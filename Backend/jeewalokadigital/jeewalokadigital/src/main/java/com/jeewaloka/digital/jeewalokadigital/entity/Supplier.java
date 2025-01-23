@@ -1,10 +1,14 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+
 @Table(name = "Supplier")
 public class Supplier {
 

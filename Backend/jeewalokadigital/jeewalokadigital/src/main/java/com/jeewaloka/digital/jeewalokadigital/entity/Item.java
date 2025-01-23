@@ -1,9 +1,15 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Item")
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+
 public class Item {
 
     @Id
