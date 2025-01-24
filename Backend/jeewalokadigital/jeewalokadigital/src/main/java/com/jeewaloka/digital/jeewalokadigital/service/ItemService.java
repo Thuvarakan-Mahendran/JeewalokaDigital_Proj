@@ -61,4 +61,5 @@ public class ItemService {
         List<Item> items = itemRepository.findAll();
         return modelMapper.map(items, new TypeToken<List<ItemDTO>>() {}.getType());
     }
+
 }

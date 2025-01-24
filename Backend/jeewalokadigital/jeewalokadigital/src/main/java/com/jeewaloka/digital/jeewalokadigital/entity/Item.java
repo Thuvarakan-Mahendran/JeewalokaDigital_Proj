@@ -1,6 +1,9 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 
@@ -36,59 +39,9 @@ public class Item {
     @Column(name = "PCCode")
     private String itemPcCode;
 
-    public Long getItemCode() {
-        return itemCode;
-    }
 
-    public void setItemCode(Long itemCode) {
-        this.itemCode = itemCode;
-    }
+    @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
+    private List<BillItem> billItems;
 
-    public Supplier getSupplier() {
-        return supplier;
-    }
 
-    public void setSupplier(Supplier supplier) {
-        this.supplier = supplier;
-    }
-
-    public String getItemName() {
-        return itemName;
-    }
-
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
-
-    public String getItemType() {
-        return itemType;
-    }
-
-    public void setItemType(String itemType) {
-        this.itemType = itemType;
-    }
-
-    public Double getItemPurchasePrice() {
-        return itemPurchasePrice;
-    }
-
-    public void setItemPurchasePrice(Double itemPurchasePrice) {
-        this.itemPurchasePrice = itemPurchasePrice;
-    }
-
-    public Double getItemSalesPrice() {
-        return itemSalesPrice;
-    }
-
-    public void setItemSalesPrice(Double itemSalesPrice) {
-        this.itemSalesPrice = itemSalesPrice;
-    }
-
-    public String getItemPcCode() {
-        return itemPcCode;
-    }
-
-    public void setItemPcCode(String itemPcCode) {
-        this.itemPcCode = itemPcCode;
-    }
 }

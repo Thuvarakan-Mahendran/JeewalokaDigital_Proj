@@ -1,7 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.controller;
 
 import com.jeewaloka.digital.jeewalokadigital.dto.ItemDTO;
-import com.jeewaloka.digital.jeewalokadigital.service.ItemService;
+import com.jeewaloka.digital.jeewalokadigital.service.impl.ItemServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class ItemController {
 
     @Autowired
-    private ItemService itemService;
+    private ItemServiceImpl itemService;
 
     @GetMapping("/getitems")
     public List<ItemDTO> getItems() {
