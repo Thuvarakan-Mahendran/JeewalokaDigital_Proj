@@ -2,11 +2,13 @@ package com.jeewaloka.digital.jeewalokadigital.entity.bill;
 
 import com.jeewaloka.digital.jeewalokadigital.entity.Item;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
 public class BillItem {
+    @Id
     private Long BIID;
     private Integer quantity;
     private Float totalValue;

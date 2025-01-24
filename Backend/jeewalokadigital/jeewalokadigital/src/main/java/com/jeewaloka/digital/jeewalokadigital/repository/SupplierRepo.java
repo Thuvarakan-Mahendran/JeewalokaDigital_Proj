@@ -1,9 +1,10 @@
 package com.jeewaloka.digital.jeewalokadigital.repository;
 
-import com.jeewaloka.digital.jeewalokadigital.entity.Item;
+import com.jeewaloka.digital.jeewalokadigital.entity.Supplier;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ItemRepo extends JpaRepository<Item,Long> {
+public interface SupplierRepo extends JpaRepository<Supplier,Long>
+{
 }

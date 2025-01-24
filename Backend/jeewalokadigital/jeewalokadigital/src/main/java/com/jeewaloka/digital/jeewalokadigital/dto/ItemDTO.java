@@ -1,8 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
@@ -13,8 +11,6 @@ public class ItemDTO {
     private String itemType;
     private double itemPurchasePrice;
     private double itemSalesPrice;
-
+    private Long supplierId;
 
 }
-
-

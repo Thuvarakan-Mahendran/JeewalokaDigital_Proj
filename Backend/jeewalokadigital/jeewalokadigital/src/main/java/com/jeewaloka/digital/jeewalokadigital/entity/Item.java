@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 
+@Table(name = "item")
 public class Item {
 
     @Id
@@ -25,10 +26,10 @@ public class Item {
 //    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "SupplierID", nullable = false)
+    @JoinColumn(name = "SupplierID",nullable = false)
     private Supplier supplier;
 
-    @Column(name = "ItemName", nullable = false)
+    @Column(name = "ItemName")
     private String itemName;
 
     @Column(name = "Type")
@@ -46,5 +47,7 @@ public class Item {
 
     @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
     private List<BillItem> billItems;
+
+
 
 }
