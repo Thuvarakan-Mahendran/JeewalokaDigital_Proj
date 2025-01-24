@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 
 public class RequestRetailerDTO {
-    private Integer RetailerId;
+    private String RetailerId;
     private String RetailerName;
     private String RetailerContactNo;
     private String RetailerAddress;
