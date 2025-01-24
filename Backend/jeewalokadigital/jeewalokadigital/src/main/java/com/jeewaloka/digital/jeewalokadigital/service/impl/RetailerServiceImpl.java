@@ -1,13 +1,77 @@
 package com.jeewaloka.digital.jeewalokadigital.service.impl;
+
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.RequestRetailerDTO;
+import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import com.jeewaloka.digital.jeewalokadigital.repository.RetailerRepo;
 import com.jeewaloka.digital.jeewalokadigital.service.RetailerService;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class RetailerServiceImpl implements RetailerService {
+
     @Autowired
-    private RetailerRepo retailerRepo;
+    private RetailerRepo retailerRepos;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public List<RequestRetailerDTO> getAllRetailers() {
+        // Fetch all retailers and map them to RequestRetailerDTO
+        return retailerRepos.findAll()
+                .stream()
+                .map(retailer -> modelMapper.map(retailer, RequestRetailerDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+        public RequestRetailerDTO getRetailerById(String retailerId) {
+            // Find the Retailer entity by ID
+            Retailer retailer = retailerRepos.findById(retailerId)
+                    .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
+
+            // Map the Retailer entity to a RequestRetailerDTO and return
+            return modelMapper.map(retailer, RequestRetailerDTO.class);
+        }
+
+
+    @Override
+    public RequestRetailerDTO createRetailer(RequestRetailerDTO retailerDTO) {
+        // Map RequestRetailerDTO to Retailer entity, save it, and map back to DTO
+        Retailer retailer = modelMapper.map(retailerDTO, Retailer.class);
+        Retailer savedRetailer = retailerRepos.save(retailer);
+        return modelMapper.map(savedRetailer, RequestRetailerDTO.class);
+    }
+
+    @Override
+    public RequestRetailerDTO updateRetailer(RequestRetailerDTO retailerDTO) {
+        // Check if retailer exists
+        String retailerId = retailerDTO.getRetailerId();
+        Retailer existingRetailer = retailerRepos.findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
+
+        // Update fields and save changes
+        existingRetailer.setRetailerName(retailerDTO.getRetailerName());
+        existingRetailer.setRetailerContactNo(Integer.parseInt(retailerDTO.getRetailerContactNo()));
+        existingRetailer.setRetailerAddress(retailerDTO.getRetailerAddress());
+        existingRetailer.setRetailerEmail(retailerDTO.getRetailerEmail());
+
+        Retailer updatedRetailer = retailerRepos.save(existingRetailer);
+        return modelMapper.map(updatedRetailer, RequestRetailerDTO.class);
+    }
+
+    @Override
+    public void deleteRetailer(String retailerId) {
+        // Check if retailer exists and delete it
+        Retailer retailer = retailerRepos.findById(retailerId)
+                .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
+        retailerRepos.delete(retailer);
+    }
 }
