@@ -36,4 +36,8 @@ public class Supplier {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items;
 
+    public Long getSupplierId() {
+        return supplierId;
+    }
+
 }

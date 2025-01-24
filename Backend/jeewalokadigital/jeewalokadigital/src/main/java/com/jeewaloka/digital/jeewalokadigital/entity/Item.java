@@ -1,15 +1,10 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
 
+@Table(name = "item")
 public class Item {
 
     @Id
@@ -22,10 +17,10 @@ public class Item {
 //    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "SupplierID", nullable = false)
+    @JoinColumn(name = "SupplierID",nullable = false)
     private Supplier supplier;
 
-    @Column(name = "ItemName", nullable = false)
+    @Column(name = "ItemName")
     private String itemName;
 
     @Column(name = "Type")
@@ -41,4 +36,59 @@ public class Item {
     @Column(name = "PCCode")
     private String itemPcCode;
 
+    public Long getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(Long itemCode) {
+        this.itemCode = itemCode;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
+    }
+
+    public Double getItemPurchasePrice() {
+        return itemPurchasePrice;
+    }
+
+    public void setItemPurchasePrice(Double itemPurchasePrice) {
+        this.itemPurchasePrice = itemPurchasePrice;
+    }
+
+    public Double getItemSalesPrice() {
+        return itemSalesPrice;
+    }
+
+    public void setItemSalesPrice(Double itemSalesPrice) {
+        this.itemSalesPrice = itemSalesPrice;
+    }
+
+    public String getItemPcCode() {
+        return itemPcCode;
+    }
+
+    public void setItemPcCode(String itemPcCode) {
+        this.itemPcCode = itemPcCode;
+    }
 }
