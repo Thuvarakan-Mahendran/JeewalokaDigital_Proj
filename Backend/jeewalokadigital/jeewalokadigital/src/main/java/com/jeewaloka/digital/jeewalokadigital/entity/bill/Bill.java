@@ -13,9 +13,10 @@ public abstract class Bill {
     private Long BillNO;
     private Long UID;
     private Long RID;
-    private Long ICODE;
-    private String values;
-    private Integer quantity;
+//    private Long ICODE;
+//    private String values;
+//    private Integer quantity;
     private Float total;
     private LocalDateTime date;
+
 }
