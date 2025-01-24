@@ -1,9 +1,12 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -40,5 +43,8 @@ public class Item {
 
     @Column(name = "PCCode")
     private String itemPcCode;
+
+    @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
+    private List<BillItem> billItems;
 
 }
