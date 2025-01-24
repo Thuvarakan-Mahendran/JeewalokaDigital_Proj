@@ -1,11 +1,12 @@
 package com.jeewaloka.digital.jeewalokadigital.entity.bill;
 
+import com.jeewaloka.digital.jeewalokadigital.enums.BillCategory;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@DiscriminatorColumn(name = "BillType", discriminatorType = DiscriminatorType.STRING)
 public abstract class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
@@ -13,10 +14,10 @@ public abstract class Bill {
     private Long BillNO;
     private Long UID;
     private Long RID;
-//    private Long ICODE;
-//    private String values;
-//    private Integer quantity;
     private Float total;
     private LocalDateTime date;
+    private BillCategory billCategory;
+    @OneToMany(mappedBy = "bill",cascade = CascadeType.ALL)
+    private List<BillItem> billItems;
 
 }

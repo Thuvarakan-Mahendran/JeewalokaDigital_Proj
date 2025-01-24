@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@NoArgsConstructor
 public class UserDTO {
     private Long UID;
     private String uname;
