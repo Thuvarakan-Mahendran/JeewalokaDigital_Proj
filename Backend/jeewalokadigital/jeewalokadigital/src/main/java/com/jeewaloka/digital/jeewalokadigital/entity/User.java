@@ -1,9 +1,12 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
 import com.jeewaloka.digital.jeewalokadigital.enums.UserRole;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class User {
@@ -23,13 +26,16 @@ public class User {
     private UserRole role;
     @Column(name = "LastLogin")
     private LocalDateTime lastLogin;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Column(name = "BillNO")
+    private List<Bill> bills;
+
+    public User() {
+    }
 
     public Long getUID() {
         return UID;
-    }
-
-    public void setUID(Long UID) {
-        this.UID = UID;
     }
 
     public String getUname() {

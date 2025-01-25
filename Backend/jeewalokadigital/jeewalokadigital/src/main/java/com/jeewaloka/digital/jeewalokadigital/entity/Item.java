@@ -47,7 +47,4 @@ public class Item {
 
     @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
     private List<BillItem> billItems;
-
-
-
 }

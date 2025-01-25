@@ -74,4 +74,6 @@ public class RetailerServiceImpl implements RetailerService {
                 .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
         retailerRepos.delete(retailer);
     }
+
+
 }
