@@ -43,29 +43,25 @@ public class RetailerServiceImpl implements RetailerService {
 
 
     @Override
-    public RequestRetailerDTO createRetailer(RequestRetailerDTO retailerDTO) {
-        // Map RequestRetailerDTO to Retailer entity, save it, and map back to DTO
+    public void createRetailer(RequestRetailerDTO retailerDTO) {
         Retailer retailer = modelMapper.map(retailerDTO, Retailer.class);
-        Retailer savedRetailer = retailerRepos.save(retailer);
-        return modelMapper.map(savedRetailer, RequestRetailerDTO.class);
+        retailerRepos.save(retailer);
     }
 
     @Override
-    public RequestRetailerDTO updateRetailer(RequestRetailerDTO retailerDTO) {
-        // Check if retailer exists
+    public void updateRetailer(RequestRetailerDTO retailerDTO) {
         String retailerId = retailerDTO.getRetailerId();
         Retailer existingRetailer = retailerRepos.findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
 
-        // Update fields and save changes
         existingRetailer.setRetailerName(retailerDTO.getRetailerName());
         existingRetailer.setRetailerContactNo(Integer.parseInt(retailerDTO.getRetailerContactNo()));
         existingRetailer.setRetailerAddress(retailerDTO.getRetailerAddress());
         existingRetailer.setRetailerEmail(retailerDTO.getRetailerEmail());
 
-        Retailer updatedRetailer = retailerRepos.save(existingRetailer);
-        return modelMapper.map(updatedRetailer, RequestRetailerDTO.class);
+        retailerRepos.save(existingRetailer);
     }
+
 
     @Override
     public void deleteRetailer(String retailerId) {
