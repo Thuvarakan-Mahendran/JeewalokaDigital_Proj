@@ -6,6 +6,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BillService {
-    List<BillDTO> findByDate(LocalDateTime issueDate);
+    List<BillDTO> findByDate(LocalDateTime date);
     List<BillDTO> searchByTerm(String searchTerm);
 }
