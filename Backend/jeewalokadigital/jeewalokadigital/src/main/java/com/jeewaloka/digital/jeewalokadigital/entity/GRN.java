@@ -46,7 +46,7 @@ public class GRN {
     @LastModifiedDate
     private LocalDate grnUpdatedDate;
 
-    @OneToMany(mappedBy = "grn", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "grn", cascade = CascadeType.ALL)
     private List<GRNItem> grnItems = new ArrayList<>();
 
 }
