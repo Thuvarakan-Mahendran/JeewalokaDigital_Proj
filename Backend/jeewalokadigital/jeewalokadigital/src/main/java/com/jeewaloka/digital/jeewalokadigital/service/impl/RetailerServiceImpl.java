@@ -24,7 +24,6 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     public List<RequestRetailerDTO> getAllRetailers() {
-        // Fetch all retailers and map them to RequestRetailerDTO
         return retailerRepos.findAll()
                 .stream()
                 .map(retailer -> modelMapper.map(retailer, RequestRetailerDTO.class))

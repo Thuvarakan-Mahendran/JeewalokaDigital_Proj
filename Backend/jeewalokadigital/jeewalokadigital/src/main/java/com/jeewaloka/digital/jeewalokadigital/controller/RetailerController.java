@@ -12,7 +12,7 @@ import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @CrossOrigin
-@RequestMapping(value = "api/retailer")
+@RequestMapping(value = "/api/retailer")
 public class RetailerController {
 
     @Autowired
