@@ -14,13 +14,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/grns")
+@CrossOrigin
+
 public class GRNController {
 
     @Autowired
     private GRNService grnService;
 
     // Create a new GRN
-    @PostMapping
+    @PostMapping("/creategrn")
     public ResponseEntity<ApiResponse<GRN>> createGRN(@RequestBody GRNDTO grnDTO) {
         try {
             GRN createdGRN = grnService.createGRN(grnDTO);
@@ -41,7 +43,7 @@ public class GRNController {
     }
 
     // Get a GRN by ID
-    @GetMapping("/{id}")
+    @GetMapping("getgrn/{id}")
     public ResponseEntity<ApiResponse<GRNResponseDTO>> getGRN(@PathVariable Long id) {
         try {
             GRNResponseDTO grnResponse = grnService.getGRNById(id);
@@ -62,7 +64,7 @@ public class GRNController {
     }
 
     // Get all GRNs
-    @GetMapping
+    @GetMapping("/getallgrns")
     public ResponseEntity<ApiResponse<List<GRNResponseDTO>>> getAllGRNs() {
         try {
             List<GRNResponseDTO> grns = grnService.getAllGRNs();
@@ -83,7 +85,7 @@ public class GRNController {
     }
 
     // Update a GRN
-    @PutMapping("/{id}")
+    @PutMapping("editgrn/{id}")
     public ResponseEntity<ApiResponse<GRN>> updateGRN(@PathVariable Long id, @RequestBody GRNDTO grnDTO) {
         try {
             GRN updatedGRN = grnService.updateGRN(id, grnDTO);
@@ -104,7 +106,7 @@ public class GRNController {
     }
 
     // Delete a GRN
-    @DeleteMapping("/{id}")
+    @DeleteMapping("deletegrn/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteGRN(@PathVariable Long id) {
         try {
             grnService.deleteGRN(id);
