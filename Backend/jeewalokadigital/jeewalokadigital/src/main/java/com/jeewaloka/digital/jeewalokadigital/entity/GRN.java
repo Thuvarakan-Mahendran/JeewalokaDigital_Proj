@@ -29,6 +29,8 @@ public class GRN {
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier grnSupplier;
 
+
+
     @Column(nullable = false)
     private String grnReceivedBy;
 
