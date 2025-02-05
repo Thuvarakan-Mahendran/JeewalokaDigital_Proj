@@ -1,8 +1,8 @@
 package com.jeewaloka.digital.jeewalokadigital.controller;
 
-import com.jeewaloka.digital.jeewalokadigital.dto.ApiResponse;
-import com.jeewaloka.digital.jeewalokadigital.dto.GRNDTO;
-import com.jeewaloka.digital.jeewalokadigital.dto.GRNResponseDTO;
+import com.jeewaloka.digital.jeewalokadigital.util.ApiResponse;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.GRNResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.GRN;
 import com.jeewaloka.digital.jeewalokadigital.service.GRNService;
 import org.springframework.beans.factory.annotation.Autowired;
