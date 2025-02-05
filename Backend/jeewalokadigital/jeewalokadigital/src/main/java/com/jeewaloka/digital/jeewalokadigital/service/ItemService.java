@@ -3,8 +3,8 @@ package com.jeewaloka.digital.jeewalokadigital.service;
 import com.jeewaloka.digital.jeewalokadigital.dto.ItemDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.Item;
 import com.jeewaloka.digital.jeewalokadigital.entity.Supplier;
-import com.jeewaloka.digital.jeewalokadigital.repository.ItemRepo;
-import com.jeewaloka.digital.jeewalokadigital.repository.SupplierRepo;
+import com.jeewaloka.digital.jeewalokadigital.repository.ItemRepository;
+import com.jeewaloka.digital.jeewalokadigital.repository.SupplierRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,10 @@ import java.util.List;
 public class ItemService {
 
     @Autowired
-    private ItemRepo itemRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
-    private SupplierRepo supplierRepository;
+    private SupplierRepository supplierRepository;
 
     @Autowired
     private ModelMapper modelMapper;
