@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getGRNs, deleteGRN, editGRN, saveGRN } from "../../api/GRNService";
+import api from "../../api/axiosInstance";
 
 const GRN = () => {
   const [grns, setGrns] = useState([]);
@@ -21,7 +21,7 @@ const GRN = () => {
 
   const fetchGRNs = async () => {
     try {
-      const response = await getGRNs();
+      const response = await api.get("/grns/getallgrns");
       setGrns(response.data?.data || []);
     } catch (error) {
       console.error("Failed to fetch GRNs:", error);
@@ -31,7 +31,7 @@ const GRN = () => {
 
   const handleDelete = async (id) => {
     try {
-      await deleteGRN(id);
+      await api.delete(`/grns/deletegrn/${id}`);
       fetchGRNs();
     } catch (error) {
       console.error("Failed to delete GRN:", error);
@@ -52,7 +52,10 @@ const GRN = () => {
   const handleAddItem = () => {
     setGrnForm((prevForm) => ({
       ...prevForm,
-      grnItems: [...prevForm.grnItems, { itemId: "", quantity: 0, unitPrice: 0 }],
+      grnItems: [
+        ...prevForm.grnItems,
+        { itemId: "", quantity: 0, unitPrice: 0, totalAmount: 0 },
+      ],
     }));
   };
 
@@ -64,7 +67,9 @@ const GRN = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      editingGrn ? await editGRN(editingGrn.grnId, grnForm) : await saveGRN(grnForm);
+      editingGrn
+        ? await api.put(`/grns/editgrn/${editingGrn.grnId}`, grnForm)
+        : await api.post("/grns/creategrn", grnForm);
       setShowPopup(false);
       setEditingGrn(null);
       fetchGRNs();
@@ -76,10 +81,20 @@ const GRN = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-semibold text-gray-800">Goods Received Notes (GRNs)</h2>
+
       <div className="bg-white p-4 shadow rounded-lg flex justify-between mb-4 items-center">
-        <input type="text" placeholder="Search..." className="w-1/3 rounded border border-gray-300 py-2 px-5" value={search} onChange={(e) => setSearch(e.target.value)} />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg" onClick={() => setShowPopup(true)}>+ Add New GRN</button>
+        <input
+          type="text"
+          placeholder="Search..."
+          className="w-1/3 rounded border border-gray-300 py-2 px-5"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg" onClick={() => setShowPopup(true)}>
+          + Add New GRN
+        </button>
       </div>
+
       <div className="bg-white p-4 shadow rounded-lg">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -97,8 +112,8 @@ const GRN = () => {
                 <td className="p-3">{grn.grnSupplierName}</td>
                 <td className="p-3">{grn.grnStatus}</td>
                 <td className="p-3 flex space-x-4">
-                  <button className="text-blue-600" onClick={() => { setEditingGrn(grn); setShowPopup(true); }}>View</button>
-                  <button className="text-green-500" onClick={() => { setEditingGrn(grn); setShowPopup(true); }}>Edit</button>
+                <button className="text-blue-600" onClick={() => { setEditingGrn(grn); setShowPopup(true); }}>View</button>
+                  <button className="text-green-600" onClick={() => { setEditingGrn(grn); setShowPopup(true); }}>Edit</button>
                   <button className="text-red-600" onClick={() => handleDelete(grn.grnId)}>Delete</button>
                 </td>
               </tr>
@@ -106,6 +121,7 @@ const GRN = () => {
           </tbody>
         </table>
       </div>
+
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative">
