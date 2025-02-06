@@ -1,4 +1,4 @@
-package com.jeewaloka.digital.jeewalokadigital.entity;
+package com.jeewaloka.digital.jeewalokadigital.entity.SupplierReturns;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,12 +11,13 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name = "RetailerReturnedNote")
-public class RetailerReturnedNote {
+@Table(name = "SupplierReturnedNote")
+public class SupplierReturnedNote {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rbillId", nullable = false, length = 10)
-    private Integer rbillId;
+    @Column(name = "sbillId", nullable = false, length = 10)
+    private int sbillId;
 
     @Column(name = "date", nullable = false, length = 10)
     private Date date;
