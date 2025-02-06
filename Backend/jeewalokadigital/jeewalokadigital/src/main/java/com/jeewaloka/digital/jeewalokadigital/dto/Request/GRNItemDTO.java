@@ -1,4 +1,4 @@
-package com.jeewaloka.digital.jeewalokadigital.dto;
+package com.jeewaloka.digital.jeewalokadigital.dto.Request;
 
 import lombok.Data;
 

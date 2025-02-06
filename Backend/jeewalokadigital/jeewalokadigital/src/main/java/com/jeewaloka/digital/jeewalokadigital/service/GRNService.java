@@ -1,17 +1,16 @@
 package com.jeewaloka.digital.jeewalokadigital.service;
 
-import com.jeewaloka.digital.jeewalokadigital.dto.GRNDTO;
-import com.jeewaloka.digital.jeewalokadigital.dto.GRNItemDTO;
-import com.jeewaloka.digital.jeewalokadigital.dto.GRNItemResponseDTO;
-import com.jeewaloka.digital.jeewalokadigital.dto.GRNResponseDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNItemDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.GRNItemResponseDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.GRNResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.GRN;
 import com.jeewaloka.digital.jeewalokadigital.entity.GRNItem;
 import com.jeewaloka.digital.jeewalokadigital.entity.Item;
 import com.jeewaloka.digital.jeewalokadigital.entity.Supplier;
-import com.jeewaloka.digital.jeewalokadigital.repository.GRNItemRepository;
 import com.jeewaloka.digital.jeewalokadigital.repository.GRNRepository;
-import com.jeewaloka.digital.jeewalokadigital.repository.ItemRepo;
-import com.jeewaloka.digital.jeewalokadigital.repository.SupplierRepo;
+import com.jeewaloka.digital.jeewalokadigital.repository.ItemRepository;
+import com.jeewaloka.digital.jeewalokadigital.repository.SupplierRepository;
 import jakarta.transaction.Transactional;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,10 @@ public class GRNService {
     private GRNRepository grnRepository;
 
     @Autowired
-    private SupplierRepo supplierRepository;
+    private SupplierRepository supplierRepository;
 
     @Autowired
-    private ItemRepo itemRepository;  // Add ItemRepository to fetch Items
+    private ItemRepository itemRepository;  // Add ItemRepository to fetch Items
 
     @Transactional
     public GRN createGRN(GRNDTO grnDTO) {
@@ -121,6 +120,7 @@ public class GRNService {
     }
 
     // Update GRN (same as before)
+    @Transactional
     public GRN updateGRN(Long id, GRNDTO grnDTO) {
         // Fetch the existing GRN from the database
         GRN existingGRN = grnRepository.findById(id)
@@ -131,14 +131,13 @@ public class GRNService {
         existingGRN.setGrnTotalAmount(grnDTO.getGrnTotalAmount());
         existingGRN.setGrnStatus(grnDTO.getGrnStatus());
 
-        // Fetch the Supplier and set it
+        // Fetch and set the Supplier
         Supplier supplier = supplierRepository.findById(grnDTO.getGrnSupplierId())
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found with id: " + grnDTO.getGrnSupplierId()));
         existingGRN.setGrnSupplier(supplier);
 
-        // Handle updating GRNItems
-        // We will clear the existing items and add new ones from the DTO
-        existingGRN.setGrnItems(new ArrayList<>());
+        // Remove existing GRN items before adding new ones
+        existingGRN.getGrnItems().clear();
 
         for (GRNItemDTO grnItemDTO : grnDTO.getGrnItems()) {
             // Fetch the Item to associate with the GRNItem

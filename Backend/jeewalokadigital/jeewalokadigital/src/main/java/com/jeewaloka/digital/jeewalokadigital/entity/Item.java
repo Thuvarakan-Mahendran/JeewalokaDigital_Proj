@@ -1,6 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
-import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Table(name = "item")
 public class Item {
 
@@ -21,12 +20,8 @@ public class Item {
     @Column(name = "ItemCode")
     private Long itemCode;
 
-//    @ManyToOne
-//    @JoinColumn(name = "UserID", nullable = false)
-//    private User user;
-
     @ManyToOne
-    @JoinColumn(name = "SupplierID",nullable = false)
+    @JoinColumn(name = "SupplierID", nullable = false)
     private Supplier supplier;
 
     @Column(name = "ItemName")
@@ -34,7 +29,6 @@ public class Item {
 
     @Column(name = "Type")
     private String itemType;
-
 
     @Column(name = "PurchasePrice")
     private Double itemPurchasePrice;
@@ -45,6 +39,11 @@ public class Item {
     @Column(name = "PCCode")
     private String itemPcCode;
 
-    @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
-    private List<BillItem> billItems;
+
+
+    // Calculated field for the total quantity in stock (adjusted by Purchase Orders)
+    @Transient
+    private Integer totalQuantityInStock;
+
+
 }
