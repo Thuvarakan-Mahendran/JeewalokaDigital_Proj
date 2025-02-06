@@ -120,6 +120,7 @@ public class GRNService {
     }
 
     // Update GRN (same as before)
+    @Transactional
     public GRN updateGRN(Long id, GRNDTO grnDTO) {
         // Fetch the existing GRN from the database
         GRN existingGRN = grnRepository.findById(id)
@@ -130,14 +131,13 @@ public class GRNService {
         existingGRN.setGrnTotalAmount(grnDTO.getGrnTotalAmount());
         existingGRN.setGrnStatus(grnDTO.getGrnStatus());
 
-        // Fetch the Supplier and set it
+        // Fetch and set the Supplier
         Supplier supplier = supplierRepository.findById(grnDTO.getGrnSupplierId())
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found with id: " + grnDTO.getGrnSupplierId()));
         existingGRN.setGrnSupplier(supplier);
 
-        // Handle updating GRNItems
-        // We will clear the existing items and add new ones from the DTO
-        existingGRN.setGrnItems(new ArrayList<>());
+        // Remove existing GRN items before adding new ones
+        existingGRN.getGrnItems().clear();
 
         for (GRNItemDTO grnItemDTO : grnDTO.getGrnItems()) {
             // Fetch the Item to associate with the GRNItem
