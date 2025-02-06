@@ -14,6 +14,7 @@ public class BillItem {
     @ManyToOne
     @JoinColumn(name = "BillNO",referencedColumnName = "BillNO")
     private Bill bill;
+
     @ManyToOne
     @JoinColumn(name = "itemCode",referencedColumnName = "itemCode")
     private Item item;
