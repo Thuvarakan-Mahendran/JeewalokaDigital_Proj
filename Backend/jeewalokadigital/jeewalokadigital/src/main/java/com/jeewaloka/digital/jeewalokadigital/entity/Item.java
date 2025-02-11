@@ -1,6 +1,5 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,20 +29,12 @@ public class Item {
     @Column(name = "Type")
     private String itemType;
 
-    @Column(name = "PurchasePrice")
-    private Double itemPurchasePrice;
 
-    @Column(name = "SalesPrice")
-    private Double itemSalesPrice;
-
-    @Column(name = "PCCode")
-    private String itemPcCode;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPrices> prices;
 
 
-
-    // Calculated field for the total quantity in stock (adjusted by Purchase Orders)
     @Transient
     private Integer totalQuantityInStock;
-
 
 }
