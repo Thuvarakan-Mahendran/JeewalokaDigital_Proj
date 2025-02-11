@@ -1,24 +1,29 @@
-import axios from "./axiosInstance";
+import api from "./axiosInstance";
 
 const GRNService = {
   createGRN: async (grnData) => {
-    return axios.post("/grns/create", grnData);
+    // Make sure the endpoint matches the controller mapping
+    return api.post("/grns/creategrn", grnData);
   },
 
   getGRN: async (id) => {
-    return axios.get(`/grns/${id}`);
+    // Correct the URL for fetching a single GRN by ID
+    return api.get(`/grns/getgrn/${id}`);
   },
 
   getAllGRNs: async () => {
-    return axios.get("/grns/all");
+    // Correct the URL for fetching all GRNs
+    return api.get("/grns/getallgrns");
   },
 
   updateGRN: async (id, grnData) => {
-    return axios.put(`/grns/update/${id}`, grnData);
+    // Correct the URL for updating a GRN by ID
+    return api.put(`/grns/editgrn/${id}`, grnData);
   },
 
   deleteGRN: async (id) => {
-    return axios.delete(`/grns/delete/${id}`);
+    // Correct the URL for deleting a GRN by ID
+    return api.delete(`/grns/deletegrn/${id}`);
   },
 };
 
