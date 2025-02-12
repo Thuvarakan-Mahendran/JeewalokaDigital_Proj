@@ -31,6 +31,16 @@ public class User {
     @Column(name = "BillNO")
     private List<Bill> bills;
 
+//    public void addBill(Bill bill) {
+//        bills.add(bill);
+//        bill.setUser(this);
+//    }
+//
+//    public void removeBill(Bill bill) {
+//        bills.remove(bill);
+//        bill.setUser(null);
+//    }
+
     public User() {
     }
 
