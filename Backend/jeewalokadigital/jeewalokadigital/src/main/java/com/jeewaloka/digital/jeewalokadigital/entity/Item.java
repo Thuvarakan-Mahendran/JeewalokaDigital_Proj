@@ -1,6 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
 
+import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,11 +40,10 @@ public class Item {
     @Column(name = "PCCode")
     private String itemPcCode;
 
-
-
     // Calculated field for the total quantity in stock (adjusted by Purchase Orders)
     @Transient
     private Integer totalQuantityInStock;
 
-
+    @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
+    private List<BillItem> billItems;
 }

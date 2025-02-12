@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public abstract class Bill {
+public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
     @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
