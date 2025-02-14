@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class GRNItemDTO {
+public class GRNItemRequestDTO {
     private Long grnItemId;
     private Long itemId;
     private Integer quantity;

@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GRNDTO {
+public class GRNRequestDTO {
 
 
     private Long grnId;
@@ -17,7 +17,7 @@ public class GRNDTO {
     private String grnReceivedBy;
     private Double grnTotalAmount;
     private String grnStatus;
-    private List<GRNItemDTO> grnItems;
+    private List<GRNItemRequestDTO> grnItems;
 }
 
 
