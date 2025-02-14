@@ -1,7 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.controller;
 
 import com.jeewaloka.digital.jeewalokadigital.util.ApiResponse;
-import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNRequestDTO;
 import com.jeewaloka.digital.jeewalokadigital.dto.Response.GRNResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.GRN;
 import com.jeewaloka.digital.jeewalokadigital.service.GRNService;
@@ -23,7 +23,7 @@ public class GRNController {
 
     // Create a new GRN
     @PostMapping("/creategrn")
-    public ResponseEntity<ApiResponse<GRN>> createGRN(@RequestBody GRNDTO grnDTO) {
+    public ResponseEntity<ApiResponse<GRN>> createGRN(@RequestBody GRNRequestDTO grnDTO) {
         try {
             GRN createdGRN = grnService.createGRN(grnDTO);
             ApiResponse<GRN> response = new ApiResponse<>(
@@ -86,7 +86,7 @@ public class GRNController {
 
     // Update a GRN
     @PutMapping("editgrn/{id}")
-    public ResponseEntity<ApiResponse<GRN>> updateGRN(@PathVariable Long id, @RequestBody GRNDTO grnDTO) {
+    public ResponseEntity<ApiResponse<GRN>> updateGRN(@PathVariable Long id, @RequestBody GRNRequestDTO grnDTO) {
         try {
             GRN updatedGRN = grnService.updateGRN(id, grnDTO);
             ApiResponse<GRN> response = new ApiResponse<>(
