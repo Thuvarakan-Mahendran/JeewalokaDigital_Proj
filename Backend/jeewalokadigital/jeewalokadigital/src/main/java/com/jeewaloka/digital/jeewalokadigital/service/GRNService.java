@@ -1,7 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.service;
 
-import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNDTO;
-import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNItemDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNRequestDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.GRNItemRequestDTO;
 import com.jeewaloka.digital.jeewalokadigital.dto.Response.GRNItemResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.dto.Response.GRNResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.GRN;
@@ -33,7 +33,7 @@ public class GRNService {
     private ItemRepository itemRepository;  // Add ItemRepository to fetch Items
 
     @Transactional
-    public GRN createGRN(GRNDTO grnDTO) {
+    public GRN createGRN(GRNRequestDTO grnDTO) {
         // Fetch the Supplier from the database
         Supplier supplier = supplierRepository.findById(grnDTO.getGrnSupplierId())
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
@@ -46,7 +46,7 @@ public class GRNService {
         grn.setGrnItems(new ArrayList<>()); // Initialize list
 
         // Loop through GRNItems and set Item for each
-        for (GRNItemDTO grnItemDTO : grnDTO.getGrnItems()) {
+        for (GRNItemRequestDTO grnItemDTO : grnDTO.getGrnItems()) {
             // Fetch the Item from the database using the itemId
             Item item = itemRepository.findById(grnItemDTO.getItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
@@ -121,7 +121,7 @@ public class GRNService {
 
     // Update GRN (same as before)
     @Transactional
-    public GRN updateGRN(Long id, GRNDTO grnDTO) {
+    public GRN updateGRN(Long id, GRNRequestDTO grnDTO) {
         // Fetch the existing GRN from the database
         GRN existingGRN = grnRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("GRN not found with id: " + id));
@@ -139,7 +139,7 @@ public class GRNService {
         // Remove existing GRN items before adding new ones
         existingGRN.getGrnItems().clear();
 
-        for (GRNItemDTO grnItemDTO : grnDTO.getGrnItems()) {
+        for (GRNItemRequestDTO grnItemDTO : grnDTO.getGrnItems()) {
             // Fetch the Item to associate with the GRNItem
             Item item = itemRepository.findById(grnItemDTO.getItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item not found with id: " + grnItemDTO.getItemId()));

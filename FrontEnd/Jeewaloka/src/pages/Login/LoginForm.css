@@ -1,0 +1,11 @@
+.message{
+    display: none;
+  }
+  
+  .showMessage{
+    display: block;
+    color: var(--whiteColor);
+    background: red;
+    border-radius: 3px;
+    text-align: center;
+  }
