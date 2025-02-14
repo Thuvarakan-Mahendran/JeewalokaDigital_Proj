@@ -29,6 +29,14 @@ public class Item {
     @Column(name = "Type")
     private String itemType;
 
+    @Column(name = "PurchasePrice")
+    private Double itemPurchasePrice;
+
+    @Column(name = "SalesPrice")
+    private Double itemSalesPrice;
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPrices> priceItems;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPrices> prices;
