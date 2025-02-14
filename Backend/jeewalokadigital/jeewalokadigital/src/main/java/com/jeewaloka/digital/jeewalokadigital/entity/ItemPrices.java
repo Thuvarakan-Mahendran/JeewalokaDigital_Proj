@@ -13,16 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Table(name = "price")
 public class ItemPrices {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PriceID")
-    private Long priceId;
-
-    @ManyToOne
-    @JoinColumn(name = "ItemCode", nullable = false)
-    private Item item;
-
+    @Column(name = "PriceCode")
+    private Long PcCode;
 
     @Column(name = "PurchasePrice")
     private Double purchasePrice;
@@ -30,6 +24,7 @@ public class ItemPrices {
     @Column(name = "SalesPrice")
     private Double salesPrice;
 
-    @Column(name = "EffectiveDate")
-    private LocalDateTime effectiveDate;
+    @ManyToOne
+    @JoinColumn(name = "ItemCode", referencedColumnName = "ItemCode")
+    private Item item;
 }
