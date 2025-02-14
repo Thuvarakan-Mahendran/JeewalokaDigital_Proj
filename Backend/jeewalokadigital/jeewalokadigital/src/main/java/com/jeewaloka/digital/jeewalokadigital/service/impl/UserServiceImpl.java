@@ -4,6 +4,7 @@ import com.jeewaloka.digital.jeewalokadigital.dto.UserDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.User;
 import com.jeewaloka.digital.jeewalokadigital.repository.UserRepository;
 import com.jeewaloka.digital.jeewalokadigital.service.UserService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,21 +22,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDTO> findByRole(String role) {
         List<User> users = userRepository.findByRole(role);
-        List<UserDTO> userDTOS = new ArrayList<>();
-        for(User user : users){
-            userDTOS.add(modelMapper.map(user,UserDTO.class));
-        }
-        return userDTOS;
+//        List<UserDTO> userDTOS = new ArrayList<>();
+//        for(User user : users){
+//            userDTOS.add(modelMapper.map(user,UserDTO.class));
+//        }
+//        return userDTOS;
+        return users.stream()
+                .map(user -> modelMapper.map(user,UserDTO.class))
+                .toList();
     }
 
     @Override
     public List<UserDTO> searchByTerm(String searchTerm){
         List<User> users = userRepository.searchByTerm(searchTerm);
-        List<UserDTO> userDTOS = new ArrayList<>();
-        for(User user : users){
-            userDTOS.add(modelMapper.map(user,UserDTO.class));
-        }
-        return userDTOS;
+//        List<UserDTO> userDTOS = new ArrayList<>();
+//        for(User user : users){
+//            userDTOS.add(modelMapper.map(user,UserDTO.class));
+//        }
+//        return userDTOS;
+        return users.stream()
+                .map(user -> modelMapper.map(user,UserDTO.class))
+                .toList();
     }
 
     @Override
@@ -43,18 +50,31 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userid);
     }
 
+//    @Override
+//    @Transactional
+//    public List<UserDTO> addUsers(List<UserDTO> userDTOS) {
+//        List<User> userList = new ArrayList<>();
+//        for(UserDTO userDTO : userDTOS){
+//            userList.add(userRepository.save(modelMapper.map(userDTO,User.class)));
+//        }
+//        userDTOS.clear();
+//        for(User user : userList){
+//            userDTOS.add(modelMapper.map(user,UserDTO.class));
+//        }
+//        return userDTOS;
+//    }
     @Override
+    @Transactional
     public List<UserDTO> addUsers(List<UserDTO> userDTOS) {
-        List<User> userList = new ArrayList<>();
-        for(UserDTO userDTO : userDTOS){
-            userList.add(userRepository.save(modelMapper.map(userDTO,User.class)));
-        }
-        userDTOS.clear();
-        for(User user : userList){
-            userDTOS.add(modelMapper.map(user,UserDTO.class));
-        }
-        return userDTOS;
+        List<User> usersToSave = userDTOS.stream()
+                .map(dto -> modelMapper.map(dto, User.class))
+                .toList();
+        List<User> savedUsers = userRepository.saveAll(usersToSave);
+        return savedUsers.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .toList();
     }
+
 
     @Override
     public UserDTO updateUser(UserDTO userDTO, Long id) {

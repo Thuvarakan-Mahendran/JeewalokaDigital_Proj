@@ -1,13 +1,15 @@
 package com.jeewaloka.digital.jeewalokadigital.dto.Request;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 
 public class RequestRetailerDTO {
     private String RetailerId;
@@ -15,4 +17,7 @@ public class RequestRetailerDTO {
     private String RetailerContactNo;
     private String RetailerAddress;
     private String RetailerEmail;
+    @Setter
+    private List<Long> billIds;
+
 }

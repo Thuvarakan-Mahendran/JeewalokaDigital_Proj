@@ -17,5 +17,4 @@ public interface BillRepository extends JpaRepository<Bill, Long> {
             "CAST(b.retailer.RetailerId AS string) = :searchTerm OR " +
             "CAST(b.BillNO AS string) = :searchTerm")
     List<Bill> searchByTerm(@Param("searchTerm") String searchTerm);
-
 }

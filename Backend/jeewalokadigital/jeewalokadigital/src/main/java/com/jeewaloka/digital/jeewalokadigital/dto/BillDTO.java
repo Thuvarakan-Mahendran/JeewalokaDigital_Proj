@@ -18,10 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 public class BillDTO {
     private Long BillNO;
-    private User user;
-    private Retailer retailer;
+//    private User user;
+//    private Retailer retailer;
+    private Long userID;
+    private Long retailerID;
     private Float total;
     private LocalDateTime date;
     private BillCategory billCategory;
-    private List<BillItem> billItems;
+//    private List<BillItem> billItems;
+    private List<Long> billItemIDS;
 }
