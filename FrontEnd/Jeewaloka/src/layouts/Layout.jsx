@@ -214,7 +214,7 @@ const Dashboard = () => {
                   </li>
                   <li>
                     <Link
-                      to="/goods-returns-note"
+                      to="inventary/grrn"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Goods Returns Note
@@ -262,7 +262,7 @@ const Dashboard = () => {
                   </li>
                   <li>
                     <Link
-                      to="/selle-rorders"
+                      to="sales/sellerorder"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Seller Order
@@ -278,7 +278,7 @@ const Dashboard = () => {
                   </li>
                   <li>
                     <Link
-                      to="/seller-returns"
+                      to="sales/sellersreturns"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Sellers Returns
