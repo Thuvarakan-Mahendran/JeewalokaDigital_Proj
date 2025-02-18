@@ -28,5 +28,12 @@ public class BillController {
         ResponseEntity<List<BillDTO>> responseEntity = new ResponseEntity<>(BillDTOS, HttpStatus.OK);
         return responseEntity;
     }
+
+    @PostMapping("/addbill")
+    public ResponseEntity<BillDTO> addBill(@RequestBody BillDTO billDTO){
+        BillDTO billDTO1 = billService.addBill(billDTO);
+        ResponseEntity<BillDTO> responseEntity = new ResponseEntity<>(billDTO1, HttpStatus.CREATED);
+        return responseEntity;
+    }
 }
 
