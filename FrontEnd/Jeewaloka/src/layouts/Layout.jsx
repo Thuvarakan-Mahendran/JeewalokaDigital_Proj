@@ -227,7 +227,7 @@ const Dashboard = () => {
                 <ul className="ml-6 space-y-2">
                   <li>
                     <Link
-                      to="/Seller"
+                      to="sales/sellers"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Sellers
