@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { getAllGRNs, deleteGRN, createGRN, updateGRN } from "../../api/GRNService";
+import {
+  getAllGRNs,
+  deleteGRN,
+  createGRN,
+  updateGRN,
+} from "../../api/GRNService";
 
 const GRN = () => {
   const [grns, setGRNs] = useState([]);
@@ -127,7 +132,6 @@ const GRN = () => {
     updatedItems.splice(index, 1);
     setGRNData({ ...grnData, grnItems: updatedItems });
   };
-  
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -177,9 +181,24 @@ const GRN = () => {
                 <td className="p-3">{grn.grnReceivedBy}</td>
                 <td className="p-3">{grn.grnStatus}</td>
                 <td className="p-3 flex space-x-4">
-                  <button className="text-green-500" onClick={() => handleView(grn)}>View</button>
-                  <button className="text-blue-600" onClick={() => handleEdit(grn)}>Edit</button>
-                  <button className="text-red-600" onClick={() => handleDeleteGRN(grn.grnId)}>Delete</button>
+                  <button
+                    className="text-green-500"
+                    onClick={() => handleView(grn)}
+                  >
+                    View
+                  </button>
+                  <button
+                    className="text-blue-600"
+                    onClick={() => handleEdit(grn)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="text-red-600"
+                    onClick={() => handleDeleteGRN(grn.grnId)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -188,181 +207,218 @@ const GRN = () => {
       </div>
 
       {showPopup && (
-  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-end">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 max-h-[80vh] overflow-y-auto">
-      <h3 className="text-xl font-semibold mb-4">
-        {isViewMode ? "View GRN" : editingGRN ? "Edit GRN" : "Add New GRN"}
-      </h3>
-      <form onSubmit={handleSubmit} className="max-h-[70vh] overflow-y-auto">
-        {/* Supplier ID */}
-        <label className="block mb-2">Supplier ID</label>
-        <input
-          type="number"
-          name="grnSupplierId"
-          value={grnData.grnSupplierId}
-          onChange={handleInputChange}
-          disabled={isViewMode}
-          className="w-full p-2 border rounded mb-4"
-        />
-        <input
-          type="text"
-          name="grnrecivedBy"
-          value={grnData.grnReceivedBy}
-          onChange={handleInputChange}
-          disabled={isViewMode}
-          className="w-full p-2 border rounded mb-4"
-        />
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-end z-50">
+          <div className="bg-white w-full max-w-[900px] h-full shadow-lg p-6">
 
-<input
-          type="text"
-          name="grnStatus"
-          value={grnData.grnStatus}
-          onChange={handleInputChange}
-          disabled={isViewMode}
-          className="w-full p-2 border rounded mb-4"
-        />
-
-        {/* Item Entry Section */}
-        {!isViewMode && (
-  <div className="border p-4 rounded-lg mb-4 bg-white shadow-md">
-    <h4 className="font-semibold mb-4 text-lg text-gray-800">Add Item</h4>
-
-    {/* Display Added Items in Table */}
-    <div className="overflow-x-auto">
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr className="border-b">
-            <th className="p-2 text-left">Item ID</th>
-            <th className="p-2 text-left">Quantity</th>
-            <th className="p-2 text-left">Unit Price</th>
-            <th className="p-2 text-left">Expiry Date</th>
-            <th className="p-2 text-left">Manufacture Date</th>
-            <th className="p-2 text-left">Total Amount</th>
-            <th className="p-2 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Displaying Added Items */}
-        {/* Displaying Added Items */}
-{grnData.grnItems.length > 0 ? (
-  grnData.grnItems.map((item, index) => (
-    <tr key={index} className="border-b">
-      <td className="p-2">{item.itemId}</td>
-      <td className="p-2">{item.quantity}</td>
-      <td className="p-2">Rs. {item.unitPrice}</td>
-      <td className="p-2">{item.itemExpiryDate}</td>
-      <td className="p-2">{item.itemManufactureDate}</td>
-      <td className="p-2">Rs. {item.totalAmount}</td>
-      <td className="p-2">
-        <button
-          type="button"
-          onClick={() => removeItem(index)}
-          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow-md"
-        >
-          Remove
-        </button>
-      </td>
-    </tr>
-  ))
-) : null}
-
-
-          {/* Empty Row for Adding New Item */}
-          {grnItem && (
-            <tr className="border-b">
-              <td className="p-2">
-                <input
-                  type="text"
-                  name="itemId"
-                  placeholder="Item ID"
-                  value={grnItem.itemId}
-                  onChange={handleItemChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
-              </td>
-              <td className="p-2">
-                <input
-                  type="number"
-                  name="quantity"
-                  placeholder="Quantity"
-                  value={grnItem.quantity}
-                  onChange={handleItemChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
-              </td>
-              <td className="p-2">
-                <input
-                  type="number"
-                  name="unitPrice"
-                  placeholder="Unit Price"
-                  value={grnItem.unitPrice}
-                  onChange={handleItemChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
-              </td>
-              <td className="p-2">
-                <input
-                  type="date"
-                  name="itemExpiryDate"
-                  value={grnItem.itemExpiryDate}
-                  onChange={handleItemChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
-              </td>
-              <td className="p-2">
-                <input
-                  type="date"
-                  name="itemManufactureDate"
-                  value={grnItem.itemManufactureDate}
-                  onChange={handleItemChange}
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                />
-              </td>
-              <td className="p-2">
-                <label className="font-semibold">Rs. {grnItem.totalAmount}</label>
-              </td>
-              <td className="p-2">
-              <button
-          type="button"
-          onClick={() => removeItem()}
-          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow-md"
-        >
-          Remove
-        </button>
-              </td>
-            </tr>
-            
-          )}
-        </tbody>
-      </table>
-      <button
-                  type="button"
-                  onClick={addGRNItem}
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow-md"
-                >
-                  + Add Item
-                </button>
-    </div>
-  </div>
-)}
-
-
-        <div className="flex justify-end space-x-4">
-          <button type="button" onClick={() => setShowPopup(false)} className="px-4 py-2 bg-gray-300 rounded">
-            Close
-          </button>
-          {!isViewMode && (
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
-              Save
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={() => {
+                setShowPopup(false);
+                setEditingGRN(null);
+                setIsViewMode(false); // Reset view mode
+                setGRNData({
+                  supplierCode: "",
+                  supplierName: "",
+                  supplierContact: "",
+                  supplierEmail: "",
+                  supplierAddress: "",
+                  supplierFax: "",
+                  supplierWebsite: "",
+                  supplierStatus: "",
+                  supplierCreatedDate: "",
+                });
+              }}
+            >
+              ×
             </button>
-          )}
+            <h3 className="text-xl font-semibold mb-4">
+              {isViewMode
+                ? "View GRN"
+                : editingGRN
+                ? "Edit GRN"
+                : "Add New GRN"}
+            </h3>
+            <form
+              onSubmit={handleSubmit}
+              className="max-h-[70vh] overflow-y-auto no-scrollbar"
+            >
+              {/* Supplier ID */}
+              <label className="block mb-2">Supplier ID</label>
+              <input
+                type="number"
+                name="grnSupplierId"
+                value={grnData.grnSupplierId}
+                onChange={handleInputChange}
+                disabled={isViewMode}
+                className="w-full p-2 border rounded mb-4"
+              />
+              <input
+                type="text"
+                name="grnrecivedBy"
+                value={grnData.grnReceivedBy}
+                onChange={handleInputChange}
+                disabled={isViewMode}
+                className="w-full p-2 border rounded mb-4"
+              />
+
+              <input
+                type="text"
+                name="grnStatus"
+                value={grnData.grnStatus}
+                onChange={handleInputChange}
+                disabled={isViewMode}
+                className="w-full p-2 border rounded mb-4"
+              />
+
+              {/* Item Entry Section */}
+              {!isViewMode && (
+                <div className="border p-4 rounded-lg mb-4 bg-white shadow-md">
+                  <h4 className="font-semibold mb-4 text-lg text-gray-800">
+                    Add Item
+                  </h4>
+
+                  {/* Display Added Items in Table */}
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full table-auto">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="p-2 text-left">Item ID</th>
+                          <th className="p-2 text-left">Quantity</th>
+                          <th className="p-2 text-left">Unit Price</th>
+                          <th className="p-2 text-left">Expiry Date</th>
+                          <th className="p-2 text-left">Manufacture Date</th>
+                          <th className="p-2 text-left">Total Amount</th>
+                          <th className="p-2 text-left">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {/* Displaying Added Items */}
+                        {/* Displaying Added Items */}
+                        {grnData.grnItems.length > 0
+                          ? grnData.grnItems.map((item, index) => (
+                              <tr key={index} className="border-b">
+                                <td className="p-2">{item.itemId}</td>
+                                <td className="p-2">{item.quantity}</td>
+                                <td className="p-2">Rs. {item.unitPrice}</td>
+                                <td className="p-2">{item.itemExpiryDate}</td>
+                                <td className="p-2">
+                                  {item.itemManufactureDate}
+                                </td>
+                                <td className="p-2">Rs. {item.totalAmount}</td>
+                                <td className="p-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => removeItem(index)}
+                                    className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow-md"
+                                  >
+                                    Remove
+                                  </button>
+                                </td>
+                              </tr>
+                            ))
+                          : null}
+
+                        {/* Empty Row for Adding New Item */}
+                        {grnItem && (
+                          <tr className="border-b">
+                            <td className="p-2">
+                              <input
+                                type="text"
+                                name="itemId"
+                                placeholder="Item ID"
+                                value={grnItem.itemId}
+                                onChange={handleItemChange}
+                                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                name="quantity"
+                                placeholder="Quantity"
+                                value={grnItem.quantity}
+                                onChange={handleItemChange}
+                                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="number"
+                                name="unitPrice"
+                                placeholder="Unit Price"
+                                value={grnItem.unitPrice}
+                                onChange={handleItemChange}
+                                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="date"
+                                name="itemExpiryDate"
+                                value={grnItem.itemExpiryDate}
+                                onChange={handleItemChange}
+                                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <input
+                                type="date"
+                                name="itemManufactureDate"
+                                value={grnItem.itemManufactureDate}
+                                onChange={handleItemChange}
+                                className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                              />
+                            </td>
+                            <td className="p-2">
+                              <label className="font-semibold">
+                                Rs. {grnItem.totalAmount}
+                              </label>
+                            </td>
+                            <td className="p-2">
+                              <button
+                                type="button"
+                                onClick={() => removeItem()}
+                                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow-md"
+                              >
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                    <button
+                      type="button"
+                      onClick={addGRNItem}
+                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow-md"
+                    >
+                      + Add Item
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setShowPopup(false)}
+                  className="px-4 py-2 bg-gray-300 rounded"
+                >
+                  Close
+                </button>
+                {!isViewMode && (
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                  >
+                    Save
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
-
-
+      )}
     </div>
   );
 };
