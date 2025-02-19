@@ -8,6 +8,7 @@ import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
 import LoginPage from "../pages/Login/LoginForm";
 
+
 const AppRoutes = () => {
   return (
     <BrowserRouter>
@@ -25,6 +26,7 @@ const AppRoutes = () => {
           <Route path="inventary/purchaseorder" element={<PurchaseOrder />} />
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
+          
         </Route>
 
       
