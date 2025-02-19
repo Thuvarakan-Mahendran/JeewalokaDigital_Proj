@@ -1,30 +1,51 @@
 import api from "./axiosInstance";
 
-const GRNService = {
-  createGRN: async (grnData) => {
-    // Make sure the endpoint matches the controller mapping
-    return api.post("/grns/creategrn", grnData);
-  },
-
-  getGRN: async (id) => {
-    // Correct the URL for fetching a single GRN by ID
-    return api.get(`/grns/getgrn/${id}`);
-  },
-
-  getAllGRNs: async () => {
-    // Correct the URL for fetching all GRNs
-    return api.get("/grns/getallgrns");
-  },
-
-  updateGRN: async (id, grnData) => {
-    // Correct the URL for updating a GRN by ID
-    return api.put(`/grns/editgrn/${id}`, grnData);
-  },
-
-  deleteGRN: async (id) => {
-    // Correct the URL for deleting a GRN by ID
-    return api.delete(`/grns/deletegrn/${id}`);
-  },
+export const createGRN = async (grnData) => {
+  try {
+    const response = await api.post("/grns/creategrn", grnData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating GRN:", error);
+    throw error;
+  }
 };
 
-export default GRNService;
+export const getGRN = async (id) => {
+  try {
+    const response = await api.get(`/grns/getgrn/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching GRN:", error);
+    throw error;
+  }
+};
+
+export const getAllGRNs = async () => {
+  try {
+    const response = await api.get("/grns/getallgrns");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all GRNs:", error);
+    throw error;
+  }
+};
+
+export const updateGRN = async (id, grnData) => {
+  try {
+    const response = await api.put(`/grns/editgrn/${id}`, grnData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating GRN:", error);
+    throw error;
+  }
+};
+
+export const deleteGRN = async (id) => {
+  try {
+    const response = await api.delete(`/grns/deletegrn/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting GRN:", error);
+    throw error;
+  }
+};

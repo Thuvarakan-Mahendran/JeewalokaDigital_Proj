@@ -34,43 +34,49 @@ public class GRNService {
 
     @Transactional
     public GRN createGRN(GRNRequestDTO grnDTO) {
-        // Fetch the Supplier from the database
         Supplier supplier = supplierRepository.findById(grnDTO.getGrnSupplierId())
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
 
         GRN grn = new GRN();
         grn.setGrnReceivedBy(grnDTO.getGrnReceivedBy());
-        grn.setGrnTotalAmount(grnDTO.getGrnTotalAmount());
+        grn.setGrnSupplier(supplier);
         grn.setGrnStatus(grnDTO.getGrnStatus());
-        grn.setGrnSupplier(supplier);  // Set the full Supplier entity
-        grn.setGrnItems(new ArrayList<>()); // Initialize list
+        grn.setGrnItems(new ArrayList<>());
 
-        // Loop through GRNItems and set Item for each
+        double totalAmount = 0.0; // Initialize total amount
+
         for (GRNItemRequestDTO grnItemDTO : grnDTO.getGrnItems()) {
-            // Fetch the Item from the database using the itemId
             Item item = itemRepository.findById(grnItemDTO.getItemId())
                     .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
             GRNItem grnItem = new GRNItem();
             grnItem.setQuantity(grnItemDTO.getQuantity());
             grnItem.setUnitPrice(grnItemDTO.getUnitPrice());
-            grnItem.setTotalAmount(grnItemDTO.getTotalAmount());
+
+            // Calculate totalAmount for each GRNItem
+            double itemTotal = grnItemDTO.getQuantity() * grnItemDTO.getUnitPrice();
+            grnItem.setTotalAmount(itemTotal);
+
             grnItem.setItemExpiryDate(grnItemDTO.getItemExpiryDate());
             grnItem.setItemManufactureDate(grnItemDTO.getItemManufactureDate());
-            grnItem.setItem(item);  // Set the item to the GRNItem
-            grnItem.setGrn(grn);  // Associate GRN with this item
+            grnItem.setItem(item);
+            grnItem.setGrn(grn);
+
             grn.getGrnItems().add(grnItem);
+            totalAmount += itemTotal; // Accumulate total amount
         }
 
-        return grnRepository.save(grn);  // Save GRN and its items
+        grn.setGrnTotalAmount(totalAmount); // Set total amount after calculation
+
+        return grnRepository.save(grn);
     }
+
     public GRNResponseDTO getGRNById(Long id) {
         GRN grn = grnRepository.findById(id).orElseThrow(() -> new RuntimeException("GRN not found"));
 
         GRNResponseDTO grnResponseDTO = new GRNResponseDTO();
         grnResponseDTO.setGrnId(grn.getGrnId());
         grnResponseDTO.setGrnReceivedBy(grn.getGrnReceivedBy());
-        grnResponseDTO.setGrnTotalAmount(grn.getGrnTotalAmount());
         grnResponseDTO.setGrnStatus(grn.getGrnStatus());
         grnResponseDTO.setGrnSupplierName(grn.getGrnSupplier().getSupplierName());
 
@@ -90,7 +96,6 @@ public class GRNService {
         grnItemResponseDTO.setItemCode(String.valueOf(grnItem.getItem().getItemCode()));
         grnItemResponseDTO.setQuantity(grnItem.getQuantity());
         grnItemResponseDTO.setUnitPrice(grnItem.getUnitPrice());
-        grnItemResponseDTO.setTotalAmount(grnItem.getTotalAmount());
         grnItemResponseDTO.setItemExpiryDate(grnItem.getItemExpiryDate());
         grnItemResponseDTO.setItemManufactureDate(grnItem.getItemManufactureDate());
         return grnItemResponseDTO;
@@ -104,7 +109,6 @@ public class GRNService {
             GRNResponseDTO grnResponseDTO = new GRNResponseDTO();
             grnResponseDTO.setGrnId(grn.getGrnId());
             grnResponseDTO.setGrnReceivedBy(grn.getGrnReceivedBy());
-            grnResponseDTO.setGrnTotalAmount(grn.getGrnTotalAmount());
             grnResponseDTO.setGrnStatus(grn.getGrnStatus());
             grnResponseDTO.setGrnSupplierName(grn.getGrnSupplier().getSupplierName());
 
@@ -120,45 +124,45 @@ public class GRNService {
     }
 
     // Update GRN (same as before)
+
     @Transactional
     public GRN updateGRN(Long id, GRNRequestDTO grnDTO) {
-        // Fetch the existing GRN from the database
         GRN existingGRN = grnRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("GRN not found with id: " + id));
 
-        // Update basic fields of the GRN
         existingGRN.setGrnReceivedBy(grnDTO.getGrnReceivedBy());
-        existingGRN.setGrnTotalAmount(grnDTO.getGrnTotalAmount());
         existingGRN.setGrnStatus(grnDTO.getGrnStatus());
 
-        // Fetch and set the Supplier
         Supplier supplier = supplierRepository.findById(grnDTO.getGrnSupplierId())
-                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found with id: " + grnDTO.getGrnSupplierId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
         existingGRN.setGrnSupplier(supplier);
 
-        // Remove existing GRN items before adding new ones
-        existingGRN.getGrnItems().clear();
+        existingGRN.getGrnItems().clear(); // Remove existing items
+
+        double totalAmount = 0.0;
 
         for (GRNItemRequestDTO grnItemDTO : grnDTO.getGrnItems()) {
-            // Fetch the Item to associate with the GRNItem
             Item item = itemRepository.findById(grnItemDTO.getItemId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Item not found with id: " + grnItemDTO.getItemId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
-            // Create a new GRNItem and set its properties
             GRNItem grnItem = new GRNItem();
             grnItem.setQuantity(grnItemDTO.getQuantity());
             grnItem.setUnitPrice(grnItemDTO.getUnitPrice());
-            grnItem.setTotalAmount(grnItemDTO.getTotalAmount());
+
+            double itemTotal = grnItemDTO.getQuantity() * grnItemDTO.getUnitPrice();
+            grnItem.setTotalAmount(itemTotal);
+
             grnItem.setItemExpiryDate(grnItemDTO.getItemExpiryDate());
             grnItem.setItemManufactureDate(grnItemDTO.getItemManufactureDate());
             grnItem.setItem(item);
-            grnItem.setGrn(existingGRN);  // Set the GRN this item belongs to
+            grnItem.setGrn(existingGRN);
 
-            // Add the new GRNItem to the GRN
             existingGRN.getGrnItems().add(grnItem);
+            totalAmount += itemTotal;
         }
 
-        // Save and return the updated GRN
+        existingGRN.setGrnTotalAmount(totalAmount);
+
         return grnRepository.save(existingGRN);
     }
 

@@ -25,29 +25,29 @@ const Seller = () => {
   const [editingSeller, setEditingSeller] = useState(null);
 
   useEffect(() => {
-    fetchSellers();
+    // fetchSellers();
   }, []);
 
-  const fetchSellers = async () => {
-    try {
-      const response = await getSellers();
-      setSellers(Array.isArray(response) ? response : response?.data || []);
-    } catch (error) {
-      console.error("Error fetching sellers:", error);
-      setSellers([]);
-    }
-  };
+  // const fetchSellers = async () => {
+  //   try {
+  //     const response = await getSellers();
+  //     setSellers(Array.isArray(response) ? response : response?.data || []);
+  //   } catch (error) {
+  //     console.error("Error fetching sellers:", error);
+  //     setSellers([]);
+  //   }
+  // };
 
-  const handleDeleteSeller = async (sellerId) => {
-    try {
-      await deleteSeller(sellerId);
-      setSellers((prevSellers) =>
-        prevSellers.filter((s) => s.sellerId !== sellerId)
-      );
-    } catch (error) {
-      console.error("Error deleting seller:", error);
-    }
-  };
+  // const handleDeleteSeller = async (sellerId) => {
+  //   try {
+  //     await deleteSeller(sellerId);
+  //     setSellers((prevSellers) =>
+  //       prevSellers.filter((s) => s.sellerId !== sellerId)
+  //     );
+  //   } catch (error) {
+  //     console.error("Error deleting seller:", error);
+  //   }
+  // };
 
   const handleInputChange = (e) => {
     setSellerForm((prevForm) => ({
@@ -75,7 +75,7 @@ const Seller = () => {
       });
       setEditingSeller(null);
       setShowPopup(false);
-      fetchSellers();
+      // fetchSellers();
     } catch (error) {
       console.error("Error saving seller:", error);
     }
@@ -183,12 +183,12 @@ const Seller = () => {
                   >
                     Edit
                   </button>
-                  <button
+                  {/* <button
                     className="text-red-600"
                     onClick={() => handleDeleteSeller(seller.sellerId)}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}
