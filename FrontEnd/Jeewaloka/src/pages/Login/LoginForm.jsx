@@ -2,6 +2,8 @@ import { useState } from "react";
 import './LoginForm.css';
 import { useNavigate } from "react-router-dom";
 
+
+
 const LoginPage = () => {
   // useState hooks to store inputs
   const [loginUserName, setLoginUserName] = useState('');
@@ -21,8 +23,11 @@ const LoginPage = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-lg flex">
+
         {/* Login Section */}
         <div className="flex flex-col justify-center">
+
+      
           <form onSubmit={loginSubmit}>
             {/* Input Fields */}
             <label className="block text-gray-700 mb-1">Username</label>
