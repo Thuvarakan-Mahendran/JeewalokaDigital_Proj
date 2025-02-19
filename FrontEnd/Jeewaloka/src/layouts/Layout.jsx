@@ -45,7 +45,7 @@ const Dashboard = () => {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   type="button"
                   className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                >
+                > 
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="w-8 h-8 rounded-full"
@@ -57,7 +57,12 @@ const Dashboard = () => {
                 {/* Dropdown Menu */}
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600">
-                    <div className="px-4 py-3">
+                    <div className="px-4 py-3 ">
+                      <img
+                        className="w-12 h-12 rounded-full"
+                        src="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                        alt="user photo"
+                      />
                       <p className="text-sm text-gray-900 dark:text-white">
                         Neil Sims
                       </p>
@@ -68,7 +73,7 @@ const Dashboard = () => {
                     <ul className="py-1">
                       <li>
                         <Link
-                          to="#"
+                          to="../."
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           Dashboard
