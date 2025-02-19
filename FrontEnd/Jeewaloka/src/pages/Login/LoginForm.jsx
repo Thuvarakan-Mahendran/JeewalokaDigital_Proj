@@ -3,8 +3,8 @@ import './LoginForm.css';
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-import logo from ''; // Provide the correct path for logo
-import lgphoto from ''; // Provide the correct path for the photo
+import logo from '../../../public/logo.jpg'; // Provide the correct path for logo
+import lgphoto from '../../../public/loginphoto.jpg'; // Provide the correct path for the photo
 
 const LoginPage = () => {
   // usestate hook to store inputs
@@ -51,15 +51,15 @@ const LoginPage = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-2xl shadow-lg flex">
         {/* Photo Section */}
-        <div className="w-64 h-64 bg-black text-white flex items-center justify-center text-xl font-bold rounded-xl">
-          <img src={lgphoto} alt="Company Image" />
+        <div className="w-64 h-64 flex items-center justify-center text-xl font-bold rounded-xl overflow-hidden">
+          <img src={lgphoto} alt="Company Image" className="w-full h-full object-cover" onError={(e) => e.target.style.display = 'none'} />
         </div>
 
         {/* Login Section */}
         <div className="ml-8 flex flex-col justify-center">
           {/* Logo */}
-          <div className="bg-black text-white text-center py-2 px-6 text-lg font-semibold rounded-lg mb-6">
-            <img src={logo} alt="Logo Image" />
+          <div className="flex justify-center mb-6">
+            <img src={logo} alt="Logo Image" className="w-24 h-24" onError={(e) => e.target.style.display = 'none'} />
           </div>
           <form onSubmit={loginSubmit}>
             <span className={statusHolder}>{loginStatus}</span> {/* Check this work or not */}
