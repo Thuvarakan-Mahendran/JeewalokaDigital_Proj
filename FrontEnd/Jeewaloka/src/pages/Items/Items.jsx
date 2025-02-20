@@ -8,7 +8,6 @@ import {
 import { getSuppliers } from "../../api/SupplierService";
 import Select from "react-select";
 
-
 const Item = () => {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
@@ -32,33 +31,33 @@ const Item = () => {
   }, []);
 
   useEffect(() => {
-      const fetchSuppliers = async () => {
-        try {
-          const response = await getSuppliers();
-          if (response) {
-            setSuppliers(
-              response.data.map((supplier) => ({
-                value: supplier.supplierId,
-                label: `${supplier.supplierCode} - ${supplier.supplierName}`,
-              }))
-            );
-          }
-        } catch (error) {
-          console.error("Error fetching suppliers", error);
-        } finally {
-          setLoading(false);
+    const fetchSuppliers = async () => {
+      try {
+        const response = await getSuppliers();
+        if (response) {
+          setSuppliers(
+            response.data.map((supplier) => ({
+              value: supplier.supplierId,
+              label: `${supplier.supplierCode} - ${supplier.supplierName}`,
+            }))
+          );
         }
-      };
-  
-      fetchSuppliers();
-    }, []);
-
-    const handleChange = (selectedOption) => {
-      setItemForm((prevForm) => ({
-        ...prevForm,
-        supplierId: selectedOption.value,
-      }));
+      } catch (error) {
+        console.error("Error fetching suppliers", error);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchSuppliers();
+  }, []);
+
+  const handleChange = (selectedOption) => {
+    setItemForm((prevForm) => ({
+      ...prevForm,
+      supplierId: selectedOption.value,
+    }));
+  };
 
   const fetchItems = async () => {
     try {
@@ -274,16 +273,22 @@ const Item = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-gray-700">Category</label>
-                  <input
-                    type="text"
+                  <label className="block text-gray-300">Category</label>
+                  <select
                     name="itemType"
-                    placeholder="Category"
                     value={itemForm.itemType}
                     onChange={handleInputChange}
                     className="w-full border border-gray-300 p-2 rounded focus:ring-2 focus:ring-blue-500"
                     required
-                  />
+                  >
+                    <option value="" disabled>
+                      Select a category
+                    </option>
+                    <option value="Electronics">Food</option>
+                    <option value="Clothing">Medicine</option>
+                    <option value="Furniture">Cosmetics</option>
+                    <option value="Books">Books</option>
+                  </select>
                 </div>
 
                 <div className="space-y-3">
@@ -315,14 +320,16 @@ const Item = () => {
                 <div className="space-y-3">
                   <label className="block text-gray-700">Supplier ID</label>
                   <Select
-        options={suppliers}
-        isLoading={loading}
-        isSearchable
-        onChange={handleChange}
-        value={suppliers.find((supplier) => supplier.value === itemForm.supplierId)}
-        placeholder="Select a supplier..."
-        className="w-full"
-      />
+                    options={suppliers}
+                    isLoading={loading}
+                    isSearchable
+                    onChange={handleChange}
+                    value={suppliers.find(
+                      (supplier) => supplier.value === itemForm.supplierId
+                    )}
+                    placeholder="Select a supplier..."
+                    className="w-full"
+                  />
                 </div>
 
                 {/* Save Button */}
