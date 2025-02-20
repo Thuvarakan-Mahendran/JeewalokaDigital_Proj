@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Select from "react-select";
 import { createGRN } from "../../api/GRNService";
 import { useNavigate } from "react-router-dom";
-
+import { getSuppliers } from "../../api/SupplierService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 const CreateGRN = () => {
   const [grnData, setGRNData] = useState({
     grnSupplierId: "",
+    grnSupplierName: "",
     grnReceivedBy: "",
     grnStatus: "Pending",
     grnItems: [],
@@ -19,6 +23,38 @@ const CreateGRN = () => {
     itemManufactureDate: "",
     totalAmount: 0,
   });
+
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const response = await getSuppliers();
+        if (response.statusCode === 200) {
+          setSuppliers(
+            response.data.map((supplier) => ({
+              value: supplier.supplierId,
+              label: `${supplier.supplierCode} - ${supplier.supplierName}`,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching suppliers", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSuppliers();
+  }, []);
+  
+  const handleChange = (selectedOption) => {
+    setGRNData((prevData) => ({
+      ...prevData,
+      grnSupplierId: selectedOption ? selectedOption.value : "",
+    }));
+  };
 
   const navigate = useNavigate();
 
@@ -70,6 +106,7 @@ const CreateGRN = () => {
     }
   };
 
+  
   // Submit GRN creation
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,16 +131,21 @@ const CreateGRN = () => {
       <h2 className="text-2xl font-semibold text-gray-800">Create New GRN</h2>
 
       <form onSubmit={handleSubmit} className="bg-white p-4 shadow rounded-lg">
-        <div className="mb-4">
-          <label className="block mb-2">Supplier ID</label>
-          <input
-            type="number"
-            name="grnSupplierId"
-            value={grnData.grnSupplierId}
-            onChange={handleInputChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
+      <div className="mb-4">
+      <label className="block mb-2">Supplier</label>
+      <Select
+        options={suppliers}
+        isLoading={loading}
+        isSearchable
+        onChange={handleChange}
+        value={suppliers.find((s) => s.value === grnData.grnSupplierId) || null}
+        placeholder="Select a supplier..."
+        className="w-full"
+      />
+    </div>
+
+       
+
 
         <div className="mb-4">
           <label className="block mb-2">Received By</label>
@@ -162,9 +204,9 @@ const CreateGRN = () => {
                           <button
                             type="button"
                             onClick={() => removeItem(index)}
-                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow-md"
+                            className="px-4 py-2 text-red-500 hover:text-red-600"
                           >
-                            Remove
+                            <FontAwesomeIcon icon={faMinus}/>
                           </button>
                         </td>
                       </tr>
@@ -227,9 +269,9 @@ const CreateGRN = () => {
                     <button
                       type="button"
                       onClick={addGRNItem}
-                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded shadow-md"
+                      className="px-4 py-2 text-green-600 hover:text-green-700 "
                     >
-                      Add Item
+                     <FontAwesomeIcon icon={faPlus}/>
                     </button>
                   </td>
                 </tr>
