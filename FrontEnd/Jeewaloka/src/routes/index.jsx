@@ -8,12 +8,18 @@ import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
 import ReportsPage from"../pages/Reports/Report";
 import LoginPage from "../pages/Login/LoginForm";
+<<<<<<< HEAD
 import DashboardPage from "../pages/DashboardPage/DashboardForm";
+=======
+>>>>>>> f8fa023220e2149f0784891f5fecdd2fe1757822
 
 import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
 import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
 import Users from "../pages/User/Users";
+import GRRN from "../pages/GRRN/GRRN";
+import SellerReturn from "../pages/SellersReturn/SellerReturn";
+import SellerOrder from "../pages/SellerOrder/SellerOrder";
 
 
 const AppRoutes = () => {
@@ -31,16 +37,20 @@ const AppRoutes = () => {
           <Route path="inventary/items" element={<Items />} />
           <Route path="inventary/grn" element={<GRN />} />
           <Route path="inventary/purchaseorder" element={<PurchaseOrder />} />
+          <Route path="inventary/grrn" element={<GRRN />} />
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
-
-          
-
+          <Route path="Reports/ReportsPage" element={<ReportsPage />} />
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
+<<<<<<< HEAD
           <Route path="Reports/ReportsPage" element={<ReportsPage />} />
           <Route path="dashboardform" element={<DashboardPage />} />
+=======
+          <Route path="sales/sellersreturns" element={<SellerReturn />} />
+          <Route path="sales/sellerorder" element={<SellerOrder />} />
+>>>>>>> f8fa023220e2149f0784891f5fecdd2fe1757822
 
         </Route>
 
