@@ -8,6 +8,10 @@ import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
 import ReportsPage from"../pages/Reports/Report";
 import LoginPage from "../pages/Login/LoginForm";
+<<<<<<< HEAD
+import DashboardPage from "../pages/DashboardPage/DashboardForm";
+=======
+>>>>>>> f8fa023220e2149f0784891f5fecdd2fe1757822
 
 import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
@@ -40,8 +44,13 @@ const AppRoutes = () => {
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
+<<<<<<< HEAD
+          <Route path="Reports/ReportsPage" element={<ReportsPage />} />
+          <Route path="dashboardform" element={<DashboardPage />} />
+=======
           <Route path="sales/sellersreturns" element={<SellerReturn />} />
           <Route path="sales/sellerorder" element={<SellerOrder />} />
+>>>>>>> f8fa023220e2149f0784891f5fecdd2fe1757822
 
         </Route>
 

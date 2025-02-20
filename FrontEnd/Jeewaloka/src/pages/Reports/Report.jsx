@@ -29,7 +29,7 @@ export default function ReportsPage() {
             value={secondReportType} 
             onChange={(e) => setSecondReportType(e.target.value)}
           >
-            <option value="">Report type</option>
+            <option value="">Report Duration</option>
             <option value="monthly">Monthly Report</option>
             <option value="quarterly">Quarterly Report</option>
             <option value="yearly">Yearly Report</option>
