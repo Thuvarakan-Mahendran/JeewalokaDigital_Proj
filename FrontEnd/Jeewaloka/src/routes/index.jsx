@@ -6,15 +6,12 @@ import PurchaseOrder from "../pages/PurchaseOrder/PurchaseOrder";
 import Sellers from "../pages/Sellers/Sellers";
 import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
-<<<<<<< Updated upstream
 import LoginPage from "../pages/Login/LoginForm";
-
-=======
 import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
 import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
 import Users from "../pages/User/Users";
->>>>>>> Stashed changes
+import Report from "../pages/Reports/Report"
 
 const AppRoutes = () => {
   return (
@@ -33,13 +30,10 @@ const AppRoutes = () => {
           <Route path="inventary/purchaseorder" element={<PurchaseOrder />} />
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
-<<<<<<< Updated upstream
-          
-=======
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
->>>>>>> Stashed changes
+          <Route path="reports" element={<Report />} />
         </Route>
 
       
