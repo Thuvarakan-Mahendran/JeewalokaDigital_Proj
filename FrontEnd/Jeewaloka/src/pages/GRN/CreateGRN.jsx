@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getSuppliers } from "../../api/SupplierService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {getItems} from "../../api/ItemService";
 
 
 const CreateGRN = () => {
@@ -26,7 +27,32 @@ const CreateGRN = () => {
   });
 
   const [suppliers, setSuppliers] = useState([]);
+  const[items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await getItems();
+        if (response.statusCode === 200) {
+          setItems(
+            response.data.map((item) => ({
+              value: item.itemId,
+              label: `${item.itemName}`,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching items", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+  
+  
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -216,14 +242,17 @@ const CreateGRN = () => {
 
                 <tr className="border-b">
                   <td className="p-2">
-                    <input
-                      type="text"
-                      name="itemId"
-                      placeholder="Item ID"
-                      value={grnItem.itemId}
-                      onChange={handleItemChange}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
+
+                  <Select
+        options={suppliers}
+        isLoading={loading}
+        isSearchable
+        onChange={handleChange}
+        value={items.find((s) => s.value === grnItem.itemId) || null}
+        placeholder="Select a Item..."
+        className="w-full"
+      />
+                
                   </td>
                   <td className="p-2">
                     <input
