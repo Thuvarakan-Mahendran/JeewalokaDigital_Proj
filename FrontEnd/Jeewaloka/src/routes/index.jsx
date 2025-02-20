@@ -6,7 +6,9 @@ import PurchaseOrder from "../pages/PurchaseOrder/PurchaseOrder";
 import Sellers from "../pages/Sellers/Sellers";
 import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
+import ReportsPage from"../pages/Reports/Report";
 import LoginPage from "../pages/Login/LoginForm";
+
 import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
 import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
@@ -14,6 +16,7 @@ import Users from "../pages/User/Users";
 import GRRN from "../pages/GRRN/GRRN";
 import SellerReturn from "../pages/SellersReturn/SellerReturn";
 import SellerOrder from "../pages/SellerOrder/SellerOrder";
+
 
 const AppRoutes = () => {
   return (
@@ -33,11 +36,13 @@ const AppRoutes = () => {
           <Route path="inventary/grrn" element={<GRRN />} />
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
+          <Route path="Reports/ReportsPage" element={<ReportsPage />} />
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
           <Route path="sales/sellersreturns" element={<SellerReturn />} />
           <Route path="sales/sellerorder" element={<SellerOrder />} />
+
         </Route>
 
       
