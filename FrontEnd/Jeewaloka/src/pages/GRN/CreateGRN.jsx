@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom";
 import { getSuppliers } from "../../api/SupplierService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+
+
 const CreateGRN = () => {
   const [grnData, setGRNData] = useState({
     grnSupplierId: "",
-    grnSupplierName: "",
     grnReceivedBy: "",
     grnStatus: "Pending",
     grnItems: [],
