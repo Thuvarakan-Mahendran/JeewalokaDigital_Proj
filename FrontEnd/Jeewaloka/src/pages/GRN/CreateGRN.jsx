@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getSuppliers } from "../../api/SupplierService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import {getItems} from "../../api/ItemService";
+
 
 
 const CreateGRN = () => {
@@ -14,7 +14,7 @@ const CreateGRN = () => {
     grnReceivedBy: "",
     grnStatus: "Pending",
     grnItems: [],
-    grnTotalAmount: 0,
+    
   });
 
   const [grnItem, setGRNItem] = useState({
@@ -23,34 +23,35 @@ const CreateGRN = () => {
     unitPrice: 0,
     itemExpiryDate: "",
     itemManufactureDate: "",
-    totalAmount: 0,
+  
   });
 
   const [suppliers, setSuppliers] = useState([]);
-  const[items, setItems] = useState([]);
+  //const[items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await getItems();
-        if (response.statusCode === 200) {
-          setItems(
-            response.data.map((item) => ({
-              value: item.itemId,
-              label: `${item.itemName}`,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching items", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchItems();
-  }, []);
+  // useEffect(() => {
+  //   const fetchItems = async () => {
+  //     try {
+  //       const response = await getItems();
+  //       if (response.statusCode === 200) {
+  //         setItems(
+  //           response.data.map((item) => ({
+  //             value: item.itemCode, // Updated from itemId to itemCode
+  //             label: item.itemName,
+  //           }))
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching items", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  
+  //   fetchItems();
+  // }, []);
+  
   
   
 
@@ -58,7 +59,7 @@ const CreateGRN = () => {
     const fetchSuppliers = async () => {
       try {
         const response = await getSuppliers();
-        if (response.statusCode === 200) {
+        if (response) {
           setSuppliers(
             response.data.map((supplier) => ({
               value: supplier.supplierId,
@@ -243,15 +244,14 @@ const CreateGRN = () => {
                 <tr className="border-b">
                   <td className="p-2">
 
-                  <Select
-        options={suppliers}
-        isLoading={loading}
-        isSearchable
-        onChange={handleChange}
-        value={items.find((s) => s.value === grnItem.itemId) || null}
-        placeholder="Select a Item..."
-        className="w-full"
-      />
+                  <input
+                      type="number"
+                      name="itemId"
+                      placeholder="item ID"
+                      value={grnItem.itemId}
+                      onChange={handleItemChange}
+                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    />
                 
                   </td>
                   <td className="p-2">
