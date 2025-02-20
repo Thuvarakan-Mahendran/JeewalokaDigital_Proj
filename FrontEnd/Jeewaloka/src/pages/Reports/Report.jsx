@@ -5,9 +5,9 @@ export default function ReportsPage() {
   const [secondReportType, setSecondReportType] = useState("");
   
   // Sample data fetching simulation (Replace with actual database fetch logic)
-  const cashSale = "$10,000";
-  const creditSale = "$5,000";
-  const totalSale = "$15,000";
+  const cashSale = "0";
+  const creditSale = "0";
+  const totalSale = "0";
 
   return (
     <div className="p-6">
