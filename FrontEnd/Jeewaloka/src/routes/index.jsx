@@ -7,7 +7,13 @@ import Sellers from "../pages/Sellers/Sellers";
 import Supplier from "../pages/Supplier/Supplier";
 import CreateGRN  from "../pages/GRN/CreateGRN";
 import "../styles/index.css";
+
 import LoginPage from "../pages/Login/LoginForm";
+
+
+import Invoices from "../pages/Invoices/Invoices";
+import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
+import Users from "../pages/User/Users";
 
 const AppRoutes = () => {
   return (
@@ -27,6 +33,10 @@ const AppRoutes = () => {
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
           <Route path="inventary/grn/creategrn" element={<CreateGRN/>} />
+          <Route path="sales/invoices" element={<Invoices />} />
+          <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
+          <Route path="users" element={<Users />} />
+
         </Route>
 
       
