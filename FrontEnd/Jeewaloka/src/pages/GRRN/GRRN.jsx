@@ -1,80 +1,59 @@
-import React, { useState } from "react";
-import api from "../../api/GRRNService";
-import { useSearchParams } from "react-router-dom";
+import {useState} from 'react'
 
-const GoodReturnNote = () => {
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
+export default function GRRN() {
 
-  const addItem = () => {
-    setItems([...items, { id: Date.now(), itemCode: "", itemName: "", pcCode: "", qty: 1 }]);
-  };
-
-  const removeItem = (id) => {
-    setItems(items.filter(item => item.id !== id));
-  };
+  const [AddGRRN , setAddGRRN] = useState(false)
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-        {/* Search Bar */}
-        <h2 className="text-2xl font-semibold text-gray-800">Goods Return Notes (GRNNs)</h2>
+        <h2 className='text-2xl font-semibold text-gray-800'>Goods Return Note</h2>
         <div className="bg-white p-4 shadow rounded-lg flex justify-between mb-4 items-center">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="w-1/3 rounded border border-gray-300 py-2 px-5"
-          />
+            <input type='text' placeholder='Search...' className="w-1/3 rounded border border-gray-300 py-2 px-5"/>
         </div>
-        
-        {/* Add Item Button */}
-        <button
-            onClick={addItem}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md mt-4"
-          >
-            Add Goods Return Note
-          </button>
-          <br/><br/>
-
-        {/* Table */}
+        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg" onClick={() => setAddGRRN(true)}>Add Goods Return Note</button><br/><br/>
         <div className="bg-white p-4 shadow rounded-lg">
-          <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th className="p-3">GRN NO</th>
-                <th className="p-3">Supplier</th>
-                <th className="p-3">Received Date</th>
-                <th className="p-3">Action</th>
-              </tr>
+                <tr>
+                    <th>GRN NO</th>
+                    <th>Supplier</th>
+                    <th>Received Date</th>
+                    <th>ACTIONS</th>
+                </tr>
             </thead>
             <tbody>
-              {items.map((item) => (
-                <tr key={item.id} className="text-center">
-                  <td className="border p-2">
-                    <input type="text" className="w-full border p-1" placeholder="Item Code" />
-                  </td>
-                  <td className="border p-2">
-                    <input type="text" className="w-full border p-1" placeholder="Item Name" />
-                  </td>
-                  <td className="border p-2">
-                    <input type="text" className="w-full border p-1" placeholder="PC Code" />
-                  </td>
-                  <td className="border p-2">
-                    <input type="number" className="w-full border p-1" defaultValue={1} />
-                  </td>
-                  <td className="border p-2">
-                    <button onClick={() => removeItem(item.id)} className="text-red-600">Remove</button>
-                  </td>
-                </tr>
-              ))}
+
             </tbody>
-          </table>
-
-          
-
-          
+            </table>
         </div>
+        {AddGRRN &&
+          <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-2/3 relative">
+              <h3 className="text-xl font-bold mb-4">Add Goods Return Note</h3>
+              <button className="absolute top-2 right-2 text-red-600" onClick={() => setAddGRRN(false)}>X</button>
+              <input type='text' name='' className="w-1/3 rounded border border-gray-300 py-2 px-5" placeholder='GRN No'/><br/><br/>
+              <input type='text' name='' className="w-1/3 rounded border border-gray-300 py-2 px-5" placeholder='Supplier'/><br/><br/>
+              <input type='text' name='' className="w-1/3 rounded border border-gray-300 py-2 px-5" placeholder='Received Date'/><br/><br/>
+              <table className="w-full text-left border-collapse">
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>PC_code</th>
+                        <th>Qty</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <button className="bg-green-600 text-white px-4 py-2 rounded-lg">Add Another Item</button>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-lg absolute right-2">Cretae Note</button>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
     </div>
-  );
-};
-
-export default GoodReturnNote;
+  )
+}
