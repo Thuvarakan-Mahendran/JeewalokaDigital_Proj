@@ -37,15 +37,15 @@ export default function ReportsPage() {
         </div>
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span>This month's total cash sale by now:</span>
+            <span>Total cash sale by now:</span>
             <input className="border p-2 rounded w-32" value={cashSale} readOnly />
           </div>
           <div className="flex justify-between items-center">
-            <span>This month's total credit sale by now:</span>
+            <span>Total credit sale by now:</span>
             <input className="border p-2 rounded w-32" value={creditSale} readOnly />
           </div>
           <div className="flex justify-between items-center">
-            <span>This month's total sale by now:</span>
+            <span>Total sale by now:</span>
             <input className="border p-2 rounded w-32" value={totalSale} readOnly />
           </div>
         </div>
