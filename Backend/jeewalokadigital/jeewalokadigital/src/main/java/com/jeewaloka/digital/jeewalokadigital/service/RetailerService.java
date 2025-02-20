@@ -1,8 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.service;
 
 import com.jeewaloka.digital.jeewalokadigital.dto.Request.RequestRetailerDTO;
-import com.jeewaloka.digital.jeewalokadigital.dto.UserDTO;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 

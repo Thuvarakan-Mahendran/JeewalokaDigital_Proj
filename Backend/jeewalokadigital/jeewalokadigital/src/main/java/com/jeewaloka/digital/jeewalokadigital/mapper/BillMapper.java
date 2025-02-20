@@ -1,6 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.mapper;
 
-import com.jeewaloka.digital.jeewalokadigital.dto.BillDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.BillRequestDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.BillResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import com.jeewaloka.digital.jeewalokadigital.entity.User;
 import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
@@ -12,7 +13,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,14 +25,14 @@ public class BillMapper {
     private RetailerRepo retailerRepo;
     @Autowired
     private BillItemRepo billItemRepo;
-    public Bill toBill(BillDTO billDTO){
+    public Bill toBill(BillRequestDTO billDTO){
         if (billDTO == null) {
             return null;
         }
 
         Bill bill = new Bill();
         bill.setTotal(billDTO.getTotal());
-        bill.setDate(billDTO.getDate() != null ? billDTO.getDate() : LocalDateTime.now());
+        bill.setDate(billDTO.getDate() != null ? billDTO.getDate() : LocalDate.now());
         bill.setBillCategory(billDTO.getBillCategory());
 
         // Fetch and set User by ID
@@ -63,12 +64,12 @@ public class BillMapper {
         }
         return bill;
     }
-    public BillDTO toBillDTO(Bill bill){
+    public BillResponseDTO toBillDTO(Bill bill){
         if (bill == null) {
             return null;
         }
 
-        BillDTO billDTO = new BillDTO();
+        BillResponseDTO billDTO = new BillResponseDTO();
         billDTO.setBillNO(bill.getBillNO());
         billDTO.setUserID(bill.getUser() != null ? bill.getUser().getUID() : null);
         billDTO.setRetailerID(Long.valueOf(bill.getRetailer() != null ? bill.getRetailer().getRetailerId() : null));

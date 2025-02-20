@@ -1,30 +1,24 @@
-package com.jeewaloka.digital.jeewalokadigital.dto;
+package com.jeewaloka.digital.jeewalokadigital.dto.Response;
 
-import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
-import com.jeewaloka.digital.jeewalokadigital.entity.User;
-import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
 import com.jeewaloka.digital.jeewalokadigital.enums.BillCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BillDTO {
+public class BillResponseDTO{
     private Long BillNO;
-//    private User user;
-//    private Retailer retailer;
     private Long userID;
     private Long retailerID;
     private Float total;
-    private LocalDateTime date;
+    private LocalDate date;
     private BillCategory billCategory;
-//    private List<BillItem> billItems;
     private List<Long> billItemIDS;
 }
