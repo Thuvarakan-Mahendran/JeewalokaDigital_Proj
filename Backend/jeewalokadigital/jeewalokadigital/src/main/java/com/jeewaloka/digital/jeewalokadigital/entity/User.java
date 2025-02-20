@@ -5,7 +5,7 @@ import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
 import com.jeewaloka.digital.jeewalokadigital.enums.UserRole;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -25,11 +25,21 @@ public class User {
     @Column(name = "userRole", nullable = false)
     private UserRole role;
     @Column(name = "LastLogin")
-    private LocalDateTime lastLogin;
+    private LocalDate lastLogin;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "BillNO")
     private List<Bill> bills;
+
+//    public void addBill(Bill bill) {
+//        bills.add(bill);
+//        bill.setUser(this);
+//    }
+//
+//    public void removeBill(Bill bill) {
+//        bills.remove(bill);
+//        bill.setUser(null);
+//    }
 
     public User() {
     }
@@ -70,11 +80,19 @@ public class User {
         this.role = role;
     }
 
-    public LocalDateTime getLastLogin() {
+    public LocalDate getLastLogin() {
         return lastLogin;
     }
 
-    public void setLastLogin(LocalDateTime lastLogin) {
+    public void setLastLogin(LocalDate lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public List<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(List<Bill> bills) {
+        this.bills = bills;
     }
 }

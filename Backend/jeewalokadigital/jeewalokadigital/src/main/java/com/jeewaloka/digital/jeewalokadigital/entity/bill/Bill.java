@@ -5,11 +5,11 @@ import com.jeewaloka.digital.jeewalokadigital.entity.User;
 import com.jeewaloka.digital.jeewalokadigital.enums.BillCategory;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public abstract class Bill {
+public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
     @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
@@ -21,7 +21,7 @@ public abstract class Bill {
     @JoinColumn(name = "RID", referencedColumnName = "RetailerId")
     private Retailer retailer;
     private Float total;
-    private LocalDateTime date; //it has to be the date the bill record was created
+    private LocalDate date; // date bill record was created
     private BillCategory billCategory;
     @OneToMany(mappedBy = "bill",cascade = CascadeType.ALL)
     private List<BillItem> billItems;
@@ -57,11 +57,11 @@ public abstract class Bill {
         this.total = total;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

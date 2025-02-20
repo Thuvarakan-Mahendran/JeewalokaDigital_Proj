@@ -1,25 +1,51 @@
-import axios from "./axiosInstance";
+import api from "./axiosInstance";
 
-const GRNService = {
-  createGRN: async (grnData) => {
-    return axios.post("/grns/create", grnData);
-  },
-
-  getGRN: async (id) => {
-    return axios.get(`/grns/${id}`);
-  },
-
-  getAllGRNs: async () => {
-    return axios.get("/grns/all");
-  },
-
-  updateGRN: async (id, grnData) => {
-    return axios.put(`/grns/update/${id}`, grnData);
-  },
-
-  deleteGRN: async (id) => {
-    return axios.delete(`/grns/delete/${id}`);
-  },
+export const createGRN = async (grnData) => {
+  try {
+    const response = await api.post("/grns/creategrn", grnData);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating GRN:", error);
+    throw error;
+  }
 };
 
-export default GRNService;
+export const getGRN = async (id) => {
+  try {
+    const response = await api.get(`/grns/getgrn/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching GRN:", error);
+    throw error;
+  }
+};
+
+export const getAllGRNs = async () => {
+  try {
+    const response = await api.get("/grns/getallgrns");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all GRNs:", error);
+    throw error;
+  }
+};
+
+export const updateGRN = async (id, grnData) => {
+  try {
+    const response = await api.put(`/grns/editgrn/${id}`, grnData);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating GRN:", error);
+    throw error;
+  }
+};
+
+export const deleteGRN = async (id) => {
+  try {
+    const response = await api.delete(`/grns/deletegrn/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting GRN:", error);
+    throw error;
+  }
+};
