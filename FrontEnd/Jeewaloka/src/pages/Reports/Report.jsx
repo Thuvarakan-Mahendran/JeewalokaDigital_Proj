@@ -1,40 +1,55 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 export default function ReportsPage() {
   const [reportType, setReportType] = useState("");
+  const [secondReportType, setSecondReportType] = useState("");
+  
+  // Sample data fetching simulation (Replace with actual database fetch logic)
+  const cashSale = "$10,000";
+  const creditSale = "$5,000";
+  const totalSale = "$15,000";
+
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold">Reports</h1>
-      <Card className="mt-4 p-6 w-full max-w-2xl">
-        <CardContent>
-          <Select onValueChange={(value) => setReportType(value)}>
-            <SelectTrigger className="w-64">
-              <SelectValue placeholder="Report type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sales">Sales Report</SelectItem>
-              <SelectItem value="inventory">Inventory Report</SelectItem>
-              <SelectItem value="finance">Financial Report</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="mt-6 space-y-4">
-            <div className="flex justify-between items-center">
-              <span>This month's total cash sale by now:</span>
-              <span className="font-semibold">$10,000</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>This month's total credit sale by now:</span>
-              <span className="font-semibold">$5,000</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span>This month's total sale by now:</span>
-              <span className="font-semibold">$15,000</span>
-            </div>
+      <div className="mt-4 p-6 w-full max-w-2xl border rounded-lg shadow-sm">
+        <div className="flex space-x-4 mb-4">
+          <select 
+            className="border p-2 rounded w-64" 
+            value={reportType} 
+            onChange={(e) => setReportType(e.target.value)}
+          >
+            <option value="">Report type</option>
+            <option value="sales">Sales Report</option>
+            <option value="inventory">Inventory Report</option>
+            <option value="finance">Financial Report</option>
+          </select>
+          <select 
+            className="border p-2 rounded w-64" 
+            value={secondReportType} 
+            onChange={(e) => setSecondReportType(e.target.value)}
+          >
+            <option value="">Report Duration</option>
+            <option value="monthly">Monthly Report</option>
+            <option value="quarterly">Quarterly Report</option>
+            <option value="yearly">Yearly Report</option>
+          </select>
+        </div>
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <span>Total cash sale by now:</span>
+            <input className="border p-2 rounded w-32" value={cashSale} readOnly />
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex justify-between items-center">
+            <span>Total credit sale by now:</span>
+            <input className="border p-2 rounded w-32" value={creditSale} readOnly />
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Total sale by now:</span>
+            <input className="border p-2 rounded w-32" value={totalSale} readOnly />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

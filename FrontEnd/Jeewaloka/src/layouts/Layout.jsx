@@ -73,20 +73,13 @@ const Dashboard = () => {
                     <ul className="py-1">
                       <li>
                         <Link
-                          to="../."
+                          to="dashboardform"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
                         >
                           Dashboard
                         </Link>
                       </li>
-                      <li>
-                        <Link
-                          to="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                        >
-                          Settings
-                        </Link>
-                      </li>
+                      
                       <li>
                         <Link
                           to="/login"
@@ -114,7 +107,7 @@ const Dashboard = () => {
           <ul className="space-y-2 font-semibold">
             <li>
               <Link
-                to="/"
+                to="dashboardform"
                 className="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <FontAwesomeIcon
@@ -196,7 +189,7 @@ const Dashboard = () => {
                   </li>
                   <li>
                     <Link
-                      to="/goods-returns-note"
+                      to="inventary/grrn"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Goods Returns Note
@@ -237,7 +230,7 @@ const Dashboard = () => {
                   </li>
                   <li>
                     <Link
-                      to="/selle-rorders"
+                      to="sales/sellerorder"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Seller Order
@@ -253,7 +246,7 @@ const Dashboard = () => {
                   </li>
                   <li>
                     <Link
-                      to="/seller-returns"
+                      to="sales/sellersreturns"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Sellers Returns
@@ -272,7 +265,7 @@ const Dashboard = () => {
             </li>
             <li>
               <Link
-                to="/sellers"
+                to="Reports/ReportsPage"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <FontAwesomeIcon
