@@ -6,15 +6,14 @@ import PurchaseOrder from "../pages/PurchaseOrder/PurchaseOrder";
 import Sellers from "../pages/Sellers/Sellers";
 import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
-<<<<<<< Updated upstream
 import LoginPage from "../pages/Login/LoginForm";
-
-=======
 import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
 import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
 import Users from "../pages/User/Users";
->>>>>>> Stashed changes
+import GRRN from "../pages/GRRN/GRRN";
+import SellerReturn from "../pages/SellersReturn/SellerReturn";
+import SellerOrder from "../pages/SellerOrder/SellerOrder";
 
 const AppRoutes = () => {
   return (
@@ -31,15 +30,14 @@ const AppRoutes = () => {
           <Route path="inventary/items" element={<Items />} />
           <Route path="inventary/grn" element={<GRN />} />
           <Route path="inventary/purchaseorder" element={<PurchaseOrder />} />
+          <Route path="inventary/grrn" element={<GRRN />} />
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
-<<<<<<< Updated upstream
-          
-=======
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
->>>>>>> Stashed changes
+          <Route path="sales/sellersreturns" element={<SellerReturn />} />
+          <Route path="sales/sellerorder" element={<SellerOrder />} />
         </Route>
 
       
