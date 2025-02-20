@@ -8,7 +8,7 @@ import Supplier from "../pages/Supplier/Supplier";
 import "../styles/index.css";
 import ReportsPage from"../pages/Reports/Report";
 import LoginPage from "../pages/Login/LoginForm";
-
+import DashboardPage from "../pages/DashboardPage/DashboardForm";
 
 import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
@@ -40,6 +40,7 @@ const AppRoutes = () => {
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
           <Route path="Reports/ReportsPage" element={<ReportsPage />} />
+          <Route path="dashboardform" element={<DashboardPage />} />
 
         </Route>
 
