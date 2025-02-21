@@ -21,6 +21,7 @@ const Item = () => {
     itemPurchasePrice: "",
     itemSalesPrice: "",
     supplierId: "",
+    status  : "Active",
   });
   const [editingItem, setEditingItem] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
@@ -110,6 +111,8 @@ const Item = () => {
         itemPurchasePrice: "",
         itemSalesPrice: "",
         supplierId: "",
+        status: "Active",
+        
       });
       setEditingItem(null);
       setShowPopup(false);
@@ -165,17 +168,24 @@ const Item = () => {
           className="w-1/5 rounded border-[1.5px] border-stroke bg-gray-100 py-2 px-5 text-black outline-none transition focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white"
           onChange={(e) => setBrandFilter(e.target.value)}
         >
-          <option key="all-brands" value="">
-            All Brands
+          <option key="all-suppliers" value="">
+            All Suppliers
           </option>
-          {Array.from(new Set(items.map((item) => item.itemBrand))).map(
-            (brand, index) => (
-              <option key={`brand-${index}`} value={brand}>
-                {brand}
-              </option>
+          {Array.from(
+            new Set(
+              items.map(
+                (item) =>
+                  suppliers.find((s) => s.value === item.supplierId)?.label ||
+                  "Unknown Supplier"
+              )
             )
-          )}
+          ).map((supplier, index) => (
+            <option key={`supplier-${index}`} value={supplier}>
+              {supplier}
+            </option>
+          ))}
         </select>
+
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700"
           onClick={() => setShowPopup(true)}
@@ -192,9 +202,9 @@ const Item = () => {
               <th className="p-3">ProductId</th>
               <th className="p-3">Product</th>
               <th className="p-3">Category</th>
-              <th className="p-3">Brand</th>
-              <th className="p-3">Price</th>
-              <th className="p-3">Stock</th>
+              <th className="p-3">PurchasePrice(Rs)</th>
+              <th className="p-3">SalesPrice(Rs)</th>
+              <th className="p-3">Supplier</th>
               <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
@@ -202,13 +212,16 @@ const Item = () => {
           <tbody>
             {filteredItems.map((item) => (
               <tr key={item.itemCode} className="border-b hover:bg-gray-50">
-                <td className="p-3">{item.itemCode}</td>
+                <td className="p-3">IT-0000{item.itemCode}</td>
                 <td className="p-3">{item.itemName}</td>
                 <td className="p-3">{item.itemType}</td>
-                <td className="p-3">{item.itemBrand || "-"}</td>
-                <td className="p-3">${item.itemSalesPrice}</td>
-                <td className="p-3">{item.itemQuantity}</td>
-
+                <td className="p-3">{item.itemPurchasePrice}</td>
+                <td className="p-3">{item.itemSalesPrice}</td>
+                <td className="p-3">
+                  {suppliers
+                    .find((s) => s.value === item.supplierId)
+                    ?.label.split(" - ")[1] || "Unknown Supplier"}
+                </td>
                 <td className="p-3">
                   <span
                     className={`px-2 py-1 rounded text-white ${
@@ -330,6 +343,35 @@ const Item = () => {
                     placeholder="Select a supplier..."
                     className="w-full"
                   />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-gray-700">Status</label>
+                  <div className="flex space-x-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="status"
+                        value="Active"
+                        checked={itemForm.status === "Active"}
+                        onChange={handleInputChange}
+                        className="form-radio text-blue-600"
+                      />
+                      <span>Active</span>
+                    </label>
+
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="status"
+                        value="Inactive"
+                        checked={itemForm.status === "Inactive"}
+                        onChange={handleInputChange}
+                        className="form-radio text-blue-600"
+                      />
+                      <span>Inactive</span>
+                    </label>
+                  </div>
                 </div>
 
                 {/* Save Button */}
