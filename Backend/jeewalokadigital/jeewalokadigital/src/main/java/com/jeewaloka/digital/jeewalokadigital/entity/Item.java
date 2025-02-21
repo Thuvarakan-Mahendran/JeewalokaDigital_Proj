@@ -20,6 +20,9 @@ public class Item {
     @Column(name = "ItemCode")
     private Long itemCode;
 
+//    @Column(name = "ItemCode2")
+//    private String itemCode2;
+
     @ManyToOne
     @JoinColumn(name = "SupplierID", nullable = false)
     private Supplier supplier;
@@ -43,7 +46,8 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPrices> prices;
 
-
+    @Column(name = "Status")
+    private String status;
  
     @Transient
     private Integer totalQuantityInStock;
