@@ -6,15 +6,12 @@ import { getSuppliers } from "../../api/SupplierService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-
-
 const CreateGRN = () => {
   const [grnData, setGRNData] = useState({
     grnSupplierId: "",
     grnReceivedBy: "",
     grnStatus: "Pending",
     grnItems: [],
-    
   });
 
   const [grnItem, setGRNItem] = useState({
@@ -22,38 +19,10 @@ const CreateGRN = () => {
     quantity: 0,
     unitPrice: 0,
     itemExpiryDate: "",
-    itemManufactureDate: "",
-  
   });
 
   const [suppliers, setSuppliers] = useState([]);
-  //const[items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const fetchItems = async () => {
-  //     try {
-  //       const response = await getItems();
-  //       if (response.statusCode === 200) {
-  //         setItems(
-  //           response.data.map((item) => ({
-  //             value: item.itemCode, // Updated from itemId to itemCode
-  //             label: item.itemName,
-  //           }))
-  //         );
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching items", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  
-  //   fetchItems();
-  // }, []);
-  
-  
-  
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -76,7 +45,7 @@ const CreateGRN = () => {
 
     fetchSuppliers();
   }, []);
-  
+
   const handleChange = (selectedOption) => {
     setGRNData((prevData) => ({
       ...prevData,
@@ -86,12 +55,10 @@ const CreateGRN = () => {
 
   const navigate = useNavigate();
 
-  // Handle changes in input fields
   const handleInputChange = (e) => {
     setGRNData({ ...grnData, [e.target.name]: e.target.value });
   };
 
-  // Handle changes in item fields
   const handleItemChange = (e) => {
     const { name, value } = e.target;
     setGRNItem((prevItem) => {
@@ -107,7 +74,6 @@ const CreateGRN = () => {
     });
   };
 
-  // Add item to GRN
   const addGRNItem = () => {
     if (grnItem.itemId && grnItem.quantity > 0 && grnItem.unitPrice > 0) {
       const updatedItems = [...grnData.grnItems, grnItem];
@@ -122,36 +88,34 @@ const CreateGRN = () => {
         grnTotalAmount: updatedTotalAmount,
       });
 
-      // Reset the grnItem state after adding
       setGRNItem({
         itemId: "",
         quantity: 0,
         unitPrice: 0,
         itemExpiryDate: "",
-        itemManufactureDate: "",
-        totalAmount: 0,
+       
       });
     }
   };
 
-  
-  // Submit GRN creation
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await createGRN(grnData);
-      navigate("/dashboard/inventary/grn"); // Redirect to the correct GRN listing page
+      navigate("/dashboard/inventary/grn");
     } catch (error) {
       console.error("Error creating GRN:", error);
     }
   };
-  
 
-  // Remove item from GRN
   const removeItem = (index) => {
     const updatedItems = [...grnData.grnItems];
     updatedItems.splice(index, 1);
-    setGRNData({ ...grnData, grnItems: updatedItems });
+    const updatedTotalAmount = updatedItems.reduce(
+      (sum, item) => sum + Number(item.totalAmount),
+      0
+    );
+    setGRNData({ ...grnData, grnItems: updatedItems, grnTotalAmount: updatedTotalAmount });
   };
 
   return (
@@ -159,21 +123,18 @@ const CreateGRN = () => {
       <h2 className="text-2xl font-semibold text-gray-800">Create New GRN</h2>
 
       <form onSubmit={handleSubmit} className="bg-white p-4 shadow rounded-lg">
-      <div className="mb-4">
-      <label className="block mb-2">Supplier</label>
-      <Select
-        options={suppliers}
-        isLoading={loading}
-        isSearchable
-        onChange={handleChange}
-        value={suppliers.find((s) => s.value === grnData.grnSupplierId) || null}
-        placeholder="Select a supplier..."
-        className="w-full"
-      />
-    </div>
-
-       
-
+        <div className="mb-4">
+          <label className="block mb-2">Supplier</label>
+          <Select
+            options={suppliers}
+            isLoading={loading}
+            isSearchable
+            onChange={handleChange}
+            value={suppliers.find((s) => s.value === grnData.grnSupplierId) || null}
+            placeholder="Select a supplier..."
+            className="w-full"
+          />
+        </div>
 
         <div className="mb-4">
           <label className="block mb-2">Received By</label>
@@ -201,10 +162,7 @@ const CreateGRN = () => {
         </div>
 
         <div className="border p-4 rounded-lg mb-4 bg-white shadow-md">
-          <h4 className="font-semibold mb-4 text-lg text-gray-800">
-            Add Item
-          </h4>
-
+          <h4 className="font-semibold mb-4 text-lg text-gray-800">Add Item</h4>
           <div className="overflow-x-auto">
             <table className="min-w-full table-auto">
               <thead>
@@ -213,7 +171,7 @@ const CreateGRN = () => {
                   <th className="p-2 text-left">Quantity</th>
                   <th className="p-2 text-left">Unit Price</th>
                   <th className="p-2 text-left">Expiry Date</th>
-                  <th className="p-2 text-left">Manufacture Date</th>
+                  
                   <th className="p-2 text-left">Total Amount</th>
                   <th className="p-2 text-left">Action</th>
                 </tr>
@@ -226,7 +184,7 @@ const CreateGRN = () => {
                         <td className="p-2">{item.quantity}</td>
                         <td className="p-2">Rs. {item.unitPrice}</td>
                         <td className="p-2">{item.itemExpiryDate}</td>
-                        <td className="p-2">{item.itemManufactureDate}</td>
+                       
                         <td className="p-2">Rs. {item.totalAmount}</td>
                         <td className="p-2">
                           <button
@@ -234,25 +192,22 @@ const CreateGRN = () => {
                             onClick={() => removeItem(index)}
                             className="px-4 py-2 text-red-500 hover:text-red-600"
                           >
-                            <FontAwesomeIcon icon={faMinus}/>
+                            <FontAwesomeIcon icon={faMinus} />
                           </button>
                         </td>
                       </tr>
                     ))
                   : null}
-
                 <tr className="border-b">
                   <td className="p-2">
-
-                  <input
+                    <input
                       type="number"
                       name="itemId"
-                      placeholder="item ID"
+                      placeholder="Item ID"
                       value={grnItem.itemId}
                       onChange={handleItemChange}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full p-2 border rounded"
                     />
-                
                   </td>
                   <td className="p-2">
                     <input
@@ -261,7 +216,7 @@ const CreateGRN = () => {
                       placeholder="Quantity"
                       value={grnItem.quantity}
                       onChange={handleItemChange}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full p-2 border rounded"
                     />
                   </td>
                   <td className="p-2">
@@ -271,7 +226,7 @@ const CreateGRN = () => {
                       placeholder="Unit Price"
                       value={grnItem.unitPrice}
                       onChange={handleItemChange}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full p-2 border rounded"
                     />
                   </td>
                   <td className="p-2">
@@ -280,18 +235,10 @@ const CreateGRN = () => {
                       name="itemExpiryDate"
                       value={grnItem.itemExpiryDate}
                       onChange={handleItemChange}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full p-2 border rounded"
                     />
                   </td>
-                  <td className="p-2">
-                    <input
-                      type="date"
-                      name="itemManufactureDate"
-                      value={grnItem.itemManufactureDate}
-                      onChange={handleItemChange}
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    />
-                  </td>
+                  
                   <td className="p-2">
                     <label className="font-semibold">Rs. {grnItem.totalAmount}</label>
                   </td>
@@ -299,9 +246,9 @@ const CreateGRN = () => {
                     <button
                       type="button"
                       onClick={addGRNItem}
-                      className="px-4 py-2 text-green-600 hover:text-green-700 "
+                      className="px-4 py-2 text-green-600 hover:text-green-700"
                     >
-                     <FontAwesomeIcon icon={faPlus}/>
+                      <FontAwesomeIcon icon={faPlus} />
                     </button>
                   </td>
                 </tr>
@@ -320,12 +267,18 @@ const CreateGRN = () => {
           </button>
           <button
             type="submit"
-            onClick={() => navigate("/dashboard/inventary/grn")}
             className="px-4 py-2 bg-blue-600 text-white rounded"
           >
             Save GRN
           </button>
         </div>
+
+        <div className="mt-6 bg-blue-50 p-4 rounded-lg shadow-md text-right">
+  <h3 className="text-xl font-semibold text-gray-800">
+    Total Amount: <span className="text-2xl font-bold text-blue-600">Rs. {grnData.grnTotalAmount || 0}</span>
+  </h3>
+</div>
+
       </form>
     </div>
   );
