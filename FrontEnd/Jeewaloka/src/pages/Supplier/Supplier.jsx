@@ -178,7 +178,7 @@ const Supplier = () => {
                   </button>
 
                   <button
-                    className="text-blue-600"
+                    className="text-blue-600 font-semibold hover:text-blue-800"
                     onClick={() => handleEdit(supplier)}
                   >
                     Edit
@@ -334,11 +334,11 @@ const Supplier = () => {
                         ? "bg-gray-200 cursor-not-allowed"
                         : "focus:outline-none focus:ring-2 focus:ring-blue-500"
                     }`}
-                    required
+                    
                   />
                 </div>
 
-                <div className="space-y-3">
+                {/* <div className="space-y-3">
                   <label className="block text-gray-700">Website</label>
                   <input
                     type="text"
@@ -352,9 +352,9 @@ const Supplier = () => {
                         ? "bg-gray-200 cursor-not-allowed"
                         : "focus:outline-none focus:ring-2 focus:ring-blue-500"
                     }`}
-                    required
+                    
                   />
-                </div>
+                </div> */}
 
                 {/* Status Radio Buttons */}
                 <div className="space-y-2">
@@ -369,6 +369,7 @@ const Supplier = () => {
                         onChange={handleInputChange}
                         disabled={isViewMode} // Disable in View Mode
                         className="text-blue-500"
+                        required
                       />
                       <span className={`${isViewMode ? "text-gray-800" : ""}`}>
                         Active
