@@ -92,7 +92,7 @@ const GRN = () => {
         unitPrice: 0,
         itemExpiryDate: "",
         itemManufactureDate: "",
-        totalAmount: 0,
+        
       });
     }
   };
@@ -171,7 +171,7 @@ const GRN = () => {
             <tr className="bg-gray-100">
               <th className="p-3">GRN-Code</th>
               <th className="p-3">Supplier Name</th>
-              <th className="p-3">Received By</th>
+              {/* <th className="p-3">Received By</th> */}
               <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
@@ -181,7 +181,7 @@ const GRN = () => {
               <tr key={grn.grnId} className="border-b hover:bg-gray-50">
                 <td className="p-3">{grn.grnCode}</td>
                 <td className="p-3">{grn.grnSupplierName}</td>
-                <td className="p-3">{grn.grnReceivedBy}</td>
+                {/* <td className="p-3">{grnData.grnTotalAmount}</td> */}
                 <td className="p-3">{grn.grnStatus}</td>
                 <td className="p-3 flex space-x-4">
                   <button
