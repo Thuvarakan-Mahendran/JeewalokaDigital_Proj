@@ -297,9 +297,9 @@ const Item = () => {
                     <option value="" disabled>
                       Select a category
                     </option>
-                    <option value="Electronics">Food</option>
-                    <option value="Clothing">Medicine</option>
-                    <option value="Furniture">Cosmetics</option>
+                    <option value="Food">Food</option>
+                    <option value="Medicine">Medicine</option>
+                    <option value="Cosmetics">Cosmetics</option>
                     <option value="Books">Books</option>
                   </select>
                 </div>
