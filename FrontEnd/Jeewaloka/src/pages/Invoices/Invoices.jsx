@@ -51,7 +51,7 @@ const Invoices = () => {
             </div>
             <button
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg ml-6 mt-2"
-                onClick={() => { navigate('/sales/invoices/createInvoice') }}
+                onClick={() => { navigate('/dashboard/sales/invoices/createInvoice') }}
             >
                 Create Invoice
             </button>

@@ -8,15 +8,13 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
-
+@Getter
+@Setter
 public class RequestRetailerDTO {
-    private String RetailerId;
+    private Integer RetailerId;
     private String RetailerName;
-    private String RetailerContactNo;
+    private int RetailerContactNo;
     private String RetailerAddress;
     private String RetailerEmail;
-    @Setter
     private List<Long> billIds;
-
 }

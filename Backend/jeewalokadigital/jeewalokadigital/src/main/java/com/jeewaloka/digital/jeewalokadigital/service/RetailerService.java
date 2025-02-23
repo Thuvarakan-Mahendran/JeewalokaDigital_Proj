@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface RetailerService {
     List<RequestRetailerDTO> getAllRetailers();
-    RequestRetailerDTO getRetailerById(String RetailerId);
+    RequestRetailerDTO getRetailerById(Integer RetailerId);
     void createRetailer(RequestRetailerDTO retailerDTO);
     void updateRetailer(RequestRetailerDTO retailerDTO);
-    void deleteRetailer(String retailerId);
+    void deleteRetailer(Integer retailerId);
 }
