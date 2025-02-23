@@ -136,7 +136,7 @@ const CreateGRN = () => {
           />
         </div>
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block mb-2">Received By</label>
           <input
             type="text"
@@ -145,7 +145,7 @@ const CreateGRN = () => {
             onChange={handleInputChange}
             className="w-full p-2 border rounded"
           />
-        </div>
+        </div> */}
 
         <div className="mb-4">
           <label className="block mb-2">Status</label>
