@@ -5,6 +5,8 @@ import {
   createGRN,
   updateGRN,
 } from "../../api/GRNService";
+import { useNavigate } from "react-router-dom";
+
 
 const GRN = () => {
   const [grns, setGRNs] = useState([]);
@@ -15,11 +17,15 @@ const GRN = () => {
 
   const [grnData, setGRNData] = useState({
     grnSupplierId: "",
+    grnCode: "",
     grnReceivedBy: "",
     grnStatus: "Pending",
     grnItems: [],
     grnTotalAmount: 0,
   });
+
+  
+
 
   const [grnItem, setGRNItem] = useState({
     itemId: "",
@@ -29,6 +35,8 @@ const GRN = () => {
     itemManufactureDate: "",
     totalAmount: 0,
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchGRNs();
@@ -84,7 +92,7 @@ const GRN = () => {
         unitPrice: 0,
         itemExpiryDate: "",
         itemManufactureDate: "",
-        totalAmount: 0,
+        
       });
     }
   };
@@ -133,6 +141,10 @@ const GRN = () => {
     setGRNData({ ...grnData, grnItems: updatedItems });
   };
 
+  const handleAddNewGRN = () => {
+    navigate("creategrn");
+  };
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-semibold text-gray-800">All GRNs</h2>
@@ -145,20 +157,9 @@ const GRN = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <button
+         <button
           className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-          onClick={() => {
-            setEditingGRN(null);
-            setGRNData({
-              grnSupplierId: "",
-              grnReceivedBy: "",
-              grnStatus: "Pending",
-              grnItems: [],
-              grnTotalAmount: 0,
-            });
-            setIsViewMode(false);
-            setShowPopup(true);
-          }}
+          onClick={handleAddNewGRN} // Navigate to New GRN page
         >
           + Add new GRN
         </button>
@@ -168,8 +169,9 @@ const GRN = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3">Supplier ID</th>
-              <th className="p-3">Received By</th>
+              <th className="p-3">GRN-Code</th>
+              <th className="p-3">Supplier Name</th>
+              {/* <th className="p-3">Received By</th> */}
               <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
@@ -177,8 +179,9 @@ const GRN = () => {
           <tbody>
             {grns.map((grn) => (
               <tr key={grn.grnId} className="border-b hover:bg-gray-50">
-                <td className="p-3">{grn.grnSupplierId}</td>
-                <td className="p-3">{grn.grnReceivedBy}</td>
+                <td className="p-3">{grn.grnCode}</td>
+                <td className="p-3">{grn.grnSupplierName}</td>
+                {/* <td className="p-3">{grnData.grnTotalAmount}</td> */}
                 <td className="p-3">{grn.grnStatus}</td>
                 <td className="p-3 flex space-x-4">
                   <button

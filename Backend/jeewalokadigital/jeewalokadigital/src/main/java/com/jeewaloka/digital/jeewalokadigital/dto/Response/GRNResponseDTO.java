@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 public class GRNResponseDTO {
     private Long grnId;
+    private String grnCode;
     private String grnReceivedBy;
     private String grnSupplierName;
     private String grnStatus;

@@ -38,6 +38,6 @@ public class GRNItem {
     @Column(nullable = false)
     private LocalDate itemExpiryDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate itemManufactureDate;
 }
