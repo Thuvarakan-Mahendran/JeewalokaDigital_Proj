@@ -8,8 +8,6 @@ public interface GRRNService {
 
     ItemDTO getItemByName(String itemName);
 
-    GRRNDTO updateGRRN(Long grrnId, GRRNDTO grrnDTO);
-
     GRRNDTO addGRRNWithItems(GRRNDTO grrnDTO); // Method to save GRRN and associated GRRNItems
 
 }
