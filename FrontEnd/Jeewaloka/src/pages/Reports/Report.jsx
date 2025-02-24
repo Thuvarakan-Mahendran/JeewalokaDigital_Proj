@@ -2,13 +2,6 @@ import { useState } from "react";
 
 export default function ReportsPage() {
   const [reportType, setReportType] = useState("");
-  const [secondReportType, setSecondReportType] = useState("");
-  
-  // Sample data fetching simulation (Replace with actual database fetch logic)
-  const cashSale = "$10,000";
-  const creditSale = "$5,000";
-  const totalSale = "$15,000";
-
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold">Reports</h1>
@@ -51,5 +44,7 @@ export default function ReportsPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
+
+export default Report

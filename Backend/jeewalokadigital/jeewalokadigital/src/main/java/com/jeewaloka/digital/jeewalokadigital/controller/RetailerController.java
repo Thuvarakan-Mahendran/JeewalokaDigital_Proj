@@ -22,20 +22,21 @@ public class RetailerController {
     public List<RequestRetailerDTO> getAllRetailers() {return retailerService.getAllRetailers();}
 
     @GetMapping("/getRetailerById/{id}")
-    public RequestRetailerDTO getRetailerById(String id){return retailerService.getRetailerById(id);}
+    public RequestRetailerDTO getRetailerById(@PathVariable Integer id){return retailerService.getRetailerById(id);}
 
     @PostMapping("/createRetailer")
-    public void createRetailer(RequestRetailerDTO retailer){
+    public void createRetailer(@RequestBody RequestRetailerDTO retailer){
         retailerService.createRetailer(retailer);
+        System.out.println(retailer.getRetailerName());
     }
 
     @PutMapping("/updateRetailer/{id}")
-    public void updateRetailer(RequestRetailerDTO retailer){
+    public void updateRetailer(@RequestBody RequestRetailerDTO retailer,@PathVariable Integer id){
         retailerService.updateRetailer(retailer);
     }
 
     @DeleteMapping("deleteRetailer/{id}")
-    public void deleteRetailer(String id){retailerService.deleteRetailer(id);}
+    public void deleteRetailer(@PathVariable Integer id){retailerService.deleteRetailer(id);}
 
 
 

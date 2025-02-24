@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-// import {
-//   getSuppliers,
-//   deleteSupplier,
-//   editSupplier,
-//   saveSupplier,
-// } from "../../api/SupplierService";
+import {
+  getSellers,
+  deleteSeller,
+  editSeller,
+  saveSellers,
+} from "../../api/RetailerService";
 
 const Seller = () => {
   const [sellers, setSellers] = useState([]);
@@ -14,40 +14,37 @@ const Seller = () => {
     sellerCode: "",
     sellerName: "",
     sellerContact: "",
-    sellerEmail: "",
     sellerAddress: "",
-    sellerFax: "",
-    sellerWebsite: "",
-    sellerStatus: "",
+    sellerEmail: "",
     sellerCreatedDate: "",
   });
   const [isViewMode, setIsViewMode] = useState(false);
   const [editingSeller, setEditingSeller] = useState(null);
 
   useEffect(() => {
-    // fetchSellers();
+    fetchSellers();
   }, []);
 
-  // const fetchSellers = async () => {
-  //   try {
-  //     const response = await getSellers();
-  //     setSellers(Array.isArray(response) ? response : response?.data || []);
-  //   } catch (error) {
-  //     console.error("Error fetching sellers:", error);
-  //     setSellers([]);
-  //   }
-  // };
+  const fetchSellers = async () => {
+    try {
+      const response = await getSellers();
+      setSellers(Array.isArray(response) ? response : response?.data || []);
+    } catch (error) {
+      console.error("Error fetching sellers:", error);
+      setSellers([]);
+    }
+  };
 
-  // const handleDeleteSeller = async (sellerId) => {
-  //   try {
-  //     await deleteSeller(sellerId);
-  //     setSellers((prevSellers) =>
-  //       prevSellers.filter((s) => s.sellerId !== sellerId)
-  //     );
-  //   } catch (error) {
-  //     console.error("Error deleting seller:", error);
-  //   }
-  // };
+  const handleDeleteSeller = async (sellerId) => {
+    try {
+      await deleteSeller(sellerId);
+      setSellers((prevSellers) =>
+        prevSellers.filter((s) => s.sellerId !== sellerId)
+      );
+    } catch (error) {
+      console.error("Error deleting seller:", error);
+    }
+  };
 
   const handleInputChange = (e) => {
     setSellerForm((prevForm) => ({
@@ -60,18 +57,15 @@ const Seller = () => {
     e.preventDefault();
     try {
       if (editingSeller) {
-        await editingSeller({ ...editingSeller, ...sellerForm });
+        await editSeller({ ...editingSeller, ...sellerForm });
       } else {
-        setSellers(sellerForm);
+        await saveSellers(sellerForm);
       }
       setSellerForm({
         sellerName: "",
         sellerContact: "",
-        sellerEmail: "",
         sellerAddress: "",
-        sellerFax: "",
-        sellerWebsite: "",
-        sellerStatus: "",
+        sellerEmail: "",
       });
       setEditingSeller(null);
       setShowPopup(false);
@@ -91,11 +85,8 @@ const Seller = () => {
       sellerCode: seller.sellerCode,
       sellerName: seller.sellerName,
       sellerContact: seller.sellerContact,
-      sellerEmail: seller.sellerEmail,
       sellerAddress: seller.sellerAddress,
-      sellerFax: seller.sellerFax,
-      sellerWebsite: seller.sellerWebsite,
-      sellerStatus: seller.sellerStatus,
+      sellerEmail: seller.sellerEmail,
       sellerCreatedDate: seller.sellerCreatedDate,
     });
 
@@ -129,11 +120,8 @@ const Seller = () => {
               sellerCode: "",
               sellerName: "",
               sellerContact: "",
-              sellerEmail: "",
               sellerAddress: "",
-              sellerFax: "",
-              sellerWebsite: "",
-              sellerStatus: "",
+              sellerEmail: "",
               sellerCreatedDate: "",
             }); // Reset form
             setShowPopup(true);
@@ -151,8 +139,8 @@ const Seller = () => {
               <th className="p-3">SellerCode</th>
               <th className="p-3">Name</th>
               <th className="p-3">Contact</th>
-              <th className="p-3">Email</th>
               <th className="p-3">Address</th>
+              <th className="p-3">Email</th>
               <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
@@ -166,8 +154,8 @@ const Seller = () => {
                 <td className="p-3">{seller.sellerCode}</td>
                 <td className="p-3">{seller.sellerName}</td>
                 <td className="p-3">{seller.sellerContact}</td>
-                <td className="p-3">{seller.sellerEmail}</td>
                 <td className="p-3">{seller.sellerAddress}</td>
+                <td className="p-3">{seller.sellerEmail}</td>
                 <td className="p-3">{seller.sellerStatus}</td>
                 <td className="p-3 flex space-x-4">
                   <button
@@ -183,12 +171,12 @@ const Seller = () => {
                   >
                     Edit
                   </button>
-                  {/* <button
+                  {<button
                     className="text-red-600"
                     onClick={() => handleDeleteSeller(seller.sellerId)}
                   >
                     Delete
-                  </button> */}
+                  </button>}
                 </td>
               </tr>
             ))}
@@ -211,11 +199,8 @@ const Seller = () => {
                   sellerCode: "",
                   sellerName: "",
                   sellerContact: "",
-                  sellerEmail: "",
                   sellerAddress: "",
-                  sellerFax: "",
-                  sellerWebsite: "",
-                  sellerStatus: "",
+                  sellerEmail: "",
                   sellerCreatedDate: "",
                 });
               }}
@@ -285,24 +270,6 @@ const Seller = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    name="sellerEmail"
-                    placeholder="Email Address"
-                    value={sellerForm?.sellerEmail || ""}
-                    onChange={handleInputChange}
-                    readOnly={isViewMode} // Make it read-only in view mode
-                    className={`w-full border border-gray-300 p-2 rounded ${
-                      isViewMode
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    }`}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-3">
                   <label className="block text-gray-700">Address</label>
                   <input
                     type="text"
@@ -321,12 +288,12 @@ const Seller = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="block text-gray-700">Fax</label>
+                  <label className="block text-gray-700">Email</label>
                   <input
-                    type="text"
-                    name="sellerFax"
-                    placeholder="Fax Number"
-                    value={sellerForm?.sellerFax || ""}
+                    type="email"
+                    name="sellerEmail"
+                    placeholder="Email Address"
+                    value={sellerForm?.sellerEmail || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${
@@ -337,70 +304,6 @@ const Seller = () => {
                     required
                   />
                 </div>
-
-                <div className="space-y-3">
-                  <label className="block text-gray-700">Website</label>
-                  <input
-                    type="text"
-                    name="sellerWebsite"
-                    placeholder="Website"
-                    value={sellerForm?.sellerWebsite || ""}
-                    onChange={handleInputChange}
-                    readOnly={isViewMode} // Make it read-only in view mode
-                    className={`w-full border border-gray-300 p-2 rounded ${
-                      isViewMode
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    }`}
-                    required
-                  />
-                </div>
-
-                {/* Status Radio Buttons */}
-                <div className="space-y-2">
-                  <label className="block text-gray-700">Status</label>
-                  <div className="flex items-center space-x-4">
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name="sellerStatus"
-                        value="Active"
-                        checked={sellerForm?.sellerStatus === "Active"}
-                        onChange={handleInputChange}
-                        disabled={isViewMode} // Disable in View Mode
-                        className="text-blue-500"
-                      />
-                      <span className={`${isViewMode ? "text-gray-800" : ""}`}>
-                        Active
-                      </span>
-                    </label>
-                    <label className="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        name="sellerStatus"
-                        value="Inactive"
-                        checked={sellerForm?.sellerStatus === "Inactive"}
-                        onChange={handleInputChange}
-                        disabled={isViewMode} // Disable in View Mode
-                        className="text-blue-500"
-                      />
-                      <span className={`${isViewMode ? "text-gray-800" : ""}`}>
-                        Inactive
-                      </span>
-                    </label>
-                  </div>
-                </div>
-                {isViewMode && (
-                  <div className="space-y-3">
-                    <label className="block text-gray-700">Created Date</label>
-                    <input
-                      type="text"
-                      value={sellerForm.sellerCreatedDate || ""}
-                      readOnly
-                      className="w-full border border-gray-300 p-2 rounded bg-gray-200 cursor-not-allowed"
-                    />
-                  </div>
-                )}
 
                 {/* Save and Close Button */}
                 {!isViewMode && (
