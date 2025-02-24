@@ -27,7 +27,7 @@ public class GRRN {
 
 
     @OneToMany(mappedBy = "grrnitemId", cascade = CascadeType.ALL)
-    private List<GRRNItem> grrnitemId;
+    private List<GRRNItem> grrnItemList;
 
 
 
