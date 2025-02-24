@@ -15,5 +15,5 @@ public class GRRNDTO {
     private Long grrnid;
     private String supplierName;
     private LocalDate returneDate;
-    private List<GRRNItem> grrnitemId;
+    private List<GRRNItem> grrnItemList;
 }
