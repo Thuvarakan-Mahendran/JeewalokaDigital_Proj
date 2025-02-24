@@ -64,7 +64,41 @@ public class GRRNController {
         }
     }
 
+    // DELETE endpoint to remove GRRN and its associated items
+    @DeleteMapping("/deletegrrn/{grrnId}")
+    public ResponseEntity<ApiResponse<Void>> deleteGRRN(@PathVariable("grrnId") Long grrnId) {
+        try {
+            // Call the service to delete GRRN and its items
+            grrnService.deleteGRRN(grrnId);
+            ApiResponse<Void> response = new ApiResponse<>(
+                    HttpStatus.NO_CONTENT.value(),
+                    "GRRN and items deleted successfully.",
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+        } catch (Exception e) {
+            ApiResponse<Void> errorResponse = new ApiResponse<>(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "Failed to delete GRRN and items: " + e.getMessage(),
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 
+    // GET endpoint to view GRRN data with associated GRRNItem data
+    @GetMapping("/getgrrn/{grrnId}")
+    public ResponseEntity<GRRNDTO> getGRRN(@PathVariable("grrnId") Long grrnId) {
+        try {
+            GRRNDTO grrnDTO = grrnService.getGRRNById(grrnId);
+            if (grrnDTO == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return NOT_FOUND if GRRN not found
+            }
+            return new ResponseEntity<>(grrnDTO, HttpStatus.OK); // Return GRRNDTO if found
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Handle errors gracefully
+        }
+    }
 
 
 
