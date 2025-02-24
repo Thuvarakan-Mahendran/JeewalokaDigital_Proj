@@ -81,5 +81,29 @@ public class GRRNServiceImpl implements GRRNService {
         }
     }
 
+    @Override
+    public void deleteGRRN(Long grrnId) {
+        // Fetch the GRRN entity by its ID
+        GRRN grrn = grrnRepository.findById(grrnId)
+                .orElseThrow(() -> new RuntimeException("GRRN not found"));
+
+        // Delete associated GRRNItems
+        grrnItemRepository.deleteAll(grrn.getGrrnItemList()); // Delete all related items
+
+        // Delete the GRRN entity itself
+        grrnRepository.delete(grrn);
+    }
+
+    @Override
+    public GRRNDTO getGRRNById(Long grrnId) {
+        // Fetch the GRRN entity by ID
+        GRRN grrn = grrnRepository.findById(grrnId)
+                .orElseThrow(() -> new RuntimeException("GRRN not found"));
+
+        // Convert the GRRN entity to GRRNDTO (which includes the list of GRRNItem)
+        GRRNDTO grrnDTO = modelMapper.map(grrn, GRRNDTO.class);
+        return grrnDTO;
+    }
+
 
 }
