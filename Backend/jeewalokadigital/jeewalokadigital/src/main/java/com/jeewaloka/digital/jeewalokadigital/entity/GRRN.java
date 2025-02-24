@@ -26,7 +26,7 @@ public class GRRN {
     private LocalDate returneDate;
 
 
-    @OneToMany(mappedBy = "grrnitemId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "grrnitemList", cascade = CascadeType.ALL)
     private List<GRRNItem> grrnItemList;
 
 
