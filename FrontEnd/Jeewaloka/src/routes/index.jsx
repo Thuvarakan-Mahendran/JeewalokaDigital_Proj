@@ -1,25 +1,25 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Items from "../pages/Items/Items";
-import GRN from "../pages/GRN/GRN";
+import GRN from "../pages/GRN/ViewGRN";
 import Dashboard from "../layouts/Layout";
 import PurchaseOrder from "../pages/PurchaseOrder/PurchaseOrder";
 import Sellers from "../pages/Sellers/Sellers";
 import Supplier from "../pages/Supplier/Supplier";
+import CreateGRN  from "../pages/GRN/CreateGRN";
 import "../styles/index.css";
-<<<<<<< Updated upstream
 import LoginPage from "../pages/Login/LoginForm";
-<<<<<<< HEAD
-import DashboardPage from "../pages/DashboardPage/DashboardForm";
-=======
->>>>>>> f8fa023220e2149f0784891f5fecdd2fe1757822
-
-import { Rule } from "postcss";
 import Invoices from "../pages/Invoices/Invoices";
 import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
 import Users from "../pages/User/Users";
+import ReportsPage from"../pages/Reports/Report";
+import DashboardPage from "../pages/DashboardPage/DashboardForm";
+
+
+
 import GRRN from "../pages/GRRN/GRRN";
 import SellerReturn from "../pages/SellersReturn/SellerReturn";
 import SellerOrder from "../pages/SellerOrder/SellerOrder";
+
 
 
 const AppRoutes = () => {
@@ -40,13 +40,21 @@ const AppRoutes = () => {
           <Route path="inventary/grrn" element={<GRRN />} />
           <Route path="sales/sellers" element={<Sellers />} />
           <Route path="inventary/supplier" element={<Supplier />} />
-<<<<<<< Updated upstream
-          
-=======
+
+          <Route path="inventary/grn/creategrn" element={<CreateGRN/>} />
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           <Route path="users" element={<Users />} />
->>>>>>> Stashed changes
+
+          <Route path="Reports/ReportsPage" element={<ReportsPage />} />
+          <Route path="sales/invoices" element={<Invoices />} />
+          <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
+          <Route path="users" element={<Users />} />
+          <Route path="dashboardform" element={<DashboardPage />} />
+          <Route path="sales/sellersreturns" element={<SellerReturn />} />
+          <Route path="sales/sellerorder" element={<SellerOrder />} />
+
+
         </Route>
 
       
