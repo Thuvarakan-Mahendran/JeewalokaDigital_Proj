@@ -142,7 +142,7 @@ const GRN = () => {
   };
 
   const handleAddNewGRN = () => {
-    navigate("creategrn");
+    navigate("#"); // need to navigate "creategrrn"
   };
 
   return (
@@ -169,7 +169,7 @@ const GRN = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3">GRN-Code</th>
+              <th className="p-3">GRRN-Code</th>
               <th className="p-3">Supplier Name</th>
               {/* <th className="p-3">Received By</th> */}
               <th className="p-3">Status</th>
