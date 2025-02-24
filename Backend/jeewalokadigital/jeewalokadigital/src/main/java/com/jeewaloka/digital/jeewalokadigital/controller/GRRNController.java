@@ -64,27 +64,8 @@ public class GRRNController {
         }
     }
 
-    // PUT endpoint to update GRRN
-    @PutMapping("/updategrrn/{grrnId}")
-    public ResponseEntity<ApiResponse<GRRNDTO>> updateGRRN(@PathVariable("grrnId") Long grrnId, @RequestBody GRRNDTO grrnDTO) {
-        try {
-            // Call the service to update the GRRN
-            GRRNDTO updatedGRRN = grrnService.updateGRRN(grrnId, grrnDTO);
-            ApiResponse<GRRNDTO> response = new ApiResponse<>(
-                    HttpStatus.OK.value(),
-                    "GRRN updated successfully.",
-                    updatedGRRN
-            );
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (Exception e) {
-            ApiResponse<GRRNDTO> errorResponse = new ApiResponse<>(
-                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                    "Failed to update GRRN: " + e.getMessage(),
-                    null
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
-    }
+
+
 
 
 }
