@@ -10,4 +10,8 @@ public interface GRRNService {
 
     GRRNDTO addGRRNWithItems(GRRNDTO grrnDTO); // Method to save GRRN and associated GRRNItems
 
+    void deleteGRRN(Long grrnId); // Method to delete GRRN and associated GRRNItems
+
+    GRRNDTO getGRRNById(Long grrnId); // Method to retrieve GRRN data with associated GRRNItems
+
 }
