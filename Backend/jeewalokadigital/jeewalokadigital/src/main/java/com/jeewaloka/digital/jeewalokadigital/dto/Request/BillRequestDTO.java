@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BillRequestDTO {
     private Long userID;
-    private Long retailerID;
+    private String retailerID;
     private Float total;
     private LocalDate date;
     private BillCategory billCategory;
