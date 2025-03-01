@@ -44,7 +44,7 @@ public class BillMapper {
 
         // Fetch and set Retailer by ID
         if (billDTO.getRetailerID() != null) {
-            Retailer retailer = retailerRepo.findById(Math.toIntExact(billDTO.getRetailerID()))
+            Retailer retailer = retailerRepo.findById(billDTO.getRetailerID())
                     .orElseThrow(() -> new EntityNotFoundException("Retailer not found with ID: " + billDTO.getRetailerID()));
             bill.setRetailer(retailer);
         }

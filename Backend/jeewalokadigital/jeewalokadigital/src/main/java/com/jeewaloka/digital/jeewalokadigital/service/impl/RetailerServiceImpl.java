@@ -1,6 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.service.impl;
 
 import com.jeewaloka.digital.jeewalokadigital.dto.Request.RequestRetailerDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.ResponseRetailerDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
 import com.jeewaloka.digital.jeewalokadigital.repository.RetailerRepo;
@@ -10,7 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,11 +22,11 @@ public class RetailerServiceImpl implements RetailerService {
     private final ModelMapper modelMapper;
 
     @Override
-    public List<RequestRetailerDTO> getAllRetailers() {
+    public List<ResponseRetailerDTO> getAllRetailers() {
         return retailerRepo.findAll()
                 .stream()
                 .map(retailer -> {
-                    RequestRetailerDTO dto = modelMapper.map(retailer, RequestRetailerDTO.class);
+                    ResponseRetailerDTO dto = modelMapper.map(retailer, ResponseRetailerDTO.class);
 
                     List<Long> billIds = retailer.getBills() != null
                             ? retailer.getBills().stream().map(Bill::getBillNO).collect(Collectors.toList())
@@ -38,11 +39,11 @@ public class RetailerServiceImpl implements RetailerService {
     }
 
     @Override
-    public RequestRetailerDTO getRetailerById(Integer retailerId) {
+    public ResponseRetailerDTO getRetailerById(String retailerId) {
         Retailer retailer = retailerRepo.findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
 
-        RequestRetailerDTO dto = modelMapper.map(retailer, RequestRetailerDTO.class);
+        ResponseRetailerDTO dto = modelMapper.map(retailer, ResponseRetailerDTO.class);
 
         List<Long> billIds = retailer.getBills() != null
                 ? retailer.getBills().stream().map(Bill::getBillNO).collect(Collectors.toList())
@@ -58,28 +59,28 @@ public class RetailerServiceImpl implements RetailerService {
             throw new IllegalArgumentException("Retailer data cannot be null");
         }
 
-        Retailer retailer = modelMapper.map(retailerDTO, Retailer.class);
+        Retailer retailer = Retailer.builder()
+                .RetailerId(UUID.randomUUID().toString())
+                .RetailerName(retailerDTO.getRetailerName())
+                .RetailerAddress(retailerDTO.getRetailerAddress())
+                .RetailerEmail(retailerDTO.getRetailerEmail())
+                .RetailerContactNo(retailerDTO.getRetailerContactNo())
+                .build();
         retailerRepo.save(retailer);
     }
 
     @Override
-    public void updateRetailer(RequestRetailerDTO retailerDTO) {
-        if (retailerDTO == null || retailerDTO.getRetailerId() == null) {
-            throw new IllegalArgumentException("Retailer ID cannot be null for update");
-        }
+    public void updateRetailer(RequestRetailerDTO retailerDTO, String id) {
 
-        Retailer existingRetailer = retailerRepo.findById(retailerDTO.getRetailerId())
-                .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerDTO.getRetailerId()));
+        Retailer existingRetailer = retailerRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + id));
 
         modelMapper.map(retailerDTO, existingRetailer);
         retailerRepo.save(existingRetailer);
     }
 
     @Override
-    public void deleteRetailer(Integer retailerId) {
-        if (retailerId == null) {
-            throw new IllegalArgumentException("Retailer ID cannot be null for deletion");
-        }
+    public void deleteRetailer(String retailerId) {
 
         Retailer retailer = retailerRepo.findById(retailerId)
                 .orElseThrow(() -> new RuntimeException("Retailer not found with ID: " + retailerId));
