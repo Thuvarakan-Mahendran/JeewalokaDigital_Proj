@@ -2,6 +2,15 @@ import { useState } from "react";
 
 export default function ReportsPage() {
   const [reportType, setReportType] = useState("");
+
+  const [secondReportType, setSecondReportType] = useState("");
+  
+  // Sample data fetching simulation (Replace with actual database fetch logic)
+  const cashSale = "0";
+  const creditSale = "0";
+  const totalSale = "0";
+
+
   return (
     <div className="p-6">
       <h1 className="text-xl font-semibold">Reports</h1>

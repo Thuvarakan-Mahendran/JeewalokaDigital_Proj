@@ -10,4 +10,6 @@ public interface SupplierRepository extends JpaRepository<Supplier,Long>
 {
     @Query("SELECT MAX(s.supplierCode) FROM Supplier s WHERE s.supplierCode LIKE 'SUP-%'")
     String findLastSupplierCode();
+
+    Supplier findBySupplierNameIgnoreCase(String supplierName);
 }
