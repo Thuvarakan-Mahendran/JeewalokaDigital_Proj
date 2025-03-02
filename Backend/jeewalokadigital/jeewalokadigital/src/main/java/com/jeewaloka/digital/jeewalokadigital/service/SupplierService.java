@@ -115,4 +115,28 @@ public class SupplierService {
 
         return String.format("SUP-%03d", newNumber); // Format to "SUP-001"
     }
+
+    public SupplierResponseDTO getSupplierByName(String supplierName) {
+        try{
+            Supplier supplier = supplierRepository.findBySupplierNameIgnoreCase(supplierName);
+            if (supplier == null) {
+                return null;
+            }
+            SupplierResponseDTO supplierResponseDTO = new SupplierResponseDTO();
+            supplierResponseDTO.setSupplierId(supplier.getSupplierId());
+            supplierResponseDTO.setSupplierCode(supplier.getSupplierCode());
+            supplierResponseDTO.setSupplierName(supplier.getSupplierName());
+            supplierResponseDTO.setSupplierContact(supplier.getSupplierContact());
+            supplierResponseDTO.setSupplierEmail(supplier.getSupplierEmail());
+            supplierResponseDTO.setSupplierAddress(supplier.getSupplierAddress());
+            supplierResponseDTO.setSupplierFax(supplier.getSupplierFax());
+            supplierResponseDTO.setSupplierWebsite(supplier.getSupplierWebsite());
+            supplierResponseDTO.setSupplierStatus(supplier.getSupplierStatus());
+            supplierResponseDTO.setSupplierCreatedDate(String.valueOf(supplier.getCreatedDate()));
+            return supplierResponseDTO;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

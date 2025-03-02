@@ -10,6 +10,7 @@ import {
   faDollarSign,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
+import Logo from "../pages/Login/logo.jpg"
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -32,6 +33,13 @@ const Dashboard = () => {
                 <span className="sr-only">Open sidebar</span>
                 <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
               </button>
+              {/* Logo */}
+              
+                <img
+                  src={Logo}
+                  alt="Flowbite"
+                  className="w-8 h-8"
+                />
               <a href="https://flowbite.com" className="flex ms-2 md:me-24">
                 <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
                   Jeewaloka Distribution System
@@ -45,7 +53,7 @@ const Dashboard = () => {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   type="button"
                   className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                > 
+                >
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="w-8 h-8 rounded-full"
@@ -79,7 +87,7 @@ const Dashboard = () => {
                           Dashboard
                         </Link>
                       </li>
-                      
+
                       <li>
                         <Link
                           to="/login"
@@ -99,8 +107,9 @@ const Dashboard = () => {
 
       <aside
         id="logo-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
         aria-label="Sidebar"
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
@@ -148,8 +157,9 @@ const Dashboard = () => {
 
                 <FontAwesomeIcon
                   icon={faChevronDown}
-                  className={`w-3 h-3 transition-transform ${isInventoryDropdownOpen ? "rotate-180" : ""
-                    }`}
+                  className={`w-3 h-3 transition-transform ${
+                    isInventoryDropdownOpen ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
@@ -213,8 +223,9 @@ const Dashboard = () => {
                 </div>
                 <FontAwesomeIcon
                   icon={faChevronDown}
-                  className={`w-3 h-3 transition-transform ${isSalesDropdownOpen ? "rotate-180" : ""
-                    }`}
+                  className={`w-3 h-3 transition-transform ${
+                    isSalesDropdownOpen ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
@@ -228,14 +239,7 @@ const Dashboard = () => {
                       Sellers
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      to="sales/sellerorder"
-                      className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                    >
-                      Seller Order
-                    </Link>
-                  </li>
+
                   <li>
                     <Link
                       to="sales/invoices"
@@ -252,14 +256,6 @@ const Dashboard = () => {
                       Sellers Returns
                     </Link>
                   </li>
-                  <li>
-                    <Link
-                      to="/goods-returns-note"
-                      className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                    >
-                      Goods Returns Note
-                    </Link>
-                  </li>
                 </ul>
               )}
             </li>
@@ -272,7 +268,7 @@ const Dashboard = () => {
                   icon={faChartBar}
                   className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 />
-                <span  className="flex-1 ms-3 whitespace-nowrap">Reports</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">Reports</span>
               </Link>
             </li>
           </ul>
