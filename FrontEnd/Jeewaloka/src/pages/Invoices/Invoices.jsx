@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react'
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import longFormatters from 'date-fns/_lib/format/longFormatters';
+// import { parse } from 'date-fns';
 import {
     saveBill,
     getBills
@@ -8,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom'
 const Invoices = () => {
     const [invoices, setInvoices] = useState([])
     const [search, setSearch] = useState("")
+    const [idate, setIdate] = useState("")
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,20 +24,38 @@ const Invoices = () => {
         try {
             const response = await getBills();
             setInvoices(Array.isArray(response) ? response : response?.data || []);
+            // console.log(response)
         } catch (error) {
             console.error("Error fetching suppliers:", error);
             setInvoices([]);
         }
     }
 
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e.target
+    //     setSearch((prev) => ({
+    //         ...prev,
+    //         [name]: value
+    //     }))
+    // }
+
     const handleDownloadBill = async () => {
         try { }
         catch (error) { }
     }
 
-    const filteredInvoices = invoices.filter((invoice) =>
-        invoice.BillNO.toLowerCase().includes(search.toLowerCase())
-    )
+    const filteredInvoices = invoices.filter((invoice) => {
+        // invoice.BillNO.toString().includes(search.toString())
+        const matchesBillNo = search ? invoice.billNO.toString().includes(search.toString()) : true
+        const matchesIssuedDate = idate ? new Date(invoice.date) === new Date(idate) : true
+        // let matchesIssuedDate = true;
+        // if (idate) {
+        //     const invoiceDate = parse(invoice.date, "yyyy/MM/dd", new Date());
+        //     const inputDate = new Date(idate);
+        //     matchesIssuedDate = invoiceDate.getTime() === inputDate.getTime();
+        // }
+        return matchesBillNo && matchesIssuedDate
+    })
 
     return (
         <div>
@@ -47,11 +71,23 @@ const Invoices = () => {
                 <input
                     type="date"
                     className="w-1/3 rounded border-[1.5px] border-stroke bg-gray-100 py-2 px-5 ml-10"
+                    value={idate}
+                    onChange={(e) => setIdate(e.target.value)}
                 />
+                {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                        label="Date picker"
+                        value={search}
+                        onChange={(e) => {
+                            setIdate(e.target.value);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider> */}
             </div>
             <button
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg ml-6 mt-2"
-                onClick={() => { navigate('/sales/invoices/createInvoice') }}
+                onClick={() => { navigate('/dashboard/sales/invoices/createInvoice') }}
             >
                 Create Invoice
             </button>
@@ -71,12 +107,12 @@ const Invoices = () => {
                     <tbody>
                         {filteredInvoices.map((invoice) => (
                             <tr
-                                key={invoice.BillNO}
+                                key={invoice.billNO}
                                 className="border-b hover:bg-gray-50"
                             >
-                                <td className="p-3">{invoice.BillNO}</td>
-                                <td className="p-3">{invoice.user}</td>
-                                <td className="p-3">{invoice.retailer}</td>
+                                <td className="p-3">{invoice.billNO}</td>
+                                <td className="p-3">{invoice.userID}</td>
+                                <td className="p-3">{invoice.retailerID}</td>
                                 <td className="p-3">{invoice.total}</td>
                                 <td className="p-3">{invoice.date}</td>
                                 <td className="p-3">{invoice.billCategory}</td>

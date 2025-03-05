@@ -45,7 +45,7 @@ const Dashboard = () => {
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   type="button"
                   className="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                > 
+                >
                   <span className="sr-only">Open user menu</span>
                   <img
                     className="w-8 h-8 rounded-full"
@@ -272,14 +272,14 @@ const Dashboard = () => {
             </li>
             <li>
               <Link
-                to="/sellers"
+                to="reports"
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <FontAwesomeIcon
                   icon={faChartBar}
                   className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                 />
-                <span  className="flex-1 ms-3 whitespace-nowrap">Reports</span>
+                <span className="flex-1 ms-3 whitespace-nowrap">Reports</span>
               </Link>
             </li>
           </ul>

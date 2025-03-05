@@ -32,7 +32,6 @@ public class BillMapper {
 
         Bill bill = new Bill();
         bill.setTotal(billDTO.getTotal());
-        bill.setDate(billDTO.getDate() != null ? billDTO.getDate() : LocalDate.now());
         bill.setBillCategory(billDTO.getBillCategory());
 
         // Fetch and set User by ID
@@ -59,7 +58,7 @@ public class BillMapper {
             // Set up bidirectional relationship
             bill.setBillItems(billItems);
             // Set the bill reference in each BillItem
-            billItems.forEach(item -> item.setBill(bill));
+//            billItems.forEach(item -> item.setBill(bill));
             // After set, did we update the BillItem table with bill
         }
         return bill;
@@ -78,11 +77,11 @@ public class BillMapper {
         billDTO.setBillCategory(bill.getBillCategory());
 
         // Extract IDs from BillItems if they exist
-        if (bill.getBillItems() != null) {
-            billDTO.setBillItemIDS(bill.getBillItems().stream()
-                    .map(BillItem::getBIID)
-                    .collect(Collectors.toList()));
-        }
+//        if (bill.getBillItems() != null && !bill.getBillItems().isEmpty()) {
+//            billDTO.setBillItemIDS(bill.getBillItems().stream()
+//                    .map(BillItem::getBIID)
+//                    .collect(Collectors.toList()));
+//        }
 
         return billDTO;
     }

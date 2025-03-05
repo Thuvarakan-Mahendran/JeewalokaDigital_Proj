@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
 import com.jeewaloka.digital.jeewalokadigital.enums.UserRole;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,8 +12,9 @@ import java.util.List;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
-    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
+//    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long UID;
     @Column(name = "userName", nullable = false)
@@ -24,6 +26,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "userRole", nullable = false)
     private UserRole role;
+    @CreatedDate
     @Column(name = "LastLogin")
     private LocalDate lastLogin;
     @JsonIgnore
@@ -42,6 +45,12 @@ public class User {
 //    }
 
     public User() {
+    }
+
+    public User(String uname, String contact, String email) {
+        this.uname = uname;
+        this.contact = contact;
+        this.email = email;
     }
 
     public Long getUID() {

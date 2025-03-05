@@ -1,7 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { NumericFormat } from 'react-number-format'
 import { useRef } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import {
+    getRetailers,
+    // saveRetailer,
+    // editRetailer,
+    // deleteRetailer,
+} from "../../api/RetailerService";
+import {
+    getItems,
+} from "../../api/ItemService"
+import {
+    saveBillItem,
+} from "../../api/InvoiceItemService"
+import {
+    saveBill
+} from "../../api/InvoiceService"
 
 
 const Input = ({ className = '', ...props }) => (
@@ -31,9 +47,24 @@ const Select = ({ children, className = '', ...props }) => (
 
 const InvoiceGenerator = () => {
     const contentRef = useRef(null)
+    const [retailers, setRetailers] = useState([])
+    const [items, setItems] = useState([])
+    // const [userData, setUserData] = useState({
+    //     userId: '',
+    //     userName: ''
+    // })
+    // const [itemData, setItemData] = useState({
+    //     itemId: '',
+    //     itemName: ''
+    // })
+    const [retailerData, setRetailerData] = useState({
+        retailerId: '',
+        retailerName: ''
+    })
     const [invoiceData, setInvoiceData] = useState({
         invoiceNo: '',
         issueDate: '',
+        user: '',
         retailer: '',
         paymentType: '',
         items: [],
@@ -43,11 +74,38 @@ const InvoiceGenerator = () => {
     })
 
     const [currentItem, setCurrentItem] = useState({
+        id: '',
         name: '',
         qty: '',
         unitPrice: '',
         amount: 0
     })
+
+    useEffect(() => {
+        fetchReatilers();
+        fetchItems();
+    }, []);
+
+    const fetchItems = async () => {
+        try {
+            const response = await getItems();
+            setItems(Array.isArray(response) ? response : response?.data || []);
+        } catch (error) {
+            console.error("Error fetching Items:", error);
+            setItems([]);
+        }
+    }
+
+    const fetchReatilers = async () => {
+        try {
+            const response = await getRetailers();
+            setRetailers(Array.isArray(response) ? response : response?.data || []);
+            // console.log(response)
+        } catch (error) {
+            console.error("Error fetching Retailers:", error);
+            setRetailers([]);
+        }
+    }
 
     const handleDownloadPDF = async () => {
         if (contentRef.current == null) {
@@ -68,17 +126,41 @@ const InvoiceGenerator = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
+        // console.log(e.target.value)
         setInvoiceData(prev => ({
             ...prev,
             [name]: value
         }))
     }
 
+    // const handleUserChange = (e) => {
+    //     const { name, value } = e.target
+    //     setUserData(prev => ({
+    //         ...prev,
+    //         [name]: value
+    //     }))
+    // }
+
+    const handleRetailerChange = (e) => {
+        const { name, value } = e.target
+        handleInputChange(e)
+        const selectedRetailer = retailers ? retailers.find(retailer => retailer.retailerId == value) : null
+        // console.log(e.target.name)
+        setRetailerData(prev => ({
+            ...prev,
+            retailerId: value ? value : prev.retailerId,
+            retailerName: selectedRetailer ? selectedRetailer.retailerName : prev.retailerName
+        }))
+        // console.log(retailerData.retailerId)
+    }
+
     const handleItemChange = (e) => {
         const { name, value } = e.target
+        const selectedItem = items ? items.find(item => item.itemName == value) : null
         setCurrentItem(prev => ({
             ...prev,
             [name]: value,
+            id: selectedItem && name === 'name' ? selectedItem.itemCode : prev.itemCode,
             amount: name === 'qty' || name === 'unitPrice'
                 ? (name === 'qty' ? value : prev.qty) * (name === 'unitPrice' ? value : prev.unitPrice)
                 : prev.amount
@@ -94,6 +176,7 @@ const InvoiceGenerator = () => {
                 total: prev.subtotal + currentItem.amount - prev.discount
             }))
             setCurrentItem({
+                id: '',
                 name: '',
                 qty: '',
                 unitPrice: '',
@@ -116,6 +199,42 @@ const InvoiceGenerator = () => {
         })
     }
 
+    const handleItemSubmit = async () => {
+        const billItems = invoiceData.items.map((billItem) => ({
+            item: Number(billItem.id),
+            totalvalue: parseFloat(billItem.amount),
+            quantity: parseInt(billItem.qty)
+        }))
+        console.log(billItems)
+        try {
+            const response = await saveBillItem(billItems)
+            console.log("BillItems saved successfully" + response)
+        }
+        catch (error) {
+            console.error("Error: ", error)
+        }
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        try {
+            const savedBillItems = await handleItemSubmit()
+            const billData = {
+                // userID: invoiceData.user,
+                retailerID: Number(invoiceData.retailer),
+                billCategory: invoiceData.paymentType,
+                total: parseFloat(invoiceData.total),
+                billItemIDS: invoiceData.items.map(item => Number(item.id)),
+            };
+            console.log(billData)
+            const response = await saveBill(billData)
+            console.log("Bill is saved" + response)
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
     return (
         <div className="flex gap-6 p-6 min-h-screen bg-gray-50">
             {/* Left Side - Form */}
@@ -124,7 +243,7 @@ const InvoiceGenerator = () => {
 
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
+                        {/* <div>
                             <label className="block text-sm mb-1">Invoice No</label>
                             <Input
                                 name="invoiceNo"
@@ -140,16 +259,43 @@ const InvoiceGenerator = () => {
                                 value={invoiceData.issueDate}
                                 onChange={handleInputChange}
                             />
+                        </div> */}
+                        <div>
+                            <label className="block text-sm mb-1">User</label>
+                            <Input
+                                name="userNo"
+                                value={invoiceData.user}
+                            // onChange={handleUserChange}
+                            />
                         </div>
+                        {/* <label className="block text-sm mb-1">User</label>
+                        <Select
+                            name="user"
+                            value={invoiceData.user}
+                            onChange={handleUserChange}
+                        >
+                            <option value=''>Select User</option>
+                            {retailers.map((retailer) => (
+                                <option key={retailer.retailerId} value={retailer.retailerName}>
+                                    {retailer.retailerName}
+                                </option>
+                            ))}
+                        </Select> */}
                     </div>
-
                     <div>
                         <label className="block text-sm mb-1">Retailer</label>
-                        <Input
+                        <Select
                             name="retailer"
                             value={invoiceData.retailer}
-                            onChange={handleInputChange}
-                        />
+                            onChange={handleRetailerChange}
+                        >
+                            <option value=''>Select Retailer</option>
+                            {retailers.map((retailer) => (
+                                <option key={retailer.retailerId} value={retailer.retailerId}>
+                                    {retailer.retailerName}
+                                </option>
+                            ))}
+                        </Select>
                     </div>
 
                     <div>
@@ -167,12 +313,19 @@ const InvoiceGenerator = () => {
                     <div className="border p-4 rounded-lg">
                         <h3 className="text-lg font-semibold mb-4">Add Item</h3>
                         <div className="grid grid-cols-4 gap-2">
-                            <Input
+                            <Select
                                 placeholder="Item name"
                                 name="name"
                                 value={currentItem.name}
                                 onChange={handleItemChange}
-                            />
+                            >
+                                <option value=''>Select Item</option>
+                                {items.map((item) => (
+                                    <option key={item.itemCode} value={item.itemName}>
+                                        {item.itemName}
+                                    </option>
+                                ))}
+                            </Select>
                             <Input
                                 type="number"
                                 placeholder="Qty"
@@ -182,11 +335,22 @@ const InvoiceGenerator = () => {
                             />
                             <Input
                                 type="number"
+                                step="0.01"
                                 placeholder="Unit price"
                                 name="unitPrice"
                                 value={currentItem.unitPrice}
                                 onChange={handleItemChange}
                             />
+                            {/* <NumericFormat
+                                value={currentItem.unitPrice}
+                                thousandSeparator={true}
+                                decimalScale={2}
+                                fixedDecimalScale={true}
+                                prefix={'Rs'}
+                                placeholder="Unit price"
+                                onValueChange={handleItemChange}
+                                className="input-field"
+                            /> */}
                             <Button onClick={addItem}>Add Item</Button>
                         </div>
                         <div>
@@ -197,6 +361,7 @@ const InvoiceGenerator = () => {
                                 Download
                             </Button>
                             <Button
+                                onClick={handleSubmit}
                                 className='mr-2'
                             >
                                 Save
@@ -225,7 +390,7 @@ const InvoiceGenerator = () => {
 
                 <div className="mb-6">
                     <h3 className="font-bold mb-2">Bill To:</h3>
-                    <p>{invoiceData.retailer}</p>
+                    <p>{retailerData.retailerName}</p>
                     <p className="text-gray-600">Payment Terms: {invoiceData.paymentType}</p>
                 </div>
 

@@ -10,8 +10,8 @@ export const saveUser = async (user) => {
     return response.data;
 };
 
-export const editUser = async (user) => {
-    const response = await axios.put(`users/updateUser/${supplier.supplierId}`, user);
+export const editsUser = async (user) => {
+    const response = await axios.put(`users/updateUser/${user.UID}`, user);
     return response.data;
 };
 

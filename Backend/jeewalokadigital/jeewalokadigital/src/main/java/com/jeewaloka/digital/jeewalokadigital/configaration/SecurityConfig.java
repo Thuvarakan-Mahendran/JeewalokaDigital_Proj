@@ -52,10 +52,10 @@ public class SecurityConfig {
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
             .csrf(csrf -> csrf.disable())  // Updated CSRF configuration
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()  // Whitelist auth endpoints
-                    .anyRequest().authenticated()                 // Secure all other endpoints
-            )
+//            .authorizeHttpRequests(auth -> auth
+//                    .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()  // Whitelist auth endpoints
+//                    .anyRequest().authenticated()                 // Secure all other endpoints
+//            )
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // No sessions
             )

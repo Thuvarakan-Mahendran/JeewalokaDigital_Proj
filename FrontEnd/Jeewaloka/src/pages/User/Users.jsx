@@ -1,158 +1,215 @@
-import { useEffect, useState } from "react";
-import {
-    getUsers,
-    saveUser,
-    editUser,
-    deleteUser
-} from "../../api/UserService";
+import React, { useState, useEffect } from 'react';
+import { Pencil, Trash2 } from 'lucide-react';
+import { getUsers, saveUser, editsUser, deleteUser } from "../../api/UserService";
 
 const Users = () => {
-    const [users, setUsers] = useState([])
-    const [search, setSearch] = useState("")
-    const [showPopup, setShowPopup] = useState(false)
-    const [userForm, setUserForm] = useState({
-        userId: "",
-        userName: "",
-        userContact: "",
-        userEmail: "",
-        userRole: "",
-        userLastLogin: ""
-    })
-    const [editingUser, setEditingUser] = useState(null)
+    const [users, setUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
 
     useEffect(() => {
-        fetchUsers()
-    }, [])
+        fetchUsers();
+    }, []);
 
     const fetchUsers = async () => {
         try {
-            const response = await getUsers()
-            setUsers(Array.isArray(response) ? response : response?.data || [])
+            const data = await getUsers();
+            setUsers(data || []);
         } catch (error) {
-            console.error("Error fetching suppliers:", error)
-            setUsers([])
+            console.error("Error fetching users:", error);
+            setUsers([]);
         }
-    }
+    };
 
-    const handleDeleteUser = async (userId) => {
-        try {
-            await deleteUser(userId)
-            setUsers((prevUsers) =>
-                prevUsers.filter((s) => s.userId !== userId)
-            );
-        } catch (error) {
-            console.error("Error deleting user:", error)
-        }
-    }
-
-    const handleInputChange = (e) => {
-        setUserForm((prevForm) => ({
-            ...prevForm,
-            [e.target.name]: e.target.value,
-        }))
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        try {
-            if (editingUser) {
-                await editUser({ ...editingUser, ...userForm })
-            } else {
-                await saveUser(userForm)
+    const handleDelete = async (uid) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            try {
+                await deleteUser(uid);
+                setUsers((prevUsers) =>
+                    prevUsers.filter((user) => user.UID !== uid)
+                );
+            } catch (error) {
+                console.error("Error deleting user:", error);
             }
-            setUserForm({
-                userName: "",
-                userContact: "",
-                userEmail: "",
-                supplierStatus: ""
-            });
-            setEditingUser(null)
-            setShowPopup(false)
-            fetchUsers()
-        } catch (error) {
-            console.error("Error saving user:", error)
         }
-    }
+    };
 
     const handleEdit = (user) => {
-        setEditingUser(user)
-        setUserForm(user)
-        setShowPopup(true)
-    }
+        setIsEditing(true);
+        setEditingUser(user);
+    };
 
-    const filteredUsers = users.filter((user) =>
-        user.userName.toLowerCase().includes(search.toLowerCase())
-    )
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            await editsUser(editingUser);
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.UID === editingUser.UID ? editingUser : user
+                )
+            );
+            setIsEditing(false);
+            setEditingUser(null);
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    };
+
+    const handleSave = async (newUser) => {
+        try {
+            const savedUser = await saveUser(newUser);
+            setUsers((prevUsers) => [...prevUsers, savedUser]);
+            setIsEditing(false);
+            setEditingUser(null);
+        } catch (error) {
+            console.error("Error saving user:", error);
+        }
+    };
+
+    const filteredUsers = users.filter(user =>
+        user.UName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <h2 className="text-2xl font-semibold text-gray-800">All Users</h2>
-
-            {/* Search */}
-            <div className="bg-white p-4 shadow rounded-lg flex justify-between mb-4 items-center">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    className="w-1/3 rounded border-[1.5px] border-stroke bg-gray-100 py-2 px-5"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-                <button
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-                    onClick={() => {
-                        setEditingUser(null); // Ensure we are not in edit mode
-                        setUserForm({
-                            userId: "",
-                            userName: "",
-                            userContact: "",
-                            userEmail: "",
-                            userStatus: "",
-                            userCreatedDate: ""
-                        }); // Reset form
-                        setShowPopup(true);
-                    }}
-                >
-                    Add new user
-                </button>
+        <div className="p-6">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">All Users</h1>
+                <div className="flex gap-4">
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        className="px-4 py-2 border rounded-lg"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                        onClick={() => {
+                            setIsEditing(true);
+                            setEditingUser({
+                                UName: '',
+                                UContact: '',
+                                UEmail: '',
+                                UStatus: '',
+                                URole: ''
+                            });
+                        }}
+                    >
+                        Add new user
+                    </button>
+                </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white p-4 shadow rounded-lg">
-                <table className="w-full text-left border-collapse">
+            {isEditing && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">
+                            {editingUser.UID ? 'Edit User' : 'Add New User'}
+                        </h2>
+                        <form onSubmit={handleSave}>
+                            <div className="mb-4">
+                                <label className="block mb-2">Name</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border rounded"
+                                    value={editingUser.UName}
+                                    onChange={(e) => setEditingUser({ ...editingUser, UName: e.target.value })}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Contact</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border rounded"
+                                    value={editingUser.UContact}
+                                    onChange={(e) => setEditingUser({ ...editingUser, UContact: e.target.value })}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Email</label>
+                                <input
+                                    type="email"
+                                    className="w-full px-3 py-2 border rounded"
+                                    value={editingUser.UEmail}
+                                    onChange={(e) => setEditingUser({ ...editingUser, UEmail: e.target.value })}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Role</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border rounded"
+                                    value={editingUser.URole}
+                                    onChange={(e) => setEditingUser({ ...editingUser, URole: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 border rounded"
+                                    onClick={() => {
+                                        setIsEditing(false);
+                                        setEditingUser(null);
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                                    onClick={() => {
+                                        if (editingUser.UID) {
+                                            handleUpdate();
+                                        } else {
+                                            handleSave(editingUser);
+                                        }
+                                    }}
+                                >
+                                    {editingUser.UID ? 'Save Changes' : 'Add User'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            <div className="bg-white rounded-lg shadow">
+                <table className="w-full">
                     <thead>
-                        <tr className="bg-gray-100">
-                            <th className="p-3">UID</th>
-                            <th className="p-3">UName</th>
-                            <th className="p-3">UContact</th>
-                            <th className="p-3">UEmail</th>
-                            <th className="p-3">UStatus</th>
-                            <th className="p-3">Actions</th>
+                        <tr className="border-b">
+                            <th className="px-6 py-3 text-left">UID</th>
+                            <th className="px-6 py-3 text-left">Name</th>
+                            <th className="px-6 py-3 text-left">Role</th>
+                            <th className="px-6 py-3 text-left">Contact</th>
+                            <th className="px-6 py-3 text-left">Email</th>
+                            <th className="px-6 py-3 text-left">Status</th>
+                            <th className="px-6 py-3 text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredUsers.map((user) => (
-                            <tr
-                                key={user.userId}
-                                className="border-b hover:bg-gray-50"
-                            >
-                                <td className="p-3">{user.userId}</td>
-                                <td className="p-3">{user.userName}</td>
-                                <td className="p-3">{user.userContact}</td>
-                                <td className="p-3">{user.userEmail}</td>
-                                <td className="p-3">{user.userStatus}</td>
-                                <td className="p-3 flex space-x-4">
-                                    <button
-                                        className="text-blue-600"
-                                        onClick={() => handleEdit(user)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="text-red-600"
-                                        onClick={() => handleDeleteSupplier(user.userId)}
-                                    >
-                                        Delete
-                                    </button>
+                            <tr key={user.UID} className="border-b hover:bg-gray-50">
+                                <td className="px-6 py-4">{user.UID}</td>
+                                <td className="px-6 py-4">{user.UName}</td>
+                                <td className="px-6 py-4">{user.UContact}</td>
+                                <td className="px-6 py-4">{user.UEmail}</td>
+                                <td className="px-6 py-4">{user.UStatus}</td>
+                                <td className="px-6 py-4">
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleEdit(user)}
+                                            className="p-1 hover:bg-gray-100 rounded"
+                                        >
+                                            <Pencil className="w-5 h-5 text-blue-600" />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(user.UID)}
+                                            className="p-1 hover:bg-gray-100 rounded"
+                                        >
+                                            <Trash2 className="w-5 h-5 text-red-600" />
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -163,4 +220,4 @@ const Users = () => {
     );
 };
 
-export default Users
+export default Users;
