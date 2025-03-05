@@ -1,17 +1,16 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class UserCredentials {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long UID;
-    private String username;
+    private Long UserCredID;
+    private String username;    //This is credential to login into application
     private String password;
+    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
+    private User user;
     public UserCredentials() {
     }
     public UserCredentials(String username, String password) {
@@ -19,8 +18,8 @@ public class UserCredentials {
         this.password = password;
     }
 
-    public Long getUID() {
-        return UID;
+    public Long getUserCredID() {
+        return UserCredID;
     }
 
     public String getUsername() {

@@ -3,9 +3,9 @@ package com.jeewaloka.digital.jeewalokadigital.controller;
 
 import com.jeewaloka.digital.jeewalokadigital.dto.UserCredentialsDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.UserCredentials;
-import com.jeewaloka.digital.jeewalokadigital.service.JwtService;
+import com.jeewaloka.digital.jeewalokadigital.service.Security.JwtService;
 import com.jeewaloka.digital.jeewalokadigital.service.UserCredService;
-import com.jeewaloka.digital.jeewalokadigital.service.UserDetailsServiceImpl;
+import com.jeewaloka.digital.jeewalokadigital.service.Security.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

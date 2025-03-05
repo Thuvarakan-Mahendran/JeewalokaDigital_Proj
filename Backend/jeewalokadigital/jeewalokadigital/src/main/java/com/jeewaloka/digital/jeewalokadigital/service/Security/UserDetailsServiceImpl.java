@@ -1,4 +1,4 @@
-package com.jeewaloka.digital.jeewalokadigital.service;
+package com.jeewaloka.digital.jeewalokadigital.service.Security;
 
 import com.jeewaloka.digital.jeewalokadigital.entity.UserCredentials;
 

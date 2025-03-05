@@ -2,10 +2,9 @@ package com.jeewaloka.digital.jeewalokadigital.configaration;
 
 
 import com.jeewaloka.digital.jeewalokadigital.filter.JwtAuthenticationFilter;
-import com.jeewaloka.digital.jeewalokadigital.service.UserDetailsServiceImpl;
+import com.jeewaloka.digital.jeewalokadigital.service.Security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;

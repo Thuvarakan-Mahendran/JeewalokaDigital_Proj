@@ -18,7 +18,7 @@ public class User {
     @Column(name = "userId")
     private Long UID;
     @Column(name = "userName", nullable = false)
-    private String uname;
+    private String uname;   //This is name for display in their profile
     @Column(name = "userContact", nullable = false)
     private String contact;
     @Column(name = "userMail")
@@ -29,6 +29,9 @@ public class User {
     @CreatedDate
     @Column(name = "LastLogin")
     private LocalDate lastLogin;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "UserCred", referencedColumnName = "UserCredID")
+    private UserCredentials userCredentials;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "BillNO")

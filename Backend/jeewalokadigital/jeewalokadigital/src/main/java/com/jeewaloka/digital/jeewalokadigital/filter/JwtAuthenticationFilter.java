@@ -1,6 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.filter;
 
-import com.jeewaloka.digital.jeewalokadigital.service.JwtService;
+import com.jeewaloka.digital.jeewalokadigital.service.Security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
