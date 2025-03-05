@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getSuppliers } from "../../api/SupplierService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { getItems } from "../../api/ItemService";
 
 const CreateGRN = () => {
   const [grnData, setGRNData] = useState({
@@ -12,6 +13,7 @@ const CreateGRN = () => {
     grnReceivedBy: "",
     grnStatus: "Pending",
     grnItems: [],
+    grnTotalAmount: 0, // Initialize total amount
   });
 
   const [grnItem, setGRNItem] = useState({
@@ -19,10 +21,14 @@ const CreateGRN = () => {
     quantity: 0,
     unitPrice: 0,
     itemExpiryDate: "",
+    totalAmount: 0,
   });
 
   const [suppliers, setSuppliers] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [items, setItems] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(true);
 
   useEffect(() => {
     const fetchSuppliers = async () => {
@@ -46,6 +52,36 @@ const CreateGRN = () => {
     fetchSuppliers();
   }, []);
 
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const response = await getItems();
+        if (response) {
+          setItems(
+            response.map((item) => ({
+              value: item.itemId,
+              label: `${item.itemCode} - ${item.itemName}`,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching items", error);
+      } finally {
+        setLoadingItems(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
+  const handleChangeItem = (selectedOption) => {
+    console.log("Selected Option:", selectedOption); // For debugging
+    setGRNItem((prevItem) => ({
+      ...prevItem, // Preserve other fields
+      itemId: selectedOption ? selectedOption.value : "", // Update or reset itemId
+    }));
+  };
+
   const handleChange = (selectedOption) => {
     setGRNData((prevData) => ({
       ...prevData,
@@ -64,10 +100,10 @@ const CreateGRN = () => {
     setGRNItem((prevItem) => {
       const updatedItem = { ...prevItem, [name]: value };
 
-      // Ensure quantity and unitPrice are numbers before calculating total
       if (name === "quantity" || name === "unitPrice") {
-        updatedItem.totalAmount =
-          Number(updatedItem.quantity) * Number(updatedItem.unitPrice);
+        const quantity = Number(updatedItem.quantity) || 0;
+        const unitPrice = Number(updatedItem.unitPrice) || 0;
+        updatedItem.totalAmount = quantity * unitPrice;
       }
 
       return updatedItem;
@@ -78,7 +114,7 @@ const CreateGRN = () => {
     if (grnItem.itemId && grnItem.quantity > 0 && grnItem.unitPrice > 0) {
       const updatedItems = [...grnData.grnItems, grnItem];
       const updatedTotalAmount = updatedItems.reduce(
-        (sum, item) => sum + Number(item.totalAmount),
+        (sum, item) => sum + Number(item.totalAmount || 0),
         0
       );
 
@@ -93,29 +129,46 @@ const CreateGRN = () => {
         quantity: 0,
         unitPrice: 0,
         itemExpiryDate: "",
-       
+        totalAmount: 0,
       });
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await createGRN(grnData);
-      navigate("/dashboard/inventary/grn");
-    } catch (error) {
-      console.error("Error creating GRN:", error);
     }
   };
 
   const removeItem = (index) => {
     const updatedItems = [...grnData.grnItems];
     updatedItems.splice(index, 1);
+
     const updatedTotalAmount = updatedItems.reduce(
-      (sum, item) => sum + Number(item.totalAmount),
+      (sum, item) => sum + Number(item.totalAmount || 0),
       0
     );
-    setGRNData({ ...grnData, grnItems: updatedItems, grnTotalAmount: updatedTotalAmount });
+
+    setGRNData({
+      ...grnData,
+      grnItems: updatedItems,
+      grnTotalAmount: updatedTotalAmount,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formattedGRNData = {
+        ...grnData,
+        grnItems: grnData.grnItems.map((item) => ({
+          itemId: item.itemId,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          itemExpiryDate: item.itemExpiryDate,
+          totalAmount: item.totalAmount,
+        })),
+      };
+
+      await createGRN(formattedGRNData);
+      navigate("/dashboard/inventary/grn");
+    } catch (error) {
+      console.error("Error creating GRN:", error);
+    }
   };
 
   return (
@@ -136,7 +189,7 @@ const CreateGRN = () => {
           />
         </div>
 
-        {/* <div className="mb-4">
+        <div className="mb-4">
           <label className="block mb-2">Received By</label>
           <input
             type="text"
@@ -144,8 +197,9 @@ const CreateGRN = () => {
             value={grnData.grnReceivedBy}
             onChange={handleInputChange}
             className="w-full p-2 border rounded"
+            required
           />
-        </div> */}
+        </div>
 
         <div className="mb-4">
           <label className="block mb-2">Status</label>
@@ -171,7 +225,6 @@ const CreateGRN = () => {
                   <th className="p-2 text-left">Quantity</th>
                   <th className="p-2 text-left">Unit Price</th>
                   <th className="p-2 text-left">Expiry Date</th>
-                  
                   <th className="p-2 text-left">Total Amount</th>
                   <th className="p-2 text-left">Action</th>
                 </tr>
@@ -184,7 +237,6 @@ const CreateGRN = () => {
                         <td className="p-2">{item.quantity}</td>
                         <td className="p-2">Rs. {item.unitPrice}</td>
                         <td className="p-2">{item.itemExpiryDate}</td>
-                       
                         <td className="p-2">Rs. {item.totalAmount}</td>
                         <td className="p-2">
                           <button
@@ -199,17 +251,24 @@ const CreateGRN = () => {
                     ))
                   : null}
                 <tr className="border-b">
-                  <td className="p-2">
-                    <input
-                      type="number"
-                      name="itemId"
-                      placeholder="Item ID"
-                      value={grnItem.itemId}
-                      onChange={handleItemChange}
-                      className="w-full p-2 border rounded"
-                    />
+                  <td className="p-2 w-1/3">
+                  <td className="p-2 w-1/3">
+  <Select
+  options={items}
+  isLoading={loadingItems}
+  isSearchable
+  onChange={handleChangeItem}
+  value={items.find((i) => i.value === grnItem.itemId) || null}
+  placeholder="Select an item..."
+  className="w-full"
+  menuPortalTarget={document.body}  // Fixes dropdown rendering issues
+  menuPosition="fixed"
+/>
+
+</td>
+
                   </td>
-                  <td className="p-2">
+                  <td className="p-2 w-1/12">
                     <input
                       type="number"
                       name="quantity"
@@ -219,7 +278,7 @@ const CreateGRN = () => {
                       className="w-full p-2 border rounded"
                     />
                   </td>
-                  <td className="p-2">
+                  <td className="p-2 w-1/5">
                     <input
                       type="number"
                       name="unitPrice"
@@ -238,7 +297,6 @@ const CreateGRN = () => {
                       className="w-full p-2 border rounded"
                     />
                   </td>
-                  
                   <td className="p-2">
                     <label className="font-semibold">Rs. {grnItem.totalAmount}</label>
                   </td>
@@ -274,11 +332,13 @@ const CreateGRN = () => {
         </div>
 
         <div className="mt-6 bg-blue-50 p-4 rounded-lg shadow-md text-right">
-  <h3 className="text-xl font-semibold text-gray-800">
-    Total Amount: <span className="text-2xl font-bold text-blue-600">Rs. {grnData.grnTotalAmount || 0}</span>
-  </h3>
-</div>
-
+          <h3 className="text-xl font-semibold text-gray-800">
+            Total Amount:{" "}
+            <span className="text-2xl font-bold text-blue-600">
+              Rs. {grnData.grnTotalAmount || 0}
+            </span>
+          </h3>
+        </div>
       </form>
     </div>
   );
