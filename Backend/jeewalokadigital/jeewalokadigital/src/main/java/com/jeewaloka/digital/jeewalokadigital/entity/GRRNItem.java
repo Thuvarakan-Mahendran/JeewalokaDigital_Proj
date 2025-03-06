@@ -17,6 +17,10 @@ public class GRRNItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long grrnitemId;
 
+    @ManyToOne
+    @JoinColumn(name = "grrn_id")
+    private GRRN grrn;
+
     @Column(nullable = false)
     private String itemName;
 
