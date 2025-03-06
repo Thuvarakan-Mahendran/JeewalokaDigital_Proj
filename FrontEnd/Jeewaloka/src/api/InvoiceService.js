@@ -6,7 +6,7 @@ export const getBills = async () => {
 };
 
 export const saveBill = async (invoice) => {
-    const response = await axios.post("Bill/saveBill", invoice);
+    const response = await axios.post("Bill/createBill", invoice);
     return response.data;
 };
 

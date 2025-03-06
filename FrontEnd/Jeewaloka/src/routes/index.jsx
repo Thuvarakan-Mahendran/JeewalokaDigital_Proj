@@ -21,7 +21,6 @@ import SellerReturn from "../pages/SellersReturn/SellerReturn";
 import SellerOrder from "../pages/SellerOrder/SellerOrder";
 
 
-
 const AppRoutes = () => {
   return (
     <BrowserRouter>
@@ -56,9 +55,6 @@ const AppRoutes = () => {
 
 
         </Route>
-
-      
-
       </Routes>
     </BrowserRouter>
   );

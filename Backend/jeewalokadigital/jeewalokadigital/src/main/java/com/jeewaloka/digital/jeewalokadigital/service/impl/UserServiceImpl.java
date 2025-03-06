@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
             User puser = nuser.get();
             puser.setUname(userDTO.getUname());
             puser.setRole(userDTO.getRole());
-            puser.setLastLogin(userDTO.getLastLogin());
+//            puser.setLastLogin(userDTO.getLastLogin());
             puser.setContact(userDTO.getContact());
             puser.setEmail(userDTO.getEmail());
             puser = userRepository.save(puser);

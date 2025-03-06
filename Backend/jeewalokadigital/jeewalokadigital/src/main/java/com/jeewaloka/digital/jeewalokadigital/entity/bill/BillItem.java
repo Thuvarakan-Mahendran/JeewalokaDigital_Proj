@@ -6,10 +6,13 @@ import jakarta.persistence.*;
 @Entity
 public class BillItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
-    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
+//    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long BIID;
+    @Column(name = "Quantity")
     private Integer quantity;
+    @Column(name = "ItemTotal")
     private Float totalValue;
     @ManyToOne
     @JoinColumn(name = "BillNO",referencedColumnName = "BillNO")

@@ -20,5 +20,5 @@ public class BillResponseDTO{
     private Float total;
     private LocalDate date;
     private BillCategory billCategory;
-    private List<Long> billItemIDS;
+//    private List<Long> billItemIDS;
 }

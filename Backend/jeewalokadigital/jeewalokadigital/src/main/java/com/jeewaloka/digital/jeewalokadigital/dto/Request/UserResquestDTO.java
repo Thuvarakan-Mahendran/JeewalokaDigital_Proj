@@ -19,6 +19,6 @@ public class UserResquestDTO {
     private String contact;
     private String email;
     private UserRole role;
-    private LocalDate lastLogin;
-    private List<Long> billIDS;
+//    private LocalDate lastLogin;
+//    private List<Long> billIDS;
 }

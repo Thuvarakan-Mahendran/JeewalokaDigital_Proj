@@ -17,7 +17,6 @@ public class BillRequestDTO {
     private Long userID;
     private String retailerID;
     private Float total;
-    private LocalDate date;
     private BillCategory billCategory;
     private List<Long> billItemIDS;
 }

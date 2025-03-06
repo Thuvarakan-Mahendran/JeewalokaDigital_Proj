@@ -33,5 +33,10 @@ public class BillServiceImpl implements BillService {
                 .map(billMapper::toBillDTO)
                 .toList();
     }
+
+    @Override
+    public void deleteBill(Long id) {
+        billRepository.deleteById(id);
+    }
 }
 

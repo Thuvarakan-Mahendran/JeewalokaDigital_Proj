@@ -14,12 +14,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/Bill")
+@CrossOrigin
 public class BillController {
     @Autowired
     private BillService billService;
 
-    @PostMapping("/saveBill")
+    @PostMapping("/createBill")
     public ResponseEntity<BillResponseDTO> addBill(@RequestBody BillRequestDTO billDTO){
+        System.out.println(billDTO);
         BillResponseDTO billDTO1 = billService.addBill(billDTO);
         ResponseEntity<BillResponseDTO> responseEntity = new ResponseEntity<>(billDTO1, HttpStatus.CREATED);
         return responseEntity;
@@ -30,6 +32,11 @@ public class BillController {
         List<BillResponseDTO> BillDTOS = billService.findAllBills();
         ResponseEntity<List<BillResponseDTO>> responseEntity = new ResponseEntity<>(BillDTOS, HttpStatus.OK);
         return responseEntity;
+    }
+
+    @DeleteMapping("/deleteBill/{id}")
+    public void deleteBill(@PathVariable Long id){
+        billService.deleteBill(id);
     }
 }
 

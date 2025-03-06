@@ -1,18 +1,23 @@
 package com.jeewaloka.digital.jeewalokadigital.entity.bill;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import com.jeewaloka.digital.jeewalokadigital.entity.User;
 import com.jeewaloka.digital.jeewalokadigital.enums.BillCategory;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Bill {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
-    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
+//    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long BillNO;
     @ManyToOne
     @JoinColumn(name = "UID", referencedColumnName = "userId")
@@ -20,10 +25,17 @@ public class Bill {
     @ManyToOne
     @JoinColumn(name = "RID", referencedColumnName = "RetailerId")
     private Retailer retailer;
+    @Column(name = "Total")
     private Float total;
-    private LocalDate date; // date bill record was created
+    @CreatedDate
+    @Column(name = "InvoiceDate")
+//    @JsonFormat(pattern = "dd/MM/yyyy")
+    private LocalDate date;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "BillType")
     private BillCategory billCategory;
     @OneToMany(mappedBy = "bill",cascade = CascadeType.ALL)
+    @Column(name = "BillItem")
     private List<BillItem> billItems;
 
     public Bill() {
