@@ -59,7 +59,7 @@ const CreateGRN = () => {
         if (response) {
           setItems(
             response.map((item) => ({
-              value: item.itemId,
+              value: item.itemCode,
               label: `${item.itemCode} - ${item.itemName}`,
             }))
           );
@@ -183,7 +183,9 @@ const CreateGRN = () => {
             isLoading={loading}
             isSearchable
             onChange={handleChange}
-            value={suppliers.find((s) => s.value === grnData.grnSupplierId) || null}
+            value={
+              suppliers.find((s) => s.value === grnData.grnSupplierId) || null
+            }
             placeholder="Select a supplier..."
             className="w-full"
           />
@@ -233,7 +235,11 @@ const CreateGRN = () => {
                 {grnData.grnItems.length > 0
                   ? grnData.grnItems.map((item, index) => (
                       <tr key={index} className="border-b">
-                        <td className="p-2">{item.itemId}</td>
+                        <td className="p-2">
+                          {items.find((i) => i.value === item.itemId)?.label ||
+                            "Unknown Item"}
+                        </td>
+
                         <td className="p-2">{item.quantity}</td>
                         <td className="p-2">Rs. {item.unitPrice}</td>
                         <td className="p-2">{item.itemExpiryDate}</td>
@@ -252,21 +258,21 @@ const CreateGRN = () => {
                   : null}
                 <tr className="border-b">
                   <td className="p-2 w-1/3">
-                  <td className="p-2 w-1/3">
-  <Select
-  options={items}
-  isLoading={loadingItems}
-  isSearchable
-  onChange={handleChangeItem}
-  value={items.find((i) => i.value === grnItem.itemId) || null}
-  placeholder="Select an item..."
-  className="w-full"
-  menuPortalTarget={document.body}  // Fixes dropdown rendering issues
-  menuPosition="fixed"
-/>
-
-</td>
-
+                    <td className="p-2 w-1/3">
+                      <Select
+                        options={items}
+                        isLoading={loadingItems}
+                        isSearchable
+                        onChange={handleChangeItem}
+                        value={
+                          items.find((i) => i.value === grnItem.itemId) || null
+                        }
+                        placeholder="Select an item..."
+                        className="w-full"
+                        menuPortalTarget={document.body} // Fixes dropdown rendering issues
+                        menuPosition="fixed"
+                      />
+                    </td>
                   </td>
                   <td className="p-2 w-1/12">
                     <input
@@ -298,7 +304,9 @@ const CreateGRN = () => {
                     />
                   </td>
                   <td className="p-2">
-                    <label className="font-semibold">Rs. {grnItem.totalAmount}</label>
+                    <label className="font-semibold">
+                      Rs. {grnItem.totalAmount}
+                    </label>
                   </td>
                   <td className="p-2">
                     <button
