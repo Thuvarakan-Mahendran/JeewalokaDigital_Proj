@@ -43,7 +43,7 @@ public class GRRNServiceImpl implements GRRNService {
         List<GRRNItem> grrnItems = grrnDTO.getGrrnItemList().stream()
                 .map(grrnItemDTO -> {
                     GRRNItem grrnItem = modelMapper.map(grrnItemDTO, GRRNItem.class);
-                    grrnItem.setGrn(finalGrrn); // Set the GRRN entity in GRRNItem
+                    grrnItem.setGrrn(finalGrrn); // Set the GRRN entity in GRRNItem
                     return grrnItem;
                 }).collect(Collectors.toList());
 
