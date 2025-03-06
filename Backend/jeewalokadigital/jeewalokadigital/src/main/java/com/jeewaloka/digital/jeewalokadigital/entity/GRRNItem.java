@@ -38,7 +38,5 @@ public class GRRNItem {
     private LocalDate itemExpiryDate;
 
 
-    public void setGrn(GRRN grrn) {
 
-    }
 }
