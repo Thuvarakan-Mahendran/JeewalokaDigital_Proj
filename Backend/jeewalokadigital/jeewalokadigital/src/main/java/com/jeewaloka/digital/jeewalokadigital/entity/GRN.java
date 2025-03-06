@@ -25,6 +25,9 @@ public class GRN {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long grnId;
 
+    @Column(name = "GRNCode", unique = true, nullable = false, updatable = false)
+    private String grnCode;
+
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier grnSupplier;

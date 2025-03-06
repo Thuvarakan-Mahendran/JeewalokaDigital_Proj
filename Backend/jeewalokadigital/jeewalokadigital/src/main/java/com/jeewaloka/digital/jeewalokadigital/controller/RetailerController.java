@@ -1,48 +1,84 @@
 package com.jeewaloka.digital.jeewalokadigital.controller;
 
-
 import com.jeewaloka.digital.jeewalokadigital.dto.Request.RequestRetailerDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.ResponseRetailerDTO;
+import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import com.jeewaloka.digital.jeewalokadigital.service.RetailerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.jeewaloka.digital.jeewalokadigital.util.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @RestController
-@CrossOrigin
-@RequestMapping(value = "/api/retailer")
+@RequestMapping("/api/retailer")
+@RequiredArgsConstructor
 public class RetailerController {
-
-    @Autowired
-    private RetailerService retailerService;
+    private final RetailerService retailerService;
 
     @GetMapping("/getAllRetailers")
-    public List<RequestRetailerDTO> getAllRetailers() {return retailerService.getAllRetailers();}
+    public ResponseEntity<ApiResponse<List<ResponseRetailerDTO>>> getAllRetailers() {
+        return new ResponseEntity<>(
+                new ApiResponse<>(
+                        200,
+                        "retailers details",
+                        retailerService.getAllRetailers()
+                ),
+                HttpStatus.OK
+        );
+    }
 
     @GetMapping("/getRetailerById/{id}")
-    public RequestRetailerDTO getRetailerById(String id){return retailerService.getRetailerById(id);}
+    public ResponseEntity<ApiResponse<ResponseRetailerDTO>> getRetailerById(@PathVariable String id) {
+        return new ResponseEntity<>(
+                new ApiResponse<>(
+                        200,
+                        "retailer details found",
+                        retailerService.getRetailerById(id)
+                ),
+                HttpStatus.OK
+        );
+    }
 
     @PostMapping("/createRetailer")
-    public void createRetailer(RequestRetailerDTO retailer){
+    public ResponseEntity<ApiResponse<Retailer>> createRetailer(@RequestBody RequestRetailerDTO retailer) {
         retailerService.createRetailer(retailer);
+        System.out.println(retailer.getRetailerName());
+        return new ResponseEntity<>(
+                new ApiResponse<>(
+                        201,
+                        "retailer created",
+                        null
+                ),
+                HttpStatus.CREATED
+        );
     }
 
     @PutMapping("/updateRetailer/{id}")
-    public void updateRetailer(RequestRetailerDTO retailer){
-        retailerService.updateRetailer(retailer);
+    public ResponseEntity<ApiResponse<Retailer>> updateRetailer(@RequestBody RequestRetailerDTO retailer, @PathVariable String id) {
+        retailerService.updateRetailer(retailer, id);
+        return new ResponseEntity<>(
+                new ApiResponse<>(
+                        201,
+                        "retailer updated",
+                        null
+                ),
+                HttpStatus.CREATED
+        );
     }
 
-    @DeleteMapping("deleteRetailer/{id}")
-    public void deleteRetailer(String id){retailerService.deleteRetailer(id);}
-
-
-
-
-
-
-
-
-
+    @DeleteMapping("/deleteRetailer/{id}")
+    public ResponseEntity<ApiResponse<Retailer>> deleteRetailer(@PathVariable String id) {
+        retailerService.deleteRetailer(id);
+        return new ResponseEntity<>(
+                new ApiResponse<>(
+                        204,
+                        "retailer deleted",
+                        null
+                ),
+                HttpStatus.NO_CONTENT
+        );
+    }
 }

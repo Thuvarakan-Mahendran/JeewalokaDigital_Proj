@@ -38,6 +38,7 @@ public class GRNService {
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
 
         GRN grn = new GRN();
+        grn.setGrnCode(generateGRNCode());
         grn.setGrnReceivedBy(grnDTO.getGrnReceivedBy());
         grn.setGrnSupplier(supplier);
         grn.setGrnStatus(grnDTO.getGrnStatus());
@@ -108,6 +109,7 @@ public class GRNService {
         return grns.stream().map(grn -> {
             GRNResponseDTO grnResponseDTO = new GRNResponseDTO();
             grnResponseDTO.setGrnId(grn.getGrnId());
+            grnResponseDTO.setGrnCode(grn.getGrnCode());
             grnResponseDTO.setGrnReceivedBy(grn.getGrnReceivedBy());
             grnResponseDTO.setGrnStatus(grn.getGrnStatus());
             grnResponseDTO.setGrnSupplierName(grn.getGrnSupplier().getSupplierName());
@@ -171,5 +173,22 @@ public class GRNService {
     public void deleteGRN(Long id) {
         GRN grn = grnRepository.findById(id).orElseThrow(() -> new RuntimeException("GRN not found"));
         grnRepository.delete(grn);
+    }
+
+    private String generateGRNCode() {
+        String lastCode = grnRepository.findLastGRNCode();
+
+        int newNumber = 1; // Default for first supplier
+
+        if (lastCode != null) {
+            try {
+
+                newNumber = Integer.parseInt(lastCode.replace("GRN-", "")) + 1;
+            } catch (NumberFormatException e) {
+                newNumber = 1; // If error, start from 1
+            }
+        }
+
+        return String.format("GRN-%05d", newNumber); // Format to "SUP-001"
     }
 }

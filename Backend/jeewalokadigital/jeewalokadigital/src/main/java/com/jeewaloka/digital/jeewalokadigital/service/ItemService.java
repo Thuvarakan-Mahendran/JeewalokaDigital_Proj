@@ -61,4 +61,21 @@ public class ItemService {
         List<Item> items = itemRepository.findAll();
         return modelMapper.map(items, new TypeToken<List<ItemDTO>>() {}.getType());
     }
+
+//    private String generateGRNCode() {
+//        String lastCode = itemRepository.findLastItemCode2();
+//
+//        int newNumber = 1; // Default for first supplier
+//
+//        if (lastCode != null) {
+//            try {
+//
+//                newNumber = Integer.parseInt(lastCode.replace("IT-", "")) + 1;
+//            } catch (NumberFormatException e) {
+//                newNumber = 1; // If error, start from 1
+//            }
+//        }
+//
+//        return String.format("IT-%05d", newNumber); // Format to "SUP-001"
+//    }
 }

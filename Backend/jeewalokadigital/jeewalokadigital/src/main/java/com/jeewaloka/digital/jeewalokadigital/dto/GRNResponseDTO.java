@@ -10,6 +10,7 @@ import java.util.List;
 public class GRNResponseDTO {
     // Getters and Setters
     private Long grnId;
+    private String grnCode;
     private String grnReceivedBy;
     private Double grnTotalAmount;
     private String grnStatus;

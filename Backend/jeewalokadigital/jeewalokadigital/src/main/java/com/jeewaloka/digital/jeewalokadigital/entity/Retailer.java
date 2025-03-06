@@ -2,34 +2,31 @@ package com.jeewaloka.digital.jeewalokadigital.entity;
 
 import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "retailer")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Table(name = "retailer")
+@Getter
+@Setter
+@Builder
 public class Retailer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "RetailerId", nullable = false, length = 10)  // is it good to define RestailerId as retailerId?
-    private Integer RetailerId;
+    @Column(name = "RetailerId", length = 80)  // is it good to define RestailerId as retailerId?
+    private String RetailerId;
 
-    @Column(name = "RetailerName", nullable = false, length = 45 )
+    @Column(name = "RetailerName", length = 45 )
     private String RetailerName;
 
-    @Column(name = "RetailerContactNo", nullable = false, length = 10 )
-    private int RetailerContactNo;
+    @Column(name = "RetailerContactNo",  length = 10 )
+    private String RetailerContactNo;
 
-    @Column(name = "RetailerAddress", nullable = false, length = 45 )
+    @Column(name = "RetailerAddress",  length = 100 )
     private String RetailerAddress;
 
-    @Column(name = "RetailerEmail", nullable = false, length = 45 )
+    @Column(name = "RetailerEmail",  length = 45 )
     private String RetailerEmail;
 
     @OneToMany(mappedBy = "retailer", cascade = CascadeType.ALL)
