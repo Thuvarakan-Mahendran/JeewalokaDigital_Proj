@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeewaloka.digital.jeewalokadigital.entity.bill.Bill;
 import com.jeewaloka.digital.jeewalokadigital.enums.UserRole;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,7 +25,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(name = "userRole", nullable = false)
     private UserRole role;
-    @CreatedDate
     @Column(name = "LastLogin")
     private LocalDate lastLogin;
     @OneToOne(cascade = CascadeType.ALL)

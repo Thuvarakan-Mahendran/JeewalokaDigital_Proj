@@ -6,5 +6,5 @@ import com.jeewaloka.digital.jeewalokadigital.entity.UserCredentials;
 public interface UserCredService {
     UserCredentials findById(Long id);
     boolean existsByUsername(String username);
-    void saveUserCred(UserCredentialsDTO userCredentialsDTO);
+    void addUserCredentials(UserCredentialsDTO userCredentialsDTO);
 }

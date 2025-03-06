@@ -23,13 +23,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Optional<UserCredentials> user = userCredRepository.findByUsername(username);
         System.out.println("after retrieve user");
         UserBuilder builder = null;
+        System.out.println("builder got created");
         if(user.isPresent()){
+            System.out.println("user is present");
             UserCredentials currentUser = user.get();
+//            System.out.println(currentUser.getUsername());
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
             builder.password(currentUser.getPassword());
         }else{
+            System.out.println("going throw exception");
             throw new UsernameNotFoundException("user not found when load");
         }
+        System.out.println("user is going to be built");
         return builder.build();
     }
 }

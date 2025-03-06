@@ -23,21 +23,21 @@ public class UserMapper {
         User user = new User();
         user.setEmail(userDTO.getEmail());
         user.setContact(userDTO.getContact());
-        user.setLastLogin(userDTO.getLastLogin());
+//        user.setLastLogin(userDTO.getLastLogin());
         user.setRole(userDTO.getRole());
         user.setUname(userDTO.getUname());
-        if (userDTO.getBillIDS() != null && !userDTO.getBillIDS().isEmpty()) {
-            List<Bill> bills = userDTO.getBillIDS().stream()
-                    .map(id -> billRepository.findById(id)
-                            .orElseThrow(() -> new EntityNotFoundException("user not found with ID: " + id)))
-                    .toList();
-
-            // Set up bidirectional relationship
-            user.setBills(bills);
-            // Set the user reference in each bills
-            bills.forEach(item -> item.setUser(user));
-        }
-        return null;
+//        if (userDTO.getBillIDS() != null && !userDTO.getBillIDS().isEmpty()) {
+//            List<Bill> bills = userDTO.getBillIDS().stream()
+//                    .map(id -> billRepository.findById(id)
+//                            .orElseThrow(() -> new EntityNotFoundException("user not found with ID: " + id)))
+//                    .toList();
+//
+//            // Set up bidirectional relationship
+//            user.setBills(bills);
+//            // Set the user reference in each bills
+//            bills.forEach(item -> item.setUser(user));
+//        }
+        return user;
     }
 
     public UserResponseDTO toDTO(User user){
@@ -51,11 +51,11 @@ public class UserMapper {
         userResponseDTO.setContact(user.getContact());
         userResponseDTO.setLastLogin(user.getLastLogin());
         userResponseDTO.setUname(user.getUname());
-        if(user.getBills() != null) {
-            userResponseDTO.setBillIDS(user.getBills().stream()
-                    .map(Bill::getBillNO)
-                    .toList());
-        }
+//        if(user.getBills() != null) {
+//            userResponseDTO.setBillIDS(user.getBills().stream()
+//                    .map(Bill::getBillNO)
+//                    .toList());
+//        }
         return userResponseDTO;
     }
 }

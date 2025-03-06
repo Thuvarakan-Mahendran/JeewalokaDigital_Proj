@@ -13,6 +13,6 @@ public interface UserCredRepository extends JpaRepository<UserCredentials, Long>
 
     Optional<UserCredentials> findByUsername(String username);
 
-//    @Override
-//    Optional<UserCredentials> findById(Long aLong);
+    @Override
+    Optional<UserCredentials> findById(Long aLong);
 }

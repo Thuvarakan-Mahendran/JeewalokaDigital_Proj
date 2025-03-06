@@ -21,5 +21,5 @@ public class UserResponseDTO {
     private String email;
     private UserRole role;
     private LocalDate lastLogin;
-    private List<Long> billIDS;
+//    private List<Long> billIDS;
 }

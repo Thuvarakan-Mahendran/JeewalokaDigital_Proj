@@ -31,7 +31,7 @@ public class UserCredServiceImpl implements UserCredService {
     }
 
     @Override
-    public void saveUserCred(UserCredentialsDTO userCredentialsDTO) {
+    public void addUserCredentials(UserCredentialsDTO userCredentialsDTO) {
         if(existsByUsername(userCredentialsDTO.getUsername())){
             throw new IllegalArgumentException("username already exists");
         }

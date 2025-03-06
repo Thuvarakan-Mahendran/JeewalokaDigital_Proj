@@ -23,8 +23,13 @@ public class JwtService {
     }
 
     // Generate token for user
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+//    public String generateTokens(UserDetails userDetails) {return generateToken(new HashMap<>(), userDetails);}
+
+    public Map<String, String> generateTokens(UserDetails userDetails) {
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", generateToken(new HashMap<>(), userDetails, 1000*10));
+        tokens.put("refreshToken",generateToken(new HashMap<>(), userDetails, 1000*60*60*24*7));
+        return tokens;
     }
 
     // Generate token with extra claims
@@ -37,13 +42,14 @@ public class JwtService {
 //                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
 //                .compact();
 //    }
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, int expirationTime) {
+        System.out.println("entered jwt service to generate token");
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
 //                .issuedAt(new Date(System.currentTimeMillis()))
                 .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plusMillis(1000L * 60 * 60 * 24 * jwtProperties.getTokenExpirationAfterDays())))
+                .expiration(Date.from(Instant.now().plusMillis(expirationTime)))
                 .signWith(getSigningKey())
                 .compact();
     }

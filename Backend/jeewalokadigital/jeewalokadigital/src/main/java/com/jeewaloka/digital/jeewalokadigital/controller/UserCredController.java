@@ -17,7 +17,7 @@ public class UserCredController {
     private UserCredService userCredService;
     @PostMapping("/adduserCred")
     public ResponseEntity<String> addUserCred(@RequestBody UserCredentialsDTO userCredentialsDTO){
-        userCredService.saveUserCred(userCredentialsDTO);
+        userCredService.addUserCredentials(userCredentialsDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("UserCredentials saved successfully");
     }
 }
