@@ -22,6 +22,7 @@ public class SupplierController {
     @PostMapping("/savesupplier")
     public ResponseEntity<ApiResponse<Supplier>> createSupplier(@RequestBody SupplierRequestDTO supplierDTO) {
         try {
+            System.out.println(supplierDTO.getSupplierName());
             Supplier createdSupplier = supplierService.saveSupplier(supplierDTO);
             ApiResponse<Supplier> response = new ApiResponse<>(
                     HttpStatus.CREATED.value(),
