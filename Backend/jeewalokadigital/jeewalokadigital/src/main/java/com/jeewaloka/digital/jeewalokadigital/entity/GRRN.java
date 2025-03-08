@@ -1,5 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,8 @@ public class GRRN {
     private LocalDate returneDate;
 
 
-    @OneToMany(mappedBy = "grrnitemList", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "grrn", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<GRRNItem> grrnItemList;
 
 
