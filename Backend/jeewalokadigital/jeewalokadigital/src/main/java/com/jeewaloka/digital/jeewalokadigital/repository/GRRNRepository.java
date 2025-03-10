@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 
 public interface GRRNRepository extends JpaRepository<GRRN, Long> {
+    // Custom query to find GRRNs by supplier name (if needed)
+   // List<GRRN> findBySupplierName(String supplierName);
 }

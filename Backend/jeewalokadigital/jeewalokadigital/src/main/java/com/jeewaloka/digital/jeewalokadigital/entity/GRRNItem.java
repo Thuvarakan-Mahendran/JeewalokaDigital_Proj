@@ -9,17 +9,19 @@ import java.time.LocalDate;
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-
 public class GRRNItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long grrnitemId;
 
+    @ManyToOne
+    @JoinColumn(name = "grrn_id")
+    private GRRN grrn;
+
     @Column(nullable = false)
     private String itemName;
-
 
     @Column(nullable = false)
     private Integer quantity;
@@ -33,8 +35,12 @@ public class GRRNItem {
     @Column(nullable = false)
     private LocalDate itemExpiryDate;
 
-
-    public void setGrn(GRRN grrn) {
-
+    // Constructor with fields excluding grrn (handled manually)
+    public GRRNItem(String itemName, Integer quantity, Double unitPrice, Double totalAmount, LocalDate itemExpiryDate) {
+        this.itemName = itemName;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.totalAmount = totalAmount;
+        this.itemExpiryDate = itemExpiryDate;
     }
 }

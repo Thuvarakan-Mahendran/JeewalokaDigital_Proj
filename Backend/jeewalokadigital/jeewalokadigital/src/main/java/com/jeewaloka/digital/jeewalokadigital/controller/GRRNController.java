@@ -4,7 +4,6 @@ import com.jeewaloka.digital.jeewalokadigital.dto.GRRNDTO;
 import com.jeewaloka.digital.jeewalokadigital.dto.ItemDTO;
 import com.jeewaloka.digital.jeewalokadigital.dto.Response.SupplierResponseDTO;
 import com.jeewaloka.digital.jeewalokadigital.service.GRRNService;
-import com.jeewaloka.digital.jeewalokadigital.service.ItemService;
 import com.jeewaloka.digital.jeewalokadigital.service.SupplierService;
 import com.jeewaloka.digital.jeewalokadigital.util.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,30 +22,38 @@ public class GRRNController {
     @Autowired
     private GRRNService grrnService;
 
-
+    // Get Supplier Info by Name
     @GetMapping("/getSupplierInfo/{supplierName}")
     public ResponseEntity<SupplierResponseDTO> getSupplierInfo(@PathVariable("supplierName") String supplierName) {
-        SupplierResponseDTO supplierResponseDTO = supplierService.getSupplierByName(supplierName);
-        return new ResponseEntity<>(supplierResponseDTO, HttpStatus.OK);
+        try {
+            SupplierResponseDTO supplierResponseDTO = supplierService.getSupplierByName(supplierName);
+            if (supplierResponseDTO == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Supplier not found
+            }
+            return new ResponseEntity<>(supplierResponseDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Handle unexpected errors
+        }
     }
 
-    // Get item by name for GRRN
+    // Get Item by Name for GRRN
     @GetMapping("/getitembyname/{itemName}")
     public ResponseEntity<ItemDTO> getItemByName(@PathVariable("itemName") String itemName) {
-        ItemDTO itemDTO = grrnService.getItemByName(itemName);
-
-        if (itemDTO == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Item not found
+        try {
+            ItemDTO itemDTO = grrnService.getItemByName(itemName);
+            if (itemDTO == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Item not found
+            }
+            return new ResponseEntity<>(itemDTO, HttpStatus.OK); // Return item if found
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Handle unexpected errors
         }
-
-        return new ResponseEntity<>(itemDTO, HttpStatus.OK); // Return item if found
     }
 
-    // POST endpoint to save GRRN and GRRNItem list
+    // POST endpoint to save GRRN with GRRNItems
     @PostMapping("/savegrrnwithitems")
     public ResponseEntity<ApiResponse<GRRNDTO>> createGRRNWithItems(@RequestBody GRRNDTO grrnDTO) {
         try {
-            // Call the service to save GRRN with items
             GRRNDTO savedGRRN = grrnService.addGRRNWithItems(grrnDTO);
             ApiResponse<GRRNDTO> response = new ApiResponse<>(
                     HttpStatus.CREATED.value(),
@@ -68,7 +75,6 @@ public class GRRNController {
     @DeleteMapping("/deletegrrn/{grrnId}")
     public ResponseEntity<ApiResponse<Void>> deleteGRRN(@PathVariable("grrnId") Long grrnId) {
         try {
-            // Call the service to delete GRRN and its items
             grrnService.deleteGRRN(grrnId);
             ApiResponse<Void> response = new ApiResponse<>(
                     HttpStatus.NO_CONTENT.value(),
@@ -96,10 +102,7 @@ public class GRRNController {
             }
             return new ResponseEntity<>(grrnDTO, HttpStatus.OK); // Return GRRNDTO if found
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Handle errors gracefully
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR); // Handle unexpected errors
         }
     }
-
-
-
 }
