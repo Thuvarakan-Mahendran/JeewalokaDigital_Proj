@@ -52,4 +52,11 @@ public class BillItemServiceImpl implements BillItemService {
         }
 //        return null;
     }
+
+    @Override
+    public List<BillItemResponseDTO> getBillItems() {
+        return billItemRepo.findAll().stream()
+                .map(billItemMapper::toBillItemDTO)
+                .toList();
+    }
 }

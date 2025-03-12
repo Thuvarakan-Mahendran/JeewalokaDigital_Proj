@@ -71,7 +71,7 @@ public class BillMapper {
         BillResponseDTO billDTO = new BillResponseDTO();
         billDTO.setBillNO(bill.getBillNO());
         billDTO.setUserID(bill.getUser() != null ? bill.getUser().getUID() : null);
-        billDTO.setRetailerID(Long.valueOf(bill.getRetailer() != null ? bill.getRetailer().getRetailerId() : null));
+        billDTO.setRetailerID(bill.getRetailer() != null ? bill.getRetailer().getRetailerId() : null);
         billDTO.setTotal(bill.getTotal());
         billDTO.setDate(bill.getDate());
         billDTO.setBillCategory(bill.getBillCategory());

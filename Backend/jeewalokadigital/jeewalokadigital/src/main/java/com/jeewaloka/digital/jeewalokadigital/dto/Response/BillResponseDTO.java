@@ -16,7 +16,7 @@ import java.util.List;
 public class BillResponseDTO{
     private Long BillNO;
     private Long userID;
-    private Long retailerID;
+    private String retailerID;
     private Float total;
     private LocalDate date;
     private BillCategory billCategory;

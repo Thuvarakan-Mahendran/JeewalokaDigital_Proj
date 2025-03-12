@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ResponseRetailerDTO {
+    private String RetailerId;
     private String RetailerName;
     private String RetailerContactNo;
     private String RetailerAddress;

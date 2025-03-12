@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { KeyIcon, KeyRound, Pencil, Trash2 } from 'lucide-react';
 import { getUsers, saveUser, editsUser, deleteUser } from "../../api/UserService";
+import { saveUserCred } from "../../api/UserCredService"
 
 const Users = () => {
     const [users, setUsers] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [isEditing, setIsEditing] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
+    const [isUserCred, setIsUserCred] = useState(false);
+    const [userCred, setUserCred] = useState(null)
 
     useEffect(() => {
         fetchUsers();
@@ -14,8 +17,9 @@ const Users = () => {
 
     const fetchUsers = async () => {
         try {
-            const data = await getUsers();
-            setUsers(data || []);
+            const response = await getUsers();
+            setUsers(Array.isArray(response) ? response : response?.data || []);
+            console.log(response)
         } catch (error) {
             console.error("Error fetching users:", error);
             setUsers([]);
@@ -27,7 +31,7 @@ const Users = () => {
             try {
                 await deleteUser(uid);
                 setUsers((prevUsers) =>
-                    prevUsers.filter((user) => user.UID !== uid)
+                    prevUsers.filter((user) => user.uid !== uid)
                 );
             } catch (error) {
                 console.error("Error deleting user:", error);
@@ -37,7 +41,7 @@ const Users = () => {
 
     const handleEdit = (user) => {
         setIsEditing(true);
-        setEditingUser(user);
+        setEditingUser({ ...user });
     };
 
     const handleUpdate = async (e) => {
@@ -46,7 +50,7 @@ const Users = () => {
             await editsUser(editingUser);
             setUsers((prevUsers) =>
                 prevUsers.map((user) =>
-                    user.UID === editingUser.UID ? editingUser : user
+                    user.uid === editingUser.uid ? editingUser : user
                 )
             );
             setIsEditing(false);
@@ -56,9 +60,10 @@ const Users = () => {
         }
     };
 
-    const handleSave = async (newUser) => {
+    const handleSave = async (e) => {
+        e.preventDefault()
         try {
-            const savedUser = await saveUser(newUser);
+            const savedUser = await saveUser(editingUser);
             setUsers((prevUsers) => [...prevUsers, savedUser]);
             setIsEditing(false);
             setEditingUser(null);
@@ -67,8 +72,31 @@ const Users = () => {
         }
     };
 
+    const handleCredForm = (user) => {
+        console.log("user id is: " + user.uid)
+        setUserCred({
+            username: '',
+            password: '',
+            usermark: user.uid
+        })
+        setIsUserCred(true);
+    }
+
+    const handleCredSave = async (e) => {
+        e.preventDefault();
+        try {
+            await saveUserCred(userCred)
+            alert("Credentials created successfully")
+            setIsUserCred(false);
+            setUserCred({ username: '', password: '', usermark: '' });
+        } catch (error) {
+            console.error("Error saving credentials:", error);
+            alert("failed to create credentials")
+        }
+    }
+
     const filteredUsers = users.filter(user =>
-        user.UName.toLowerCase().includes(searchTerm.toLowerCase())
+        user.uname.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -88,11 +116,12 @@ const Users = () => {
                         onClick={() => {
                             setIsEditing(true);
                             setEditingUser({
-                                UName: '',
-                                UContact: '',
-                                UEmail: '',
-                                UStatus: '',
-                                URole: ''
+                                uid: '',
+                                uname: '',
+                                role: '',
+                                contact: '',
+                                email: '',
+                                status: ''
                             });
                         }}
                     >
@@ -105,16 +134,16 @@ const Users = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg w-96">
                         <h2 className="text-xl font-bold mb-4">
-                            {editingUser.UID ? 'Edit User' : 'Add New User'}
+                            {editingUser.uid ? 'Edit User' : 'Add New User'}
                         </h2>
-                        <form onSubmit={handleSave}>
+                        <form onSubmit={editingUser.uid ? handleUpdate : handleSave}>
                             <div className="mb-4">
                                 <label className="block mb-2">Name</label>
                                 <input
                                     type="text"
                                     className="w-full px-3 py-2 border rounded"
-                                    value={editingUser.UName}
-                                    onChange={(e) => setEditingUser({ ...editingUser, UName: e.target.value })}
+                                    value={editingUser.uname}
+                                    onChange={(e) => setEditingUser({ ...editingUser, uname: e.target.value })}
                                 />
                             </div>
                             <div className="mb-4">
@@ -122,8 +151,8 @@ const Users = () => {
                                 <input
                                     type="text"
                                     className="w-full px-3 py-2 border rounded"
-                                    value={editingUser.UContact}
-                                    onChange={(e) => setEditingUser({ ...editingUser, UContact: e.target.value })}
+                                    value={editingUser.contact}
+                                    onChange={(e) => setEditingUser({ ...editingUser, contact: e.target.value })}
                                 />
                             </div>
                             <div className="mb-4">
@@ -131,8 +160,8 @@ const Users = () => {
                                 <input
                                     type="email"
                                     className="w-full px-3 py-2 border rounded"
-                                    value={editingUser.UEmail}
-                                    onChange={(e) => setEditingUser({ ...editingUser, UEmail: e.target.value })}
+                                    value={editingUser.email}
+                                    onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
                                 />
                             </div>
                             <div className="mb-4">
@@ -140,8 +169,8 @@ const Users = () => {
                                 <input
                                     type="text"
                                     className="w-full px-3 py-2 border rounded"
-                                    value={editingUser.URole}
-                                    onChange={(e) => setEditingUser({ ...editingUser, URole: e.target.value })}
+                                    value={editingUser.role}
+                                    onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
                                 />
                             </div>
                             <div className="flex justify-end gap-2">
@@ -156,17 +185,65 @@ const Users = () => {
                                     Cancel
                                 </button>
                                 <button
-                                    type="button"
+                                    type="submit"
                                     className="px-4 py-2 bg-blue-600 text-white rounded"
+                                // onClick={() => {
+                                //     if (editingUser.uid) {
+                                //         handleUpdate();
+                                //     } else {
+                                //         handleSave(editingUser);
+                                //     }
+                                // }}
+                                >
+                                    {editingUser.uid ? 'Save Changes' : 'Add User'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {isUserCred && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                        <h2 className="text-xl font-bold mb-4">
+                            Add User Credentials
+                        </h2>
+                        <form onSubmit={handleCredSave}>
+                            <div className="mb-4">
+                                <label className="block mb-2">UserName</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border rounded"
+                                    value={userCred.username}
+                                    onChange={(e) => setUserCred({ ...userCred, username: e.target.value })}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label className="block mb-2">Password</label>
+                                <input
+                                    type="password"
+                                    className="w-full px-3 py-2 border rounded"
+                                    value={userCred.password}
+                                    onChange={(e) => setUserCred({ ...userCred, password: e.target.value })}
+                                />
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <button
+                                    type="button"
+                                    className="px-4 py-2 border rounded"
                                     onClick={() => {
-                                        if (editingUser.UID) {
-                                            handleUpdate();
-                                        } else {
-                                            handleSave(editingUser);
-                                        }
+                                        setIsUserCred(false);
+                                        setUserCred({ username: '', password: '', usermark: '' });
                                     }}
                                 >
-                                    {editingUser.UID ? 'Save Changes' : 'Add User'}
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded"
+                                >
+                                    Add UserCred
                                 </button>
                             </div>
                         </form>
@@ -189,12 +266,13 @@ const Users = () => {
                     </thead>
                     <tbody>
                         {filteredUsers.map((user) => (
-                            <tr key={user.UID} className="border-b hover:bg-gray-50">
-                                <td className="px-6 py-4">{user.UID}</td>
-                                <td className="px-6 py-4">{user.UName}</td>
-                                <td className="px-6 py-4">{user.UContact}</td>
-                                <td className="px-6 py-4">{user.UEmail}</td>
-                                <td className="px-6 py-4">{user.UStatus}</td>
+                            <tr key={user.uname} className="border-b hover:bg-gray-50">
+                                <td className="px-6 py-4">{user.uid}</td>
+                                <td className="px-6 py-4">{user.uname}</td>
+                                <td className="px-6 py-4">{user.role}</td>
+                                <td className="px-6 py-4">{user.contact}</td>
+                                <td className="px-6 py-4">{user.email}</td>
+                                <td className="px-6 py-4">active</td>
                                 <td className="px-6 py-4">
                                     <div className="flex gap-2">
                                         <button
@@ -204,7 +282,13 @@ const Users = () => {
                                             <Pencil className="w-5 h-5 text-blue-600" />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(user.UID)}
+                                            onClick={() => handleCredForm(user)}
+                                            className="p-1 hover:bg-gray-100 rounded"
+                                        >
+                                            <KeyRound className='w-5 h-5 text-green-600' />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(user.uid)}
                                             className="p-1 hover:bg-gray-100 rounded"
                                         >
                                             <Trash2 className="w-5 h-5 text-red-600" />

@@ -27,8 +27,7 @@ public class User {
     private UserRole role;
     @Column(name = "LastLogin")
     private LocalDate lastLogin;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "UserCred", referencedColumnName = "UserCredID")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserCredentials userCredentials;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

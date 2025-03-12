@@ -3,8 +3,9 @@ import { NumericFormat } from 'react-number-format'
 import { useRef } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import { jwtDecode } from 'jwt-decode'
 import {
-    getRetailers,
+    getSellers,
     // saveRetailer,
     // editRetailer,
     // deleteRetailer,
@@ -18,6 +19,9 @@ import {
 import {
     saveBill
 } from "../../api/InvoiceService"
+import {
+    getUserID
+} from "../../api/UserCredService"
 
 
 const Input = ({ className = '', ...props }) => (
@@ -82,8 +86,9 @@ const InvoiceGenerator = () => {
     })
 
     useEffect(() => {
-        fetchReatilers();
-        fetchItems();
+        fetchReatilers()
+        fetchItems()
+        setUserLoggedIn()
     }, []);
 
     const fetchItems = async () => {
@@ -98,14 +103,34 @@ const InvoiceGenerator = () => {
 
     const fetchReatilers = async () => {
         try {
-            const response = await getRetailers();
+            const response = await getSellers();
             setRetailers(Array.isArray(response) ? response : response?.data || []);
-            // console.log(response)
+            console.log(response)
         } catch (error) {
             console.error("Error fetching Retailers:", error);
             setRetailers([]);
         }
     }
+
+    const getUserName = () => {
+        const token = localStorage.getItem("accessToken"); //should match the key used when storing the token -> localStorage.setItem("token", receivedJwtToken);
+        if (token) {
+            const decoded = jwtDecode(token)
+            return decoded.username;
+        }
+        return ""
+    }
+
+    const setUserLoggedIn = async () => {
+        console.log("useEffect started")
+        // const loggedInUserName = getUserName();
+        // const loggedInUserID = await getUserID(loggedInUserName)
+        console.log("in useEffect and going to store value for user in invoice data")
+        setInvoiceData((prevData) => ({
+            ...prevData,
+            user: 3 //loggedInUserID, // Set the logged-in user id
+        }));
+    };
 
     const handleDownloadPDF = async () => {
         if (contentRef.current == null) {
@@ -157,18 +182,21 @@ const InvoiceGenerator = () => {
     const handleItemChange = (e) => {
         const { name, value } = e.target
         const selectedItem = items ? items.find(item => item.itemName == value) : null
+        // console.log(selectedItem.itemCode)
         setCurrentItem(prev => ({
             ...prev,
             [name]: value,
-            id: selectedItem && name === 'name' ? selectedItem.itemCode : prev.itemCode,
+            id: selectedItem && name === 'name' ? selectedItem.itemCode : prev.id,
             amount: name === 'qty' || name === 'unitPrice'
                 ? (name === 'qty' ? value : prev.qty) * (name === 'unitPrice' ? value : prev.unitPrice)
                 : prev.amount
         }))
+        // console.log(currentItem.id)
     }
 
     const addItem = () => {
         if (currentItem.name && currentItem.qty && currentItem.unitPrice) {
+            // console.log("current item: " + currentItem.amount + " " + currentItem.id)
             setInvoiceData(prev => ({
                 ...prev,
                 items: [...prev.items, currentItem],
@@ -199,15 +227,17 @@ const InvoiceGenerator = () => {
         })
     }
 
-    const handleItemSubmit = async () => {
+    const handleItemSubmit = () => {
+        // console.log("entered Item submit")
+        // console.log(invoiceData.items)
         const billItems = invoiceData.items.map((billItem) => ({
-            item: Number(billItem.id),
+            item: billItem.id,
             totalvalue: parseFloat(billItem.amount),
             quantity: parseInt(billItem.qty)
         }))
         console.log(billItems)
         try {
-            const response = await saveBillItem(billItems)
+            const response = saveBillItem(billItems)
             console.log("BillItems saved successfully" + response)
         }
         catch (error) {
@@ -219,10 +249,10 @@ const InvoiceGenerator = () => {
         e.preventDefault()
 
         try {
-            const savedBillItems = await handleItemSubmit()
+            const savedBillItems = handleItemSubmit()
             const billData = {
-                // userID: invoiceData.user,
-                retailerID: Number(invoiceData.retailer),
+                userID: invoiceData.user,
+                retailerID: invoiceData.retailer,
                 billCategory: invoiceData.paymentType,
                 total: parseFloat(invoiceData.total),
                 billItemIDS: invoiceData.items.map(item => Number(item.id)),

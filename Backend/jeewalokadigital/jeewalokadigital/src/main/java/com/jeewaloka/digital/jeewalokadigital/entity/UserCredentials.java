@@ -1,6 +1,5 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,13 +10,24 @@ public class UserCredentials {
     @Column(unique = true)
     private String username;    //This is credential to login into application
     private String password;
-    @OneToOne(mappedBy = "userCredentials", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userID", referencedColumnName = "userId")
     private User user;
     public UserCredentials() {
     }
-    public UserCredentials(String username, String password) {
+
+    public UserCredentials(String username, String password, User user) {
         this.username = username;
         this.password = password;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Long getUserCredID() {

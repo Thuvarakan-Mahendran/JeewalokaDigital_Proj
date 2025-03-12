@@ -12,4 +12,6 @@ public interface BillItemService {
     void deleteBillItem(Long id);
 
     void addBillItems(List<BillItemRequestDTO> billItemRequestDTOList);
+
+    List<BillItemResponseDTO> getBillItems();
 }

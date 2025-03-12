@@ -53,7 +53,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
             .csrf(csrf -> csrf.disable())  // Updated CSRF configuration
 //            .authorizeHttpRequests(auth -> auth
 //                    .requestMatchers(HttpMethod.POST,"/api/auth/login", "/api/auth/refresh-token").permitAll()  // Whitelist auth endpoints
-//                    .anyRequest().authenticated()                 // Secure all other endpoints
+//                            .requestMatchers(HttpMethod.GET,"/api/auth/**").hasAuthority("CASHIER")
+////                    .anyRequest().authenticated()                 // Secure all other endpoints
 //            )
             .sessionManagement(session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // No sessions

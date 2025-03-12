@@ -27,14 +27,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<UserResponseDTO> addUsers(List<UserResquestDTO> userDTOS) {
-        List<User> usersToSave = userDTOS.stream()
-                .map(userMapper::toUser)
-                .toList();
-        List<User> savedUsers = userRepository.saveAll(usersToSave);
-        return savedUsers.stream()
-                .map(userMapper::toDTO)
-                .toList();
+    public UserResponseDTO addUser(UserResquestDTO userDTO) {
+        User userToSave = userMapper.toUser(userDTO);
+        User savedUser = userRepository.save(userToSave);
+        return userMapper.toDTO(savedUser);
     }
 
 

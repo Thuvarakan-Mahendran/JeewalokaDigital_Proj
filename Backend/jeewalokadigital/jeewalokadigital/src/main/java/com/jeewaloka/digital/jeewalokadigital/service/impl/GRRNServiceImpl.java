@@ -88,7 +88,7 @@ public class GRRNServiceImpl implements GRRNService {
                 .orElseThrow(() -> new RuntimeException("GRRN not found"));
 
         // Delete associated GRRNItems
-        grrnItemRepository.deleteAll(grrn.getGrrnItemList()); // Delete all related items
+//        grrnItemRepository.deleteAll(grrn.getGrrnItemList()); // Delete all related items
 
         // Delete the GRRN entity itself
         grrnRepository.delete(grrn);

@@ -1,12 +1,11 @@
 package com.jeewaloka.digital.jeewalokadigital.controller;
 
-import com.jeewaloka.digital.jeewalokadigital.dto.UserCredentialsDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.UserCredentialsRequestDTO;
 import com.jeewaloka.digital.jeewalokadigital.entity.UserCredentials;
 import com.jeewaloka.digital.jeewalokadigital.service.RefreshTokenRedisService;
 import com.jeewaloka.digital.jeewalokadigital.service.Security.JwtService;
 import com.jeewaloka.digital.jeewalokadigital.service.Security.UserDetailsServiceImpl;
 import com.jeewaloka.digital.jeewalokadigital.service.UserCredService;
-import com.jeewaloka.digital.jeewalokadigital.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
@@ -74,7 +73,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody UserCredentialsDTO userCredentialsDTO, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<String> authenticate(@RequestBody UserCredentialsRequestDTO userCredentialsDTO, HttpServletRequest httpServletRequest) {
         UserCredentials userCredentials = modelMapper.map(userCredentialsDTO,UserCredentials.class);
 
         String token = null;
@@ -135,14 +134,14 @@ public class AuthenticationController {
     }
 
     @GetMapping("/usercred/{id}")
-    public ResponseEntity<UserCredentialsDTO> getUserCredentials(@PathVariable Long id){
-        UserCredentialsDTO userCredentialsDTO = modelMapper.map(userCredService.findById(id),UserCredentialsDTO.class);
-        ResponseEntity<UserCredentialsDTO> responseEntity = new ResponseEntity<>(userCredentialsDTO,HttpStatus.OK);
+    public ResponseEntity<UserCredentialsRequestDTO> getUserCredentials(@PathVariable Long id){
+        UserCredentialsRequestDTO userCredentialsDTO = modelMapper.map(userCredService.findById(id), UserCredentialsRequestDTO.class);
+        ResponseEntity<UserCredentialsRequestDTO> responseEntity = new ResponseEntity<>(userCredentialsDTO,HttpStatus.OK);
         return responseEntity;
     }
 
     @PostMapping("/createuser")
-    public String addUserCredentials(@RequestBody UserCredentialsDTO userCredentialsDTO){
+    public String addUserCredentials(@RequestBody UserCredentialsRequestDTO userCredentialsDTO){
         userCredService.addUserCredentials(userCredentialsDTO);
         return "user has been created successfully";
     }

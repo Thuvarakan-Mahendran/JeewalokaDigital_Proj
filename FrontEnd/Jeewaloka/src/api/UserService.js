@@ -6,12 +6,12 @@ export const getUsers = async () => {
 };
 
 export const saveUser = async (user) => {
-    const response = await axios.post("users/saveUser", user);
+    const response = await axios.post("users/adduser", user);
     return response.data;
 };
 
 export const editsUser = async (user) => {
-    const response = await axios.put(`users/updateUser/${user.UID}`, user);
+    const response = await axios.put(`users/updateUser/${user.uid}`, user);
     return response.data;
 };
 

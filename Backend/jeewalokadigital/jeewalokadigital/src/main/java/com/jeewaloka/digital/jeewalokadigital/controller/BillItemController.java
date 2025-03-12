@@ -38,4 +38,11 @@ public class BillItemController {
     public void deleteBillItem(@PathVariable Long id){
         billItemService.deleteBillItem(id);
     }
+
+    @GetMapping("/getBillItems")
+    public ResponseEntity<List<BillItemResponseDTO>> getBillItems(){
+        List<BillItemResponseDTO> billItemResponseDTOS = billItemService.getBillItems();
+        ResponseEntity<List<BillItemResponseDTO>> responseEntity = new ResponseEntity<>(billItemResponseDTOS,HttpStatus.OK);
+        return responseEntity;
+    }
 }

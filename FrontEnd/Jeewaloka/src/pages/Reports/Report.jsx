@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-export default function ReportsPage() {
+function Report() {
   const [reportType, setReportType] = useState("");
 
   const [secondReportType, setSecondReportType] = useState("");
-  
+
   // Sample data fetching simulation (Replace with actual database fetch logic)
   const cashSale = "0";
   const creditSale = "0";
@@ -16,9 +16,9 @@ export default function ReportsPage() {
       <h1 className="text-xl font-semibold">Reports</h1>
       <div className="mt-4 p-6 w-full max-w-2xl border rounded-lg shadow-sm">
         <div className="flex space-x-4 mb-4">
-          <select 
-            className="border p-2 rounded w-64" 
-            value={reportType} 
+          <select
+            className="border p-2 rounded w-64"
+            value={reportType}
             onChange={(e) => setReportType(e.target.value)}
           >
             <option value="">Report type</option>
@@ -26,9 +26,9 @@ export default function ReportsPage() {
             <option value="inventory">Inventory Report</option>
             <option value="finance">Financial Report</option>
           </select>
-          <select 
-            className="border p-2 rounded w-64" 
-            value={secondReportType} 
+          <select
+            className="border p-2 rounded w-64"
+            value={secondReportType}
             onChange={(e) => setSecondReportType(e.target.value)}
           >
             <option value="">Report Duration</option>

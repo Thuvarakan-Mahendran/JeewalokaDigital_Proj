@@ -1,6 +1,5 @@
 package com.jeewaloka.digital.jeewalokadigital.entity.bill;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import com.jeewaloka.digital.jeewalokadigital.entity.User;
 import com.jeewaloka.digital.jeewalokadigital.enums.BillCategory;
