@@ -2,6 +2,8 @@ package com.jeewaloka.digital.jeewalokadigital.dto.Response;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Setter
@@ -13,4 +15,5 @@ public class GRNResponseDTO {
     private String grnSupplierName;
     private String grnStatus;
     private List<GRNItemResponseDTO> grnItems;
+    private MultipartFile grnAttachment;
 }
