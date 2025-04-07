@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { getSessions, revokeAllSessions, revokeSession } from "../../api/AuthService";
 import { AuthContext } from '../../Context/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,9 +18,11 @@ const DashboardPage = () => {
   const { user, logout } = useContext(AuthContext);
   const { isConnected, onlineUsers } = useWebSocket();
 
-  const isOnline = isConnected && onlineUsers.has(user.username);
-  const statusText = isConnected ? (isOnline ? 'Online' : 'Offline') : 'Connecting...';
-  const statusColor = isConnected ? (isOnline ? 'green' : 'grey') : 'orange';
+  // const isOnline = isConnected && onlineUsers.has(user.username);
+  // const statusText = isConnected ? (isOnline ? 'Online' : 'Offline') : 'Connecting...';
+  // const statusColor = isConnected ? (isOnline ? 'green' : 'grey') : 'orange';
+
+  const onlineUserArray = useMemo(() => Array.from(onlineUsers), [onlineUsers]);
 
   // Function to fetch all active sessions.
   const fetchSessions = async () => {
@@ -72,8 +74,8 @@ const DashboardPage = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Active Sessions</h1>
+    <div className='p-5'>
+      <h1 className="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2">Active Sessions</h1>
 
       {loading ? (
         <p>Loading sessions...</p>
@@ -85,15 +87,6 @@ const DashboardPage = () => {
         sessions.map((session, index) => (
           <div
             key={index}
-            // style={{
-            //   display: 'flex',
-            //   border: '1px solid #ccc',
-            //   borderRadius: '8px',
-            //   padding: '10px',
-            //   marginBottom: '10px',
-            //   backgroundColor: '#f9f9f9',
-            //   justifyContent: 'space-between'
-            // }}
             className='border border-gray-300 rounded-lg p-3 m-3 bg-gray-100 flex justify-between items-center'
           >
             <div>
@@ -117,25 +110,42 @@ const DashboardPage = () => {
       <button
         onClick={handleRevokeAllSessions}
         disabled={revokeLoading}
-        style={{
-          padding: '10px 20px',
-          fontSize: '16px',
-          backgroundColor: '#ff4d4f',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer'
-        }}
+        className='py-2.5 px-5 text-base bg-red-600 text-white rounded-lg cursor-pointer'
       >
         {revokeLoading ? 'Revoking...' : 'Revoke All Sessions'}
       </button>
-      {/* <div>
-        <h1>Online users</h1>
-        <HeartbeatComponent />
-      </div> */}
-      <span style={{ color: statusColor, fontWeight: 'bold' }}>
+      <br />
+      <br />
+      {/* <span style={{ color: statusColor, fontWeight: 'bold' }}>
         ({statusText})
-      </span>
+      </span> */}
+      {/* <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '15px', borderRadius: '5px' }}> */}
+      <h2 className="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2">Online Users ({isConnected ? onlineUserArray.length : '...'})</h2>
+      <div className='border border-gray-300 rounded-lg p-3 m-3 bg-gray-100'>
+        {!isConnected ? (
+          <p>Connecting to presence service...</p>
+        ) : onlineUserArray.length === 0 ? (
+          <p>No other users are currently online.</p>
+        ) : (
+          <ul className='list-none'>
+            {onlineUserArray.map((username) => (
+              <li
+                key={username} // Use the unique username as the key
+                className='py-4 border-b border-gray-200 flex items-center'
+              >
+                <span
+                  className='inline-block w-2.5 h-2.5 rounded-full bg-green-500 mr-2.5'
+                ></span>
+                {username}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <br></br>
+      <div>
+        <h1 className="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2">Notifications</h1>
+      </div>
     </div >
   );
 };

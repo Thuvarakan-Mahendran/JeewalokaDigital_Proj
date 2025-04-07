@@ -11,7 +11,7 @@ import LoginPage from "../pages/Login/LoginForm";
 import Invoices from "../pages/Invoices/Invoices";
 import InvoiceGenerator from "../pages/Invoices/InvoiceGenerator";
 import Users from "../pages/User/Users";
-import ReportsPage from "../pages/Reports/Report";
+import Report from "../pages/Reports/Report";
 import DashboardPage from "../pages/DashboardPage/DashboardForm";
 
 
@@ -57,7 +57,7 @@ const AppRoutes = () => {
           <Route path="unauthorized" element={<h1>Unauthorized</h1>} />
 
 
-          <Route path="Reports/ReportsPage" element={<ReportsPage />} />
+          <Route path="Reports/ReportsPage" element={<Report />} />
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/invoices/createInvoice" element={<InvoiceGenerator />} />
           {/* <Route path="users" element={<Users />} /> */}
