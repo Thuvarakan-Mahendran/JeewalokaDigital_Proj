@@ -54,4 +54,7 @@ public class GRN {
     @OneToMany(mappedBy = "grn", cascade = CascadeType.ALL)
     private List<GRNItem> grnItems = new ArrayList<>();
 
+    @Lob // Store file as binary data
+    private byte[] grnAttachment;
+
 }

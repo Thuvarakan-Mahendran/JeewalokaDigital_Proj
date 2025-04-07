@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -22,16 +24,36 @@ public class GRNController {
     private GRNService grnService;
 
     // Create a new GRN
+
+
     @PostMapping("/creategrn")
     public ResponseEntity<ApiResponse<GRN>> createGRN(@RequestBody GRNRequestDTO grnDTO) {
         try {
-            GRN createdGRN = grnService.createGRN(grnDTO);
+            // Decode Base64 string(s) into byte[]
+            List<byte[]> decodedAttachments = new ArrayList<>();
+            if (grnDTO.getGrnAttachment() != null) {
+                for (String base64File : grnDTO.getGrnAttachment()) {
+                    byte[] fileBytes = Base64.getDecoder().decode(base64File);
+                    decodedAttachments.add(fileBytes);
+                }
+            }
+
+            // Convert GRNRequestDTO to GRN Entity (assuming GRN entity supports binary storage)
+            GRN createdGRN = grnService.createGRN(grnDTO, decodedAttachments);
+
             ApiResponse<GRN> response = new ApiResponse<>(
                     HttpStatus.CREATED.value(),
                     "GRN created successfully.",
                     null
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (IllegalArgumentException e) {
+            ApiResponse<GRN> errorResponse = new ApiResponse<>(
+                    HttpStatus.BAD_REQUEST.value(),
+                    "Invalid base64 file format: " + e.getMessage(),
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
             ApiResponse<GRN> errorResponse = new ApiResponse<>(
                     HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -41,6 +63,7 @@ public class GRNController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
 
     // Get a GRN by ID
     @GetMapping("getgrn/{id}")
