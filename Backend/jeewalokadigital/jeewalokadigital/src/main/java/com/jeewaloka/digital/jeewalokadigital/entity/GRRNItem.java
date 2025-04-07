@@ -36,11 +36,11 @@ public class GRRNItem {
     private LocalDate itemExpiryDate;
 
     // Constructor with fields excluding grrn (handled manually)
-    public GRRNItem(String itemName, Integer quantity, Double unitPrice, Double totalAmount, LocalDate itemExpiryDate) {
-        this.itemName = itemName;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.totalAmount = totalAmount;
-        this.itemExpiryDate = itemExpiryDate;
-    }
+//    public GRRNItem(String itemName, Integer quantity, Double unitPrice, Double totalAmount, LocalDate itemExpiryDate) {
+//        this.itemName = itemName;
+//        this.quantity = quantity;
+//        this.unitPrice = unitPrice;
+//        this.totalAmount = totalAmount;
+//        this.itemExpiryDate = itemExpiryDate;
+//    }
 }
