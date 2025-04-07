@@ -56,4 +56,4 @@ export default function ReportsPage() {
   )
 }
 
-export default Report
+

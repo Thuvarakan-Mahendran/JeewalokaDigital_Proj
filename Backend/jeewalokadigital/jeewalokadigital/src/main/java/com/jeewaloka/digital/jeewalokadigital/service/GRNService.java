@@ -16,6 +16,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class GRNService {
     private ItemRepository itemRepository;  // Add ItemRepository to fetch Items
 
     @Transactional
-    public GRN createGRN(GRNRequestDTO grnDTO) {
+    public GRN createGRN(GRNRequestDTO grnDTO, List<byte[]> decodedAttachments) throws IOException {
         Supplier supplier = supplierRepository.findById(grnDTO.getGrnSupplierId())
                 .orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
 
@@ -42,6 +43,9 @@ public class GRNService {
         grn.setGrnReceivedBy(grnDTO.getGrnReceivedBy());
         grn.setGrnSupplier(supplier);
         grn.setGrnStatus(grnDTO.getGrnStatus());
+        if (grnDTO.getGrnAttachment() != null) {
+            grn.setGrnAttachment(grn.getGrnAttachment());
+        }
         grn.setGrnItems(new ArrayList<>());
 
         double totalAmount = 0.0; // Initialize total amount
@@ -59,7 +63,6 @@ public class GRNService {
             grnItem.setTotalAmount(itemTotal);
 
             grnItem.setItemExpiryDate(grnItemDTO.getItemExpiryDate());
-            grnItem.setItemManufactureDate(grnItemDTO.getItemManufactureDate());
             grnItem.setItem(item);
             grnItem.setGrn(grn);
 
@@ -155,7 +158,7 @@ public class GRNService {
             grnItem.setTotalAmount(itemTotal);
 
             grnItem.setItemExpiryDate(grnItemDTO.getItemExpiryDate());
-            grnItem.setItemManufactureDate(grnItemDTO.getItemManufactureDate());
+
             grnItem.setItem(item);
             grnItem.setGrn(existingGRN);
 
