@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ReportsPage() {
+function Report() {
   const [reportType, setReportType] = useState("");
 
   const [secondReportType, setSecondReportType] = useState("");
