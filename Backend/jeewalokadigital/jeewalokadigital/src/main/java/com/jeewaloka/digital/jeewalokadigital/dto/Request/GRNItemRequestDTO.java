@@ -9,5 +9,5 @@ public class GRNItemRequestDTO {
     private Integer quantity;
     private Double unitPrice;
     private LocalDate itemExpiryDate;
-    private LocalDate itemManufactureDate;
+
 }
