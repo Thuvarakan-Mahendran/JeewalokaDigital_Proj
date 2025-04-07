@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/grns")
-@CrossOrigin
+//@CrossOrigin
 
 public class GRNController {
 

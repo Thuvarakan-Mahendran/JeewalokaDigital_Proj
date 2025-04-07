@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -17,7 +16,6 @@ public class BillRequestDTO {
     private Long userID;
     private String retailerID;
     private Float total;
-    private LocalDate date;
     private BillCategory billCategory;
-    private List<Long> billItemIDS;
+    private List<BillItemRequestDTO> billItems;
 }

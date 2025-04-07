@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/purchaseorder")
-@CrossOrigin
+//@CrossOrigin
 
 public class PurchaseOrderController {
 

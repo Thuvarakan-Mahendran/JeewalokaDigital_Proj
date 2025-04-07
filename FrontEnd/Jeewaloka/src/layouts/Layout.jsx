@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { Link, Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,19 +9,37 @@ import {
   faWarehouse,
   faDollarSign,
   faChevronDown,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import Logo from "../pages/Login/logo.jpg"
+import Logo from "../pages/Login/logo.png";
+import { AuthContext } from "../Context/AuthContext";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isInventoryDropdownOpen, setIsInventoryDropdownOpen] = useState(false);
   const [isSalesDropdownOpen, setIsSalesDropdownOpen] = useState(false);
+  const { logout, user } = useContext(AuthContext);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [])
 
   return (
     <>
       <nav className="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-        <div className="px-3 py-3 lg:px-5 lg:pl-3">
+        <div className="px-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center justify-start rtl:justify-end">
               {/* Sidebar Toggle Button */}
@@ -34,21 +52,19 @@ const Dashboard = () => {
                 <FontAwesomeIcon icon={faBars} className="w-6 h-6" />
               </button>
               {/* Logo */}
-              
-                <img
-                  src={Logo}
-                  alt="Flowbite"
-                  className="w-8 h-8"
-                />
-              <a href="https://flowbite.com" className="flex ms-2 md:me-24">
-                <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                  Jeewaloka Distribution System
-                </span>
-              </a>
+
+              <img
+                src={Logo}
+                alt="Flowbite"
+                className="w-16 h-16"
+              />
+              <span className="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
+                Jeewaloka Distribution System
+              </span>
             </div>
             <div className="flex items-center">
               {/* User Menu */}
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   type="button"
@@ -72,11 +88,11 @@ const Dashboard = () => {
                         alt="user photo"
                       />
                       <p className="text-sm text-gray-900 dark:text-white">
-                        Neil Sims
+                        Welcome! <strong>{user.username}</strong>
                       </p>
-                      <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300">
+                      {/* <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300">
                         neil.sims@flowbite.com
-                      </p>
+                      </p> */}
                     </div>
                     <ul className="py-1">
                       <li>
@@ -90,8 +106,9 @@ const Dashboard = () => {
 
                       <li>
                         <Link
-                          to="/login"
+                          // to="/login"
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                          onClick={logout}
                         >
                           Sign out
                         </Link>
@@ -107,14 +124,13 @@ const Dashboard = () => {
 
       <aside
         id="logo-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+        <div className="h-full px-3 pb-4 mt-8 overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-semibold">
-            <li>
+            {/* <li>
               <Link
                 to="dashboardform"
                 className="flex items-center p-2 text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
@@ -125,7 +141,7 @@ const Dashboard = () => {
                 />
                 <span className="ms-3">Dashboard</span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 to="users"
@@ -157,9 +173,8 @@ const Dashboard = () => {
 
                 <FontAwesomeIcon
                   icon={faChevronDown}
-                  className={`w-3 h-3 transition-transform ${
-                    isInventoryDropdownOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-3 h-3 transition-transform ${isInventoryDropdownOpen ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -223,9 +238,8 @@ const Dashboard = () => {
                 </div>
                 <FontAwesomeIcon
                   icon={faChevronDown}
-                  className={`w-3 h-3 transition-transform ${
-                    isSalesDropdownOpen ? "rotate-180" : ""
-                  }`}
+                  className={`w-3 h-3 transition-transform ${isSalesDropdownOpen ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -261,7 +275,9 @@ const Dashboard = () => {
             </li>
             <li>
               <Link
+
                 to="Reports/ReportsPage"
+
                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
                 <FontAwesomeIcon
@@ -275,7 +291,7 @@ const Dashboard = () => {
         </div>
       </aside>
 
-      <div className="p-4 sm:ml-64 mt-12">
+      <div className="p-4 sm:ml-64 mt-16">
         <Outlet />
       </div>
     </>

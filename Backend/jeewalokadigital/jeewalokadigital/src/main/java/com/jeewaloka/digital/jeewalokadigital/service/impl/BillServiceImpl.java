@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BillServiceImpl implements BillService {
@@ -32,6 +33,11 @@ public class BillServiceImpl implements BillService {
         return billRepository.findAll().stream()
                 .map(billMapper::toBillDTO)
                 .toList();
+    }
+
+    @Override
+    public void deleteBill(Long id) {
+        billRepository.deleteById(id);
     }
 }
 

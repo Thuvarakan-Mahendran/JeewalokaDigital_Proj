@@ -9,4 +9,6 @@ import java.util.List;
 public interface BillService {
     BillResponseDTO addBill(BillRequestDTO billDTO);
     List<BillResponseDTO> findAllBills();
+
+    void deleteBill(Long id);
 }

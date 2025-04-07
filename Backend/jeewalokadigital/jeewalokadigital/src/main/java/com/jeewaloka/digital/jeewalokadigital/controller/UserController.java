@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+//@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -27,9 +28,9 @@ public class UserController {
         userService.deleteByUserID(userid);
     }
 
-    @PostMapping("/adduser-list") //this is for the add user design where if there is lots of users to be added
-    public ResponseEntity<List<UserResponseDTO>> addUsers(@RequestBody List<UserResquestDTO> userDTOS){
-        ResponseEntity<List<UserResponseDTO>> responseEntity = new ResponseEntity<>(userService.addUsers(userDTOS), HttpStatus.CREATED);
+    @PostMapping("/adduser") //this is for the add user design where if there is lots of users to be added
+    public ResponseEntity<UserResponseDTO> addUsers(@RequestBody UserResquestDTO userDTO){
+        ResponseEntity<UserResponseDTO> responseEntity = new ResponseEntity<>(userService.addUser(userDTO), HttpStatus.CREATED);
         return responseEntity;
     }
 

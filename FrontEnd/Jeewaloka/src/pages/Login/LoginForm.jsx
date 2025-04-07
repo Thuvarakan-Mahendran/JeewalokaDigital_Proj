@@ -1,55 +1,64 @@
-import { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import './LoginForm.css';
-import { useNavigate } from "react-router-dom";
-//import Axios from "axios";
-//import React, { useEffect, useState } from "react";
-import logo from '../Login/logo.jpg'; // Provide the correct path for logo
-import lgphoto from '../Login/loginphoto.jpg'; // Provide the correct path for the photo
+// import axios from "axios";
+// import { useHistory } from 'react-router-dom'
+import { login } from '../../api/AuthService'
+import { setAccessToken } from '../../api/TokenService'
+import { jwtDecode } from "jwt-decode";
+import logo from './logo.png';
+import lgphoto from './loginphoto.jpg';
+import { AuthContext } from "../../Context/AuthContext";
+import { useNavigate } from 'react-router-dom';
+
+
 
 const LoginPage = () => {
-  // useState hooks to store inputs
-  const [loginUserName, setLoginUserName] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const navigateTo = useNavigate();
+  const [userCred, setUserCred] = useState({
+    username: '',
+    password: ''
+  })
+  const [error, setError] = useState('');
+  const { setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  // const history = useHistory();
 
-  const loginSubmit = (e) => {
+  // useEffect(() => {
+
+  // }, [userCred])
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    // consol e.log(value)
+    setUserCred(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Navigate to the dashboard without authentication
-    navigateTo('/dashboard');
-    // Clear input fields
-    setLoginUserName('');
-    setLoginPassword('');
-   // loginUser(e); // Call the login function
-  };
-  // show the message to the user
- /* const [loginStatus, setLoginStatus] = useState('');
-  const [statusHolder, setStatusHolder] = useState('message');
- */
- /* const loginUser = (e) => {
-    e.preventDefault();
-    Axios.post('http://localhost:8080/api', {
-      LoginUserName: loginUserName,
-      LoginPassword: loginPassword,
-    }).then((response) => {
-      if (response.data.message || loginUserName === '' || loginPassword === '') {
-        navigateTo('/'); // same login page 
-        setLoginStatus(`Credentials Don't Exist!`);
-      } else {
-        navigateTo('/dashboard'); // after login success page "dashboard"
-      }
-    });
-  }; 
-  */
- /* useEffect(() => {
-    if (loginStatus !== '') {
-      setStatusHolder('showMessage');
-      setTimeout(() => {
-        setStatusHolder('message');
-      }, 4000);
+    setError('')
+    try {
+      // console.log(userCred)
+      const response = await login(userCred);
+      console.log(response)
+      setAccessToken(response)
+      const decoded = jwtDecode(response);
+      console.log("username is ", decoded.sub)
+      console.log("role is ", decoded.role)
+      setUser({ username: decoded.sub, role: decoded.role });
+      // history.push('/home');
+      // Store the token in localStorage
+      // localStorage.setItem('token', response.data.token);
+
+      // Redirect or update state
+      // window.location.href = '/dashboard'
+      navigate('/dashboard', { replace: true })
+    } catch (error) {
+      console.error('Login failed:', error)
+      setError('Invalid username or password')
     }
-  }, [loginStatus]);
-*/
-
+  }
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -65,16 +74,19 @@ const LoginPage = () => {
           <div className="flex justify-center mb-6">
             <img src={logo} alt="Logo Image" className="w-24 h-24" onError={(e) => e.target.style.display = 'none'} />
           </div>
-          <form onSubmit={loginSubmit}>
-           {/* <span className={statusHolder}>{loginStatus}</span> {/* Check this work or not */}     
+          <form onSubmit={handleSubmit}>
+            {/* <span className={statusHolder}>{loginStatus}</span> {/* Check this work or not */}
             {/* Input Fields */}
             <label className="block text-gray-700 mb-1">Username</label>
             <input
               type="text"
               id="username"
+              name="username"
               placeholder="Enter your username"
               className="w-full p-2 border border-gray-300 rounded-lg mb-4"
-              onChange={(event) => setLoginUserName(event.target.value)}
+              value={userCred.username}
+              onChange={handleChange}
+              required
             />
 
             <label className="block text-gray-700 mb-1">Password</label>
@@ -82,9 +94,12 @@ const LoginPage = () => {
               <input
                 type="password"
                 id="password"
+                name="password"
                 className="w-full p-2 border border-gray-300 rounded-lg pr-10"
                 placeholder="••••••"
-                onChange={(event) => setLoginPassword(event.target.value)}
+                value={userCred.password}
+                onChange={handleChange}
+                required
               />
             </div>
 

@@ -5,6 +5,7 @@ export const getSellers = async () => {
     return response.data;
 };
 
+
 export const saveSellers = async (retailer) => {
     const response = await axios.post("retailer/createRetailer", retailer);
     return response.data;

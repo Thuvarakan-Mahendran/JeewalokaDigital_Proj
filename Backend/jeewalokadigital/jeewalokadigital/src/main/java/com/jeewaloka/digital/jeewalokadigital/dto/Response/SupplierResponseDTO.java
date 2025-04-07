@@ -16,6 +16,4 @@ public class SupplierResponseDTO {
     private String supplierWebsite;
     private String supplierStatus;
     private String supplierCreatedDate;
-
-
 }

@@ -11,21 +11,24 @@ import java.util.List;
 @Entity
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
-    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
+//    @SequenceGenerator(name = "idSeq", sequenceName = "idSeq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long UID;
-    @Column(name = "userName", nullable = false)
-    private String uname;
+    @Column(name = "userName", nullable = false, unique = true)
+    private String uname;   //This is name for display in their profile
     @Column(name = "userContact", nullable = false)
     private String contact;
     @Column(name = "userMail")
     private String email;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "userRole", nullable = false)
-    private UserRole role;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "userRole", nullable = false)
+//    private UserRole role;
     @Column(name = "LastLogin")
     private LocalDate lastLogin;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private UserCredentials userCredentials;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Column(name = "BillNO")
@@ -42,6 +45,13 @@ public class User {
 //    }
 
     public User() {
+    }
+
+    public User(String uname, String contact, String email, UserCredentials userCredentials) {
+        this.uname = uname;
+        this.contact = contact;
+        this.email = email;
+        this.userCredentials = userCredentials;
     }
 
     public Long getUID() {
@@ -72,13 +82,13 @@ public class User {
         this.email = email;
     }
 
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
+//    public UserRole getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(UserRole role) {
+//        this.role = role;
+//    }
 
     public LocalDate getLastLogin() {
         return lastLogin;

@@ -6,9 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-
 public class SupplierRequestDTO {
-
     private String supplierCode;
     private String supplierName;
     private String supplierContact;
@@ -17,6 +15,4 @@ public class SupplierRequestDTO {
     private String supplierFax;
     private String supplierWebsite;
     private String supplierStatus;
-
-
 }
