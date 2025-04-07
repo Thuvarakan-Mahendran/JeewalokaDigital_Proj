@@ -27,8 +27,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if(user.isPresent()){
             System.out.println("user is present");
             UserCredentials currentUser = user.get();
-//            System.out.println(currentUser.getUsername());
+            System.out.println(currentUser.getUsername());
+            System.out.println(currentUser.getRole());
             builder = org.springframework.security.core.userdetails.User.withUsername(username);
+            builder.roles(currentUser.getRole().name());
             builder.password(currentUser.getPassword());
         }else{
             System.out.println("going throw exception");

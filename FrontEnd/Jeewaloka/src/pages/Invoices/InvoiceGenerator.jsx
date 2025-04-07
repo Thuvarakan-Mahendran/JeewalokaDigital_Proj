@@ -72,6 +72,7 @@ const InvoiceGenerator = () => {
         retailer: '',
         paymentType: '',
         items: [],
+        billItemList: [],
         subtotal: 0,
         discount: 0,
         total: 0
@@ -197,9 +198,17 @@ const InvoiceGenerator = () => {
     const addItem = () => {
         if (currentItem.name && currentItem.qty && currentItem.unitPrice) {
             // console.log("current item: " + currentItem.amount + " " + currentItem.id)
+            const selectedItem = {
+                item: currentItem.id,
+                // name: currentItem.name,
+                quantity: currentItem.qty,
+                // unitPrice: currentItem.unitPrice,
+                totalValue: currentItem.amount
+            }
             setInvoiceData(prev => ({
                 ...prev,
                 items: [...prev.items, currentItem],
+                billItemList: [...prev.billItemList, selectedItem],
                 subtotal: prev.subtotal + currentItem.amount,
                 total: prev.subtotal + currentItem.amount - prev.discount
             }))
@@ -227,35 +236,36 @@ const InvoiceGenerator = () => {
         })
     }
 
-    const handleItemSubmit = () => {
-        // console.log("entered Item submit")
-        // console.log(invoiceData.items)
-        const billItems = invoiceData.items.map((billItem) => ({
-            item: billItem.id,
-            totalvalue: parseFloat(billItem.amount),
-            quantity: parseInt(billItem.qty)
-        }))
-        console.log(billItems)
-        try {
-            const response = saveBillItem(billItems)
-            console.log("BillItems saved successfully" + response)
-        }
-        catch (error) {
-            console.error("Error: ", error)
-        }
-    }
+    // const handleItemSubmit = () => {
+    //     // console.log("entered Item submit")
+    //     // console.log(invoiceData.items)
+    //     const billItems = invoiceData.items.map((billItem) => ({
+    //         item: billItem.id,
+    //         totalvalue: parseFloat(billItem.amount),
+    //         quantity: parseInt(billItem.qty)
+    //     }))
+    //     console.log(billItems)
+    //     try {
+    //         const response = saveBillItem(billItems)
+    //         console.log("BillItems saved successfully" + response)
+    //     }
+    //     catch (error) {
+    //         console.error("Error: ", error)
+    //     }
+    // }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
 
         try {
-            const savedBillItems = handleItemSubmit()
+            // const savedBillItems = handleItemSubmit()
             const billData = {
                 userID: invoiceData.user,
                 retailerID: invoiceData.retailer,
                 billCategory: invoiceData.paymentType,
                 total: parseFloat(invoiceData.total),
-                billItemIDS: invoiceData.items.map(item => Number(item.id)),
+                // billItemIDS: invoiceData.items.map(item => Number(item.id)),
+                billItems: invoiceData.billItemList
             };
             console.log(billData)
             const response = await saveBill(billData)
@@ -419,8 +429,7 @@ const InvoiceGenerator = () => {
                 </div>
 
                 <div className="mb-6">
-                    <h3 className="font-bold mb-2">Bill To:</h3>
-                    <p>{retailerData.retailerName}</p>
+                    <p className="font-bold mb-2">Bill To: {retailerData.retailerName}</p>
                     <p className="text-gray-600">Payment Terms: {invoiceData.paymentType}</p>
                 </div>
 

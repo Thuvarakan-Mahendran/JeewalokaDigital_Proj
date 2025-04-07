@@ -27,7 +27,7 @@ public class JwtService {
 
     public Map<String, String> generateTokens(UserDetails userDetails) {
         Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", generateToken(new HashMap<>(), userDetails, 1000*10));
+        tokens.put("accessToken", generateToken(new HashMap<>(), userDetails, 1000*30));
         tokens.put("refreshToken",generateToken(new HashMap<>(), userDetails, 1000*60*60*24*7));
         return tokens;
     }
@@ -44,6 +44,13 @@ public class JwtService {
 //    }
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, int expirationTime) {
         System.out.println("entered jwt service to generate token");
+        if(!extraClaims.containsKey("role")){
+            System.out.println("inside role");
+            String role = userDetails.getAuthorities().iterator().next().getAuthority();
+            extraClaims.put("role",role);
+            System.out.println("role work finished");
+        }
+        System.out.println("if condition is not there");
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
@@ -67,7 +74,7 @@ public class JwtService {
     }
 
     // Check if token is expired
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         System.out.println("check expired or not");
         return extractExpiration(token).before(new Date());
     }

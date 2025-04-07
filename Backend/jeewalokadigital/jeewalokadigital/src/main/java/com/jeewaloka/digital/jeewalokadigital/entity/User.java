@@ -16,18 +16,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long UID;
-    @Column(name = "userName", nullable = false)
+    @Column(name = "userName", nullable = false, unique = true)
     private String uname;   //This is name for display in their profile
     @Column(name = "userContact", nullable = false)
     private String contact;
     @Column(name = "userMail")
     private String email;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "userRole", nullable = false)
-    private UserRole role;
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "userRole", nullable = false)
+//    private UserRole role;
     @Column(name = "LastLogin")
     private LocalDate lastLogin;
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private UserCredentials userCredentials;
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -47,10 +47,11 @@ public class User {
     public User() {
     }
 
-    public User(String uname, String contact, String email) {
+    public User(String uname, String contact, String email, UserCredentials userCredentials) {
         this.uname = uname;
         this.contact = contact;
         this.email = email;
+        this.userCredentials = userCredentials;
     }
 
     public Long getUID() {
@@ -81,13 +82,13 @@ public class User {
         this.email = email;
     }
 
-    public UserRole getRole() {
-        return role;
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-    }
+//    public UserRole getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(UserRole role) {
+//        this.role = role;
+//    }
 
     public LocalDate getLastLogin() {
         return lastLogin;

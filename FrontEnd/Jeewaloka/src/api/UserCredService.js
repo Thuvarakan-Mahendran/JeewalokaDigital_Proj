@@ -1,4 +1,6 @@
-import axios from "./axiosInstance";
+import { Axis3D } from "lucide-react";
+// import axios from "./axiosInstance";
+import api from "./api"
 
 // export const getUsers = async () => {
 //     const response = await axios.get("users/getusers");
@@ -6,12 +8,22 @@ import axios from "./axiosInstance";
 // };
 
 export const saveUserCred = async (userCred) => {
-    const response = await axios.post("userCreds/adduserCred", userCred);
+    const response = await api.post("userCreds/adduserCred", userCred);
     return response.data;
 };
 
 export const getUserID = async (userCred) => {
-    const response = await axios.post("userCreds/findUserID/${userCred.username}", userCred);
+    const response = await api.get(`userCreds/findUserID/${userCred.username}`, userCred);
+    return response.data;
+};
+
+// export const getCredRole = async (userCred) => {
+//     const response = await axios.get(`userCreds/getCredRole/${userCred.username}`, userCred);
+//     return response.data;
+// };
+
+export const getUserCreds = async () => {
+    const response = await api.get("userCreds/getUserCreds");
     return response.data;
 };
 
@@ -20,7 +32,7 @@ export const getUserID = async (userCred) => {
 //     return response.data;
 // };
 
-// export const deleteUser = async (id) => {
-//     const response = await axios.delete(`users/userdel/${id}`);
-//     return response.data;
-// };
+export const deleteUserCred = async (id) => {
+    const response = await api.delete(`userCreds/deleteUserCred/${id}`);
+    return response.data;
+};

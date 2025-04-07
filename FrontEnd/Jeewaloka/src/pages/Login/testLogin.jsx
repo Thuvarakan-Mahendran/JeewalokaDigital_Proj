@@ -23,13 +23,16 @@ const testLogin = () => {
     return (
         <Stack>
             <TextField
+                type="text"
                 name="username"
                 label="Username"
+                value={user.username}
                 onChange={handleChange} />
             <TextField
                 type="password"
                 name="password"
                 label="Password"
+                value={user.password}
                 onChange={handleChange} />
             <Button
                 variant="outlined"

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/grrns")
-@CrossOrigin
+//@CrossOrigin
 public class GRRNController {
 
     @Autowired

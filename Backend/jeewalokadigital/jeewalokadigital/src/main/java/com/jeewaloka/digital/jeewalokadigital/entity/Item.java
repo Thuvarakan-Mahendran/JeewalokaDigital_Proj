@@ -1,5 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "item")
+//@JsonIgnoreProperties()
 public class Item {
 
     @Id

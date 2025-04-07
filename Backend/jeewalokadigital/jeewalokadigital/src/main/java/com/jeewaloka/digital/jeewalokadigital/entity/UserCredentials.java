@@ -1,5 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.jeewaloka.digital.jeewalokadigital.enums.UserRole;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,16 +11,28 @@ public class UserCredentials {
     @Column(unique = true)
     private String username;    //This is credential to login into application
     private String password;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "userRole", nullable = false)
+    private UserRole role;
+    @OneToOne//(cascade = CascadeType.DETACH)
     @JoinColumn(name = "userID", referencedColumnName = "userId")
     private User user;
     public UserCredentials() {
     }
 
-    public UserCredentials(String username, String password, User user) {
+    public UserCredentials(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
-        this.user = user;
+        this.role = role;
+//        this.user = user;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 
     public User getUser() {

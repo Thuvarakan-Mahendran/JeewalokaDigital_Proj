@@ -15,6 +15,6 @@ public class BillItemResponseDTO {
     private Long BIID;
     private Integer quantity;
     private Float totalValue;
-//    private Bill bill;
-//    private Item item;
+    private Long bill;
+    private Long item;
 }

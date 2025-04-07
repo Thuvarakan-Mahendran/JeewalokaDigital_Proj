@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { KeyIcon, KeyRound, Pencil, Trash2 } from 'lucide-react';
 import { getUsers, saveUser, editsUser, deleteUser } from "../../api/UserService";
-import { saveUserCred } from "../../api/UserCredService"
+import { saveUserCred, getUserCreds, deleteUserCred } from "../../api/UserCredService"
+import { useWebSocket } from '../../Context/WebSocketContext';
 
 const Users = () => {
     const [users, setUsers] = useState([]);
@@ -10,21 +11,43 @@ const Users = () => {
     const [editingUser, setEditingUser] = useState(null);
     const [isUserCred, setIsUserCred] = useState(false);
     const [userCred, setUserCred] = useState(null)
+    const [userCreds, setUserCreds] = useState([]);
+    const [refresh, setRefresh] = useState(false);
+    const [isViewMode, setIsViewMode] = useState(false)
+    const { isConnected, onlineUsers } = useWebSocket();
+    // let statusColor = null;
 
     useEffect(() => {
         fetchUsers();
+        fetchUserCreds();
     }, []);
 
     const fetchUsers = async () => {
         try {
             const response = await getUsers();
             setUsers(Array.isArray(response) ? response : response?.data || []);
-            console.log(response)
+            // console.log(response)
         } catch (error) {
             console.error("Error fetching users:", error);
             setUsers([]);
         }
     };
+
+    const fetchUserCreds = async () => {
+        try {
+            const roleResponse = await getUserCreds();
+            console.log(roleResponse)
+            setUserCreds(Array.isArray(roleResponse) ? roleResponse : roleResponse?.data || []);
+        } catch (error) {
+            console.error("Error fetching cred role:", error);
+        }
+    }
+
+    const handleOnlineCheck = (username) => {
+        const isOnline = isConnected && onlineUsers.has(username);
+        // const statusText = isConnected ? (isOnline ? 'Online' : 'Offline') : 'Connecting...';
+        return isConnected ? (isOnline ? 'bg-green-500' : 'bg-gray-400') : 'bg-orange-400';
+    }
 
     const handleDelete = async (uid) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
@@ -72,26 +95,40 @@ const Users = () => {
         }
     };
 
-    const handleCredForm = (user) => {
+    const handleCredForm = (user, matchingCred) => {
         console.log("user id is: " + user.uid)
+        matchingCred ? setIsViewMode(true) : setIsViewMode(false)
         setUserCred({
-            username: '',
+            userCredID: matchingCred ? matchingCred.userCredID : '',
+            username: matchingCred ? matchingCred.username : '',
             password: '',
-            usermark: user.uid
+            role: matchingCred ? matchingCred.role : '',
+            user: user.uid
         })
         setIsUserCred(true);
     }
 
-    const handleCredSave = async (e) => {
-        e.preventDefault();
+    const handleCredSave = async () => {
         try {
+            console.log("inside handle cred save")
             await saveUserCred(userCred)
             alert("Credentials created successfully")
+            // setRefresh(prev => !prev)
             setIsUserCred(false);
-            setUserCred({ username: '', password: '', usermark: '' });
+            setUserCred({ username: '', password: '', role: '', user: '' });
         } catch (error) {
             console.error("Error saving credentials:", error);
             alert("failed to create credentials")
+        }
+    }
+
+    const handleUserCredDeletion = async (userCredID) => {
+        try {
+            await deleteUserCred(userCredID)
+            alert("Credentials deleted successfully")
+            // setRefresh(prev => !prev)
+        } catch (error) {
+            console.error("Error deleting credentials:", error);
         }
     }
 
@@ -118,7 +155,7 @@ const Users = () => {
                             setEditingUser({
                                 uid: '',
                                 uname: '',
-                                role: '',
+                                // role: '',
                                 contact: '',
                                 email: '',
                                 status: ''
@@ -164,7 +201,7 @@ const Users = () => {
                                     onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
                                 />
                             </div>
-                            <div className="mb-4">
+                            {/* <div className="mb-4">
                                 <label className="block mb-2">Role</label>
                                 <input
                                     type="text"
@@ -172,7 +209,7 @@ const Users = () => {
                                     value={editingUser.role}
                                     onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
                                 />
-                            </div>
+                            </div> */}
                             <div className="flex justify-end gap-2">
                                 <button
                                     type="button"
@@ -209,23 +246,36 @@ const Users = () => {
                         <h2 className="text-xl font-bold mb-4">
                             Add User Credentials
                         </h2>
-                        <form onSubmit={handleCredSave}>
+                        <form>
                             <div className="mb-4">
                                 <label className="block mb-2">UserName</label>
                                 <input
                                     type="text"
                                     className="w-full px-3 py-2 border rounded"
+                                    readOnly={isViewMode}
                                     value={userCred.username}
                                     onChange={(e) => setUserCred({ ...userCred, username: e.target.value })}
                                 />
                             </div>
+                            {!isViewMode &&
+                                <div className="mb-4">
+                                    <label className="block mb-2">Password</label>
+                                    <input
+                                        type="password"
+                                        className="w-full px-3 py-2 border rounded"
+                                        value={userCred.password}
+                                        onChange={(e) => setUserCred({ ...userCred, password: e.target.value })}
+                                    />
+                                </div>
+                            }
                             <div className="mb-4">
-                                <label className="block mb-2">Password</label>
+                                <label className="block mb-2">Role</label>
                                 <input
-                                    type="password"
+                                    type="text"
                                     className="w-full px-3 py-2 border rounded"
-                                    value={userCred.password}
-                                    onChange={(e) => setUserCred({ ...userCred, password: e.target.value })}
+                                    readOnly={isViewMode}
+                                    value={userCred.role}
+                                    onChange={(e) => setUserCred({ ...userCred, role: e.target.value })}
                                 />
                             </div>
                             <div className="flex justify-end gap-2">
@@ -239,16 +289,25 @@ const Users = () => {
                                 >
                                     Cancel
                                 </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded"
-                                >
-                                    Add UserCred
-                                </button>
+                                {isViewMode ?
+                                    <button
+                                        onClick={() => handleUserCredDeletion(userCred.userCredID)}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                                    >
+                                        Delete
+                                    </button>
+                                    :
+                                    <button
+                                        onClick={handleCredSave}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded"
+                                    >
+                                        Add UserCred
+                                    </button>
+                                }
                             </div>
                         </form>
                     </div>
-                </div>
+                </div >
             )}
 
             <div className="bg-white rounded-lg shadow">
@@ -265,42 +324,53 @@ const Users = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredUsers.map((user) => (
-                            <tr key={user.uname} className="border-b hover:bg-gray-50">
-                                <td className="px-6 py-4">{user.uid}</td>
-                                <td className="px-6 py-4">{user.uname}</td>
-                                <td className="px-6 py-4">{user.role}</td>
-                                <td className="px-6 py-4">{user.contact}</td>
-                                <td className="px-6 py-4">{user.email}</td>
-                                <td className="px-6 py-4">active</td>
-                                <td className="px-6 py-4">
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => handleEdit(user)}
-                                            className="p-1 hover:bg-gray-100 rounded"
-                                        >
-                                            <Pencil className="w-5 h-5 text-blue-600" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleCredForm(user)}
-                                            className="p-1 hover:bg-gray-100 rounded"
-                                        >
-                                            <KeyRound className='w-5 h-5 text-green-600' />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(user.uid)}
-                                            className="p-1 hover:bg-gray-100 rounded"
-                                        >
-                                            <Trash2 className="w-5 h-5 text-red-600" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                        {filteredUsers.map((user) => {
+                            const matchingCred = userCreds != null ? userCreds.find((usercred) => usercred.user === user.uid) : null
+                            const statusClass = handleOnlineCheck(user.uname);
+                            console.log(user.uname, " ", statusClass)
+                            return (
+                                <tr key={user.uname} className="border-b hover:bg-gray-50">
+                                    <td className="px-6 py-4">{user.uid}</td>
+                                    <td className="px-6 py-4">{user.uname}</td>
+                                    <td className="px-6 py-4">{matchingCred ? matchingCred.role : ''}</td>
+                                    <td className="px-6 py-4">{user.contact}</td>
+                                    <td className="px-6 py-4">{user.email}</td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex items-center">
+                                            <span className={`inline-block w-3 h-3 mr-2 rounded-full ${statusClass}`}></span>
+                                            {/* <span className="inline-block w-3 h-3 mr-2 rounded-full text-red-500"></span> */}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleEdit(user)}
+                                                className="p-1 hover:bg-gray-100 rounded"
+                                            >
+                                                <Pencil className="w-5 h-5 text-blue-600" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleCredForm(user, matchingCred)}
+                                                className="p-1 hover:bg-gray-100 rounded"
+                                            >
+                                                <KeyRound className='w-5 h-5 text-green-600' />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(user.uid)}
+                                                className="p-1 hover:bg-gray-100 rounded"
+                                            >
+                                                <Trash2 className="w-5 h-5 text-red-600" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            )
+                        }
+                        )}
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div >
     );
 };
 

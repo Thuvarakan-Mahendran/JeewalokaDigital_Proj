@@ -1,22 +1,35 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import './LoginForm.css';
-import axios from "axios";
-import logo from '../Login/logo.jpg';
-import lgphoto from '../Login/loginphoto.jpg';
+// import axios from "axios";
+// import { useHistory } from 'react-router-dom'
+import { login } from '../../api/AuthService'
+import { setAccessToken } from '../../api/TokenService'
+import { jwtDecode } from "jwt-decode";
+import logo from './logo.png';
+import lgphoto from './loginphoto.jpg';
 import { AuthContext } from "../../Context/AuthContext";
-const LOGIN_URL = '/api/auth/login'
+import { useNavigate } from 'react-router-dom';
 
 
 
 const LoginPage = () => {
-  const [user, setUser] = useState({
+  const [userCred, setUserCred] = useState({
     username: '',
     password: ''
   })
+  const [error, setError] = useState('');
+  const { setUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  // const history = useHistory();
+
+  // useEffect(() => {
+
+  // }, [userCred])
 
   const handleChange = (e) => {
     const { name, value } = e.target
-    setUser(prev => ({
+    // consol e.log(value)
+    setUserCred(prev => ({
       ...prev,
       [name]: value
     }))
@@ -24,16 +37,26 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('')
     try {
-      const response = await axios.post('', user);
-
+      // console.log(userCred)
+      const response = await login(userCred);
+      console.log(response)
+      setAccessToken(response)
+      const decoded = jwtDecode(response);
+      console.log("username is ", decoded.sub)
+      console.log("role is ", decoded.role)
+      setUser({ username: decoded.sub, role: decoded.role });
+      // history.push('/home');
       // Store the token in localStorage
-      localStorage.setItem('token', response.data.token);
+      // localStorage.setItem('token', response.data.token);
 
       // Redirect or update state
-      window.location.href = '/dashboard'
+      // window.location.href = '/dashboard'
+      navigate('/dashboard', { replace: true })
     } catch (error) {
-      console.error('Login failed:', error.response.data)
+      console.error('Login failed:', error)
+      setError('Invalid username or password')
     }
   }
 
@@ -58,9 +81,12 @@ const LoginPage = () => {
             <input
               type="text"
               id="username"
+              name="username"
               placeholder="Enter your username"
               className="w-full p-2 border border-gray-300 rounded-lg mb-4"
+              value={userCred.username}
               onChange={handleChange}
+              required
             />
 
             <label className="block text-gray-700 mb-1">Password</label>
@@ -68,9 +94,12 @@ const LoginPage = () => {
               <input
                 type="password"
                 id="password"
+                name="password"
                 className="w-full p-2 border border-gray-300 rounded-lg pr-10"
                 placeholder="••••••"
+                value={userCred.password}
                 onChange={handleChange}
+                required
               />
             </div>
 

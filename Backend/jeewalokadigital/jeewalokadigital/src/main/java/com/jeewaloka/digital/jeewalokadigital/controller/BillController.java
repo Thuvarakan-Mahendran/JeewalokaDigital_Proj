@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/Bill")
-@CrossOrigin
+//@CrossOrigin
 public class BillController {
     @Autowired
     private BillService billService;

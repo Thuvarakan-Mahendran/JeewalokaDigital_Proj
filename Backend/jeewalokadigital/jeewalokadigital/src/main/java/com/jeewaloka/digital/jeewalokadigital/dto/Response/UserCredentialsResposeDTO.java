@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCredResposeDTO {
+public class UserCredentialsResposeDTO {
     private Long UserCredID;
     private String username;
-    private String password;
-    private Long UID;
+    private String role;
+    private Long user;
 }

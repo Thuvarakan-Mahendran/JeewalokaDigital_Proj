@@ -36,6 +36,8 @@ public class BillItemMapper {
         billItemResponseDTO.setBIID(billItem.getBIID());
         billItemResponseDTO.setQuantity(billItem.getQuantity());
         billItemResponseDTO.setTotalValue(billItem.getTotalValue());
+        billItemResponseDTO.setBill(billItem.getBill().getBillNO());
+        billItemResponseDTO.setItem(billItem.getItem().getItemCode());
         return billItemResponseDTO;
     }
 }
