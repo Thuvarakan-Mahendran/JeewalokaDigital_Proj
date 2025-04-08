@@ -1,7 +1,7 @@
 package com.jeewaloka.digital.jeewalokadigital.repository;
 
-import org.springframework.stereotype.Repository;
+import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface RetailerRepo {
+public interface RetailerRepo extends JpaRepository<Retailer, String> {
 }

@@ -1,21 +1,18 @@
 package com.jeewaloka.digital.jeewalokadigital.service;
 
-import com.jeewaloka.digital.jeewalokadigital.repository.RetailerRepo;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.jeewaloka.digital.jeewalokadigital.dto.Request.RequestRetailerDTO;
+import com.jeewaloka.digital.jeewalokadigital.dto.Response.ResponseRetailerDTO;
 
-@Service
-@Transactional
-public class RetailerService {
+import java.util.List;
 
-    @Autowired
-    private RetailerRepo retailerRepo;
+public interface RetailerService {
+    List<ResponseRetailerDTO> getAllRetailers();
 
+    ResponseRetailerDTO getRetailerById(String RetailerId);
 
+    void createRetailer(RequestRetailerDTO retailerDTO);
 
+    void updateRetailer(RequestRetailerDTO retailerDTO, String id);
 
-
-
+    void deleteRetailer(String retailerId);
 }

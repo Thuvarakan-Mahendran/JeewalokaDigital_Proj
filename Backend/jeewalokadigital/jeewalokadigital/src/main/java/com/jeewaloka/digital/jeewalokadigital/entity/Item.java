@@ -1,15 +1,20 @@
 package com.jeewaloka.digital.jeewalokadigital.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jeewaloka.digital.jeewalokadigital.entity.bill.BillItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
+import java.util.List;
 
+@Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "item")
+//@JsonIgnoreProperties()
 public class Item {
 
     @Id
@@ -17,20 +22,18 @@ public class Item {
     @Column(name = "ItemCode")
     private Long itemCode;
 
-//    @ManyToOne
-//    @JoinColumn(name = "UserID", nullable = false)
-//    private User user;
+//    @Column(name = "ItemCode2")
+//    private String itemCode2;
 
     @ManyToOne
     @JoinColumn(name = "SupplierID", nullable = false)
     private Supplier supplier;
 
-    @Column(name = "ItemName", nullable = false)
+    @Column(name = "ItemName")
     private String itemName;
 
     @Column(name = "Type")
     private String itemType;
-
 
     @Column(name = "PurchasePrice")
     private Double itemPurchasePrice;
@@ -38,7 +41,20 @@ public class Item {
     @Column(name = "SalesPrice")
     private Double itemSalesPrice;
 
-    @Column(name = "PCCode")
-    private String itemPcCode;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPrices> priceItems;
+
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemPrices> prices;
+
+    @Column(name = "Status")
+    private String status;
+ 
+    @Transient
+    private Integer totalQuantityInStock;
+
+    @OneToMany(mappedBy = "item",cascade = CascadeType.ALL)
+    private List<BillItem> billItems;
 
 }
