@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { jwtDecode } from 'jwt-decode'
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext';
 import {
     getSellers,
@@ -55,6 +56,7 @@ const InvoiceGenerator = () => {
     const [retailers, setRetailers] = useState([])
     const [items, setItems] = useState([])
     const { user } = useContext(AuthContext)
+    const navigate = useNavigate();
     // const [userData, setUserData] = useState({
     //     userId: '',
     //     userName: ''
@@ -285,6 +287,7 @@ const InvoiceGenerator = () => {
             console.log(billData)
             const response = await saveBill(billData)
             console.log("Bill is saved" + response)
+            navigate('/dashboard/sales/invoices')
         } catch (error) {
             console.error("Error:", error);
         }
@@ -465,9 +468,9 @@ const InvoiceGenerator = () => {
                             <p className="text-gray-600">Date: {invoiceData.issueDate}</p>
                         </div>
                         <div className="text-right">
-                            <h2 className="font-bold">Jeewaloka</h2>
-                            <p className="text-gray-600">Address Line 1</p>
-                            <p className="text-gray-600">City, State, ZIP</p>
+                            <h2 className="font-bold">Jeewaloka Osusala,</h2>
+                            <p className="text-gray-600">Dahamana,</p>
+                            <p className="text-gray-600">Balangoda.</p>
                         </div>
                     </div>
                 </div>

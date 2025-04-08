@@ -42,7 +42,7 @@ const Invoices = () => {
     const filteredInvoices = invoices.filter((invoice) => {
         // invoice.BillNO.toString().includes(search.toString())
         const matchesBillNo = search ? invoice.billNO.toString().includes(search.toString()) : true
-        const matchesIssuedDate = idate ? new Date(invoice.date) === new Date(idate) : true
+        const matchesIssuedDate = idate ? invoice.date === idate : true
         // let matchesIssuedDate = true;
         // if (idate) {
         //     const invoiceDate = parse(invoice.date, "yyyy/MM/dd", new Date());
