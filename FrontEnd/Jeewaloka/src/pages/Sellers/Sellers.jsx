@@ -213,8 +213,8 @@ const Seller = () => {
               {isViewMode
                 ? "View Seller"
                 : editingSeller
-                ? "Edit Seller"
-                : "Add Seller"}
+                  ? "Edit Seller"
+                  : "Add Seller"}
             </h3>
 
             {/* Form and Scrollable Container */}
@@ -242,11 +242,10 @@ const Seller = () => {
                     value={sellerForm?.sellerName || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
-                    className={`w-full border border-gray-300 p-2 rounded ${
-                      isViewMode
+                    className={`w-full border border-gray-300 p-2 rounded ${isViewMode
                         ? "bg-gray-200 cursor-not-allowed"
                         : "focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    }`}
+                      }`}
                     required
                   />
                 </div>
@@ -260,11 +259,10 @@ const Seller = () => {
                     value={sellerForm?.sellerContact || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
-                    className={`w-full border border-gray-300 p-2 rounded ${
-                      isViewMode
+                    className={`w-full border border-gray-300 p-2 rounded ${isViewMode
                         ? "bg-gray-200 cursor-not-allowed"
                         : "focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    }`}
+                      }`}
                     required
                   />
                 </div>
@@ -278,11 +276,10 @@ const Seller = () => {
                     value={sellerForm?.sellerAddress || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
-                    className={`w-full border border-gray-300 p-2 rounded ${
-                      isViewMode
+                    className={`w-full border border-gray-300 p-2 rounded ${isViewMode
                         ? "bg-gray-200 cursor-not-allowed"
                         : "focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    }`}
+                      }`}
                     required
                   />
                 </div>
@@ -296,11 +293,10 @@ const Seller = () => {
                     value={sellerForm?.sellerEmail || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
-                    className={`w-full border border-gray-300 p-2 rounded ${
-                      isViewMode
+                    className={`w-full border border-gray-300 p-2 rounded ${isViewMode
                         ? "bg-gray-200 cursor-not-allowed"
                         : "focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    }`}
+                      }`}
                     required
                   />
                 </div>

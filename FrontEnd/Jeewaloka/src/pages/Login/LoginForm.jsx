@@ -54,6 +54,7 @@ const LoginPage = () => {
       // Redirect or update state
       // window.location.href = '/dashboard'
       navigate('/dashboard', { replace: true })
+      // navigate('/system', { replace: true })
     } catch (error) {
       console.error('Login failed:', error)
       setError('Invalid username or password')

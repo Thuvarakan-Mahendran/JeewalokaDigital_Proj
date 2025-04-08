@@ -12,8 +12,8 @@ export const saveUserCred = async (userCred) => {
     return response.data;
 };
 
-export const getUserID = async (userCred) => {
-    const response = await api.get(`userCreds/findUserID/${userCred.username}`, userCred);
+export const getUserID = async (username) => {
+    const response = await api.get(`userCreds/findUserID/${username}`);
     return response.data;
 };
 

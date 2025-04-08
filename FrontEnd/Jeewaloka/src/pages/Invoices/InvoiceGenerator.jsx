@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NumericFormat } from 'react-number-format'
 import { useRef } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { jwtDecode } from 'jwt-decode'
+import { AuthContext } from '../../Context/AuthContext';
 import {
     getSellers,
     // saveRetailer,
@@ -53,6 +54,7 @@ const InvoiceGenerator = () => {
     const contentRef = useRef(null)
     const [retailers, setRetailers] = useState([])
     const [items, setItems] = useState([])
+    const { user } = useContext(AuthContext)
     // const [userData, setUserData] = useState({
     //     userId: '',
     //     userName: ''
@@ -89,7 +91,8 @@ const InvoiceGenerator = () => {
     useEffect(() => {
         fetchReatilers()
         fetchItems()
-        setUserLoggedIn()
+        // setUserLoggedIn()
+        fetchUserID()
     }, []);
 
     const fetchItems = async () => {
@@ -99,6 +102,18 @@ const InvoiceGenerator = () => {
         } catch (error) {
             console.error("Error fetching Items:", error);
             setItems([]);
+        }
+    }
+
+    const fetchUserID = async () => {
+        try {
+            const response = await getUserID(user.username);
+            setInvoiceData((prevData) => ({
+                ...prevData,
+                user: response
+            }))
+        } catch (error) {
+            console.error("Error fetch UserID:", error);
         }
     }
 
@@ -113,25 +128,25 @@ const InvoiceGenerator = () => {
         }
     }
 
-    const getUserName = () => {
-        const token = localStorage.getItem("accessToken"); //should match the key used when storing the token -> localStorage.setItem("token", receivedJwtToken);
-        if (token) {
-            const decoded = jwtDecode(token)
-            return decoded.username;
-        }
-        return ""
-    }
+    // const getUserName = () => {
+    //     const token = localStorage.getItem("accessToken"); //should match the key used when storing the token -> localStorage.setItem("token", receivedJwtToken);
+    //     if (token) {
+    //         const decoded = jwtDecode(token)
+    //         return decoded.username;
+    //     }
+    //     return ""
+    // }
 
-    const setUserLoggedIn = async () => {
-        console.log("useEffect started")
-        // const loggedInUserName = getUserName();
-        // const loggedInUserID = await getUserID(loggedInUserName)
-        console.log("in useEffect and going to store value for user in invoice data")
-        setInvoiceData((prevData) => ({
-            ...prevData,
-            user: 3 //loggedInUserID, // Set the logged-in user id
-        }));
-    };
+    // const setUserLoggedIn = async () => {
+    //     console.log("useEffect started")
+    //     // const loggedInUserName = getUserName();
+    //     // const loggedInUserID = await getUserID(loggedInUserName)
+    //     console.log("in useEffect and going to store value for user in invoice data")
+    //     setInvoiceData((prevData) => ({
+    //         ...prevData,
+    //         user: 3 //loggedInUserID, // Set the logged-in user id
+    //     }));
+    // };
 
     const handleDownloadPDF = async () => {
         if (contentRef.current == null) {
@@ -300,13 +315,28 @@ const InvoiceGenerator = () => {
                                 onChange={handleInputChange}
                             />
                         </div> */}
-                        <div>
-                            <label className="block text-sm mb-1">User</label>
-                            <Input
-                                name="userNo"
-                                value={invoiceData.user}
-                            // onChange={handleUserChange}
-                            />
+                        <div className='flex justify-between w-full'>
+                            <div className="w-1/2 pr-2">
+                                <label className="block text-sm mb-1">User</label>
+                                <Input
+                                    name="user"
+                                    value={user.username}
+                                />
+                            </div>
+                            <div className="w-1/2 pr-2">
+                                <label className="block text-sm mb-1">User to be Notified</label>
+                                <Select
+                                    name="retailer"
+                                    value={invoiceData.retailer}
+                                    onChange={handleRetailerChange}
+                                >
+                                    <option value=''>Select User</option>
+                                </Select>
+                                {/* <Input
+                                    name="userNotify"
+                                    value={}
+                                /> */}
+                            </div>
                         </div>
                         {/* <label className="block text-sm mb-1">User</label>
                         <Select
@@ -393,6 +423,20 @@ const InvoiceGenerator = () => {
                             /> */}
                             <Button onClick={addItem}>Add Item</Button>
                         </div>
+                        <h3 className="text-lg font-semibold mb-4">Discount</h3>
+                        <div>
+                            <Input
+                                type="number"
+                                placeholder="%"
+                                name="discount"
+                                value={invoiceData.discount}
+                                onChange={handleInputChange}
+                                min="0"
+                                max="100"
+                                step="0.1"
+                                className="w-40 px-2 py-1 border rounded text-left"
+                            />
+                        </div>
                         <div>
                             <Button
                                 onClick={handleDownloadPDF}
@@ -473,7 +517,7 @@ const InvoiceGenerator = () => {
                         </div>
                         <div className="flex justify-between py-2">
                             <span>Discount:</span>
-                            <span>{invoiceData.discount.toFixed(2)}</span>
+                            <span>{invoiceData.discount}%</span>
                         </div>
                         <div className="flex justify-between py-2 font-bold">
                             <span>Total:</span>

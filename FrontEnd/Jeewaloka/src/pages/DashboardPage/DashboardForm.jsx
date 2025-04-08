@@ -110,7 +110,7 @@ const DashboardPage = () => {
       <button
         onClick={handleRevokeAllSessions}
         disabled={revokeLoading}
-        className='py-2.5 px-5 text-base bg-red-600 text-white rounded-lg cursor-pointer'
+        className='py-2.5 px-5 m-3 text-base bg-red-600 text-white rounded-lg cursor-pointer'
       >
         {revokeLoading ? 'Revoking...' : 'Revoke All Sessions'}
       </button>

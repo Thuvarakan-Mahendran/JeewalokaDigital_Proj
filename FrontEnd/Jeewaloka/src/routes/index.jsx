@@ -34,6 +34,7 @@ const AppRoutes = () => {
 
         {/* Protected Dashboard Route */}
         <Route path="/dashboard" element={<Dashboard />}>
+          {/* <Route path="/system" element={<DashboardPage />}> */}
           <Route path="inventary/items" element={
             <ProtectedRoute roles={['ROLE_ADMIN']}>
               <Items />

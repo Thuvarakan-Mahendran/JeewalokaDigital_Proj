@@ -292,6 +292,7 @@ const Dashboard = () => {
       </aside>
 
       <div className="p-4 sm:ml-64 mt-16">
+        {/* {user ? <h1>Welcome Home!</h1> : <Outlet />} */}
         <Outlet />
       </div>
     </>
