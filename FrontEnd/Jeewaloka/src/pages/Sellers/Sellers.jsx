@@ -5,19 +5,19 @@ import {
   editSeller,
   saveSellers,
 } from "../../api/RetailerService";
+import axios from "axios";
 
 const Seller = () => {
   const [sellers, setSellers] = useState([]);
   const [search, setSearch] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [sellerForm, setSellerForm] = useState({
-    sellerCode: "",
-    sellerName: "",
-    sellerContact: "",
-    sellerAddress: "",
-    sellerEmail: "",
-    sellerCreatedDate: "",
+    retailerName: "",
+    retailerContactNo: "",
+    retailerAddress: "",
+    retailerEmail: "",
   });
+  const [sellerId,setSellerId]=useState("");
   const [isViewMode, setIsViewMode] = useState(false);
   const [editingSeller, setEditingSeller] = useState(null);
 
@@ -37,10 +37,14 @@ const Seller = () => {
 
   const handleDeleteSeller = async (sellerId) => {
     try {
-      await deleteSeller(sellerId);
+      const response = deleteSeller(sellerId);
       setSellers((prevSellers) =>
         prevSellers.filter((s) => s.sellerId !== sellerId)
       );
+      if (response){
+        window.alert(`seller ${sellerId} successfully deleted.`)
+        location.reload();
+      }
     } catch (error) {
       console.error("Error deleting seller:", error);
     }
@@ -62,14 +66,14 @@ const Seller = () => {
         await saveSellers(sellerForm);
       }
       setSellerForm({
-        sellerName: "",
-        sellerContact: "",
-        sellerAddress: "",
-        sellerEmail: "",
+        retailerName: "",
+        retailerContactNo: "",
+        retailerAddress: "",
+        retailerEmail: "",
       });
       setEditingSeller(null);
       setShowPopup(false);
-      // fetchSellers();
+      location.reload();
     } catch (error) {
       console.error("Error saving seller:", error);
     }
@@ -82,22 +86,22 @@ const Seller = () => {
   };
   const handleView = (seller) => {
     setSellerForm({
-      sellerCode: seller.sellerCode,
-      sellerName: seller.sellerName,
-      sellerContact: seller.sellerContact,
-      sellerAddress: seller.sellerAddress,
-      sellerEmail: seller.sellerEmail,
-      sellerCreatedDate: seller.sellerCreatedDate,
+      retailerName: seller.retailerName,
+      retailerContactNo: seller.retailerContactNo,
+      retailerAddress: seller.retailerAddress,
+      retailerEmail: seller.retailerEmail,
     });
+    console.log(seller?.retailerId)
+    setSellerId(seller?.retailerId)
 
     setIsViewMode(true); // Set view mode to true
     setEditingSeller(null); // Ensure we are not in edit mode
     setShowPopup(true);
   };
 
-  const filteredSellers = sellers.filter((seller) =>
+  /*const filteredSellers = sellers.filter((seller) =>
     seller.sellerName.toLowerCase().includes(search.toLowerCase())
-  );
+  );*/
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -117,12 +121,10 @@ const Seller = () => {
           onClick={() => {
             setEditingSeller(null); // Ensure we are not in edit mode
             setSellerForm({
-              sellerCode: "",
-              sellerName: "",
-              sellerContact: "",
-              sellerAddress: "",
-              sellerEmail: "",
-              sellerCreatedDate: "",
+              retailerName: "",
+              retailerContactNo: "",
+              retailerAddress: "",
+              retailerEmail: "",
             }); // Reset form
             setShowPopup(true);
           }}
@@ -141,22 +143,20 @@ const Seller = () => {
               <th className="p-3">Contact</th>
               <th className="p-3">Address</th>
               <th className="p-3">Email</th>
-              <th className="p-3">Status</th>
               <th className="p-3">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredSellers.map((seller) => (
+            {sellers.map((seller) => (
               <tr
-                key={seller.sellerId}
+                key={seller?.retailerId}
                 className="border-b hover:bg-gray-50"
               >
-                <td className="p-3">{seller.sellerCode}</td>
-                <td className="p-3">{seller.sellerName}</td>
-                <td className="p-3">{seller.sellerContact}</td>
-                <td className="p-3">{seller.sellerAddress}</td>
-                <td className="p-3">{seller.sellerEmail}</td>
-                <td className="p-3">{seller.sellerStatus}</td>
+                <td className="p-3">{seller?.retailerId}</td>
+                <td className="p-3">{seller?.retailerName}</td>
+                <td className="p-3">{seller?.retailerContactNo}</td>
+                <td className="p-3">{seller?.retailerAddress}</td>
+                <td className="p-3">{seller?.retailerEmail}</td>
                 <td className="p-3 flex space-x-4">
                   <button
                     className="text-green-500"
@@ -173,7 +173,7 @@ const Seller = () => {
                   </button>
                   {<button
                     className="text-red-600"
-                    onClick={() => handleDeleteSeller(seller.sellerId)}
+                    onClick={() => handleDeleteSeller(seller?.retailerId)}
                   >
                     Delete
                   </button>}
@@ -196,12 +196,10 @@ const Seller = () => {
                 setEditingSeller(null);
                 setIsViewMode(false); // Reset view mode
                 setSellerForm({
-                  sellerCode: "",
-                  sellerName: "",
-                  sellerContact: "",
-                  sellerAddress: "",
-                  sellerEmail: "",
-                  sellerCreatedDate: "",
+                  retailerName: "",
+                  retailerContactNo: "",
+                  retailerAddress: "",
+                  retailerEmail: "",
                 });
               }}
             >
@@ -227,7 +225,7 @@ const Seller = () => {
                     <label className="block text-gray-700">Seller Code</label>
                     <input
                       type="text"
-                      value={sellerForm.sellerCode || ""}
+                      value={sellerId || ""}
                       readOnly
                       className="w-full border border-gray-300 p-2 rounded bg-gray-200 cursor-not-allowed"
                     />
@@ -237,9 +235,9 @@ const Seller = () => {
                   <label className="block text-gray-700">Name*</label>
                   <input
                     type="text"
-                    name="sellerName"
+                    name="retailerName"
                     placeholder="Seller Name"
-                    value={sellerForm?.sellerName || ""}
+                    value={sellerForm?.retailerName || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${
@@ -255,9 +253,9 @@ const Seller = () => {
                   <label className="block text-gray-700">Contact</label>
                   <input
                     type="text"
-                    name="sellerContact"
+                    name="retailerContactNo"
                     placeholder="Seller Contact"
-                    value={sellerForm?.sellerContact || ""}
+                    value={sellerForm?.retailerContactNo || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${
@@ -273,9 +271,9 @@ const Seller = () => {
                   <label className="block text-gray-700">Address</label>
                   <input
                     type="text"
-                    name="sellerAddress"
+                    name="retailerAddress"
                     placeholder="Seller Address"
-                    value={sellerForm?.sellerAddress || ""}
+                    value={sellerForm?.retailerAddress || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${
@@ -291,9 +289,9 @@ const Seller = () => {
                   <label className="block text-gray-700">Email</label>
                   <input
                     type="email"
-                    name="sellerEmail"
+                    name="retailerEmail"
                     placeholder="Email Address"
-                    value={sellerForm?.sellerEmail || ""}
+                    value={sellerForm?.retailerEmail || ""}
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${
