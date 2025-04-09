@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Download, Trash2 } from 'lucide-react';
 import {
     saveBill,
-    getBills
+    getBills,
+    deleteBill,
 } from "../../api/InvoiceService"
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -44,13 +45,23 @@ const Invoices = () => {
         }
     }
 
-    const handleDeleteBill = async () => {
-        try {
+    const handleDeleteBill = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this invoice?")) {
+            return;
+        }
 
+        try {
+            await deleteBill(id);
+            // setInvoices((prev) => prev.filter((invoice) => invoice.billNO !== id));
+            await fetchInvoices();
+
+            alert("Invoice deleted successfully.");
         } catch (error) {
             console.error("Error deleting bill:", error);
+            alert("Failed to delete the invoice. Check console for more info.");
         }
-    }
+    };
+
 
     const filteredInvoices = invoices.filter((invoice) => {
         // invoice.BillNO.toString().includes(search.toString())
@@ -125,14 +136,14 @@ const Invoices = () => {
                                 <td className="p-3">{invoice.date}</td>
                                 <td className="p-3">{invoice.billCategory}</td>
                                 <td className="p-3 flex space-x-4">
-                                    <button
+                                    {/* <button
                                         className="text-green-500"
-                                        onClick={() => handleDownloadBill(invoice.BillNO)}
+                                        onClick={() => handleDownloadBill(invoice.billNO)}
                                     >
                                         <Download className="w-5 h-5 text-green-600" />
-                                    </button>
+                                    </button> */}
                                     <button
-                                        onClick={() => handleDeleteBill()}
+                                        onClick={() => handleDeleteBill(invoice.billNO)}
                                         className="p-1 hover:bg-gray-100 rounded"
                                     >
                                         <Trash2 className="w-5 h-5 text-red-600" />

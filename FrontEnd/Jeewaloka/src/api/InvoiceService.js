@@ -10,12 +10,7 @@ export const saveBill = async (invoice) => {
     return response.data;
 };
 
-// export const editSupplier = async (supplier) => {
-//     const response = await axios.put(`suppliers/editsupplier/${supplier.supplierId}`, supplier);
-//     return response.data;
-// };
-
-// export const deleteSupplier = async (id) => {
-//     const response = await axios.delete(`suppliers/deletesupplier/${id}`);
-//     return response.data;
-// };
+export const deleteBill = async (id) => {
+    const response = await axios.delete(`Bill/deleteBill/${id}`);
+    return response.data;
+};

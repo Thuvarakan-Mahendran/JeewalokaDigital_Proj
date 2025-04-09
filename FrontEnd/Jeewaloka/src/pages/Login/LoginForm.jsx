@@ -9,7 +9,7 @@ import logo from './logo.png';
 import lgphoto from './loginphoto.jpg';
 import { AuthContext } from "../../Context/AuthContext";
 import { useNavigate } from 'react-router-dom';
-
+import { Eye, EyeOff } from 'lucide-react';
 
 
 const LoginPage = () => {
@@ -20,6 +20,7 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   // const history = useHistory();
 
   // useEffect(() => {
@@ -90,7 +91,7 @@ const LoginPage = () => {
               required
             />
 
-            <label className="block text-gray-700 mb-1">Password</label>
+            {/* <label className="block text-gray-700 mb-1">Password</label>
             <div className="relative w-full">
               <input
                 type="password"
@@ -102,7 +103,27 @@ const LoginPage = () => {
                 onChange={handleChange}
                 required
               />
+            </div> */}
+            <label className="block text-gray-700 mb-1">Password</label>
+            <div className="relative w-full">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                className="w-full p-2 border border-gray-300 rounded-lg pr-10"
+                placeholder="••••••"
+                value={userCred.password}
+                onChange={handleChange}
+                required
+              />
+              <span
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+                onClick={() => setShowPassword(prev => !prev)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
             </div>
+
 
             {/* Login Button */}
             <button

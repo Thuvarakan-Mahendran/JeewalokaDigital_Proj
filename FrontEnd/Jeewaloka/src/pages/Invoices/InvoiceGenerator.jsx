@@ -6,6 +6,8 @@ import html2canvas from 'html2canvas'
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/AuthContext';
+import { RefreshCw } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 import {
     getSellers,
     // saveRetailer,
@@ -167,6 +169,37 @@ const InvoiceGenerator = () => {
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
         pdf.save(`Invoice-${invoiceData.invoiceNo}.pdf`)
     }
+
+    const handleRefresh = () => {
+        fetchReatilers();
+        fetchItems();
+        fetchUserID();
+        setCurrentItem({
+            id: '',
+            name: '',
+            qty: '',
+            unitPrice: '',
+            amount: 0
+        });
+        setRetailerData({
+            retailerId: '',
+            retailerName: '',
+            limitCredit: null,
+        });
+        setInvoiceData({
+            invoiceNo: '',
+            issueDate: '',
+            user: '',
+            retailer: '',
+            paymentType: '',
+            items: [],
+            billItemList: [],
+            subtotal: 0,
+            discount: 0,
+            total: 0
+        });
+    };
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -359,7 +392,15 @@ const InvoiceGenerator = () => {
         <div className="flex gap-6 p-6 min-h-screen bg-gray-50">
             {/* Left Side - Form */}
             <div className="w-1/2 p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-6">Create Invoice</h2>
+                <div className='flex justify-between'>
+                    <h2 className="text-2xl font-bold mb-6">Create Invoice</h2>
+                    <Button
+                        onClick={handleRefresh}
+                        className='bg-blue-500 text-white mt-3'
+                    >
+                        <RefreshCw />
+                    </Button>
+                </div>
 
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">

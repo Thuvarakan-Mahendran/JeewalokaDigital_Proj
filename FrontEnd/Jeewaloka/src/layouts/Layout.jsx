@@ -196,14 +196,14 @@ const Dashboard = () => {
                       Suppliers
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link
                       to="inventary/purchaseorder"
                       className="block px-4 py-2 text-gray-900 rounded-lg hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                     >
                       Purchase Order
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link
                       to="inventary/grn"

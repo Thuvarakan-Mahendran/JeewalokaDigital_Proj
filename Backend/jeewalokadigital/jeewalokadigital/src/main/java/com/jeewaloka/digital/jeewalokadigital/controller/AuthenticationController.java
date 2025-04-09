@@ -263,7 +263,7 @@ public class AuthenticationController {
         System.out.println("user details are " + userDetails.getUsername() + " " + userDetails.getPassword() + " " + userDetails.getAuthorities());
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
-        String newToken = jwtService.generateToken(claims,userDetails,1000*30);
+        String newToken = jwtService.generateToken(claims,userDetails,1000*60*60);
         return ResponseEntity.ok(newToken);
     }
 

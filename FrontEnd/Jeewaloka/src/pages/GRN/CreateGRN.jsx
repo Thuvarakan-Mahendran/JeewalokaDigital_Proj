@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import { createGRN } from "../../api/GRNService";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { getSuppliers } from "../../api/SupplierService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { getItems } from "../../api/ItemService";
+import { AuthContext } from "../../Context/AuthContext";
 
 const CreateGRN = () => {
   const [grnData, setGRNData] = useState({
@@ -29,50 +30,97 @@ const CreateGRN = () => {
 
   const [items, setItems] = useState([]);
   const [loadingItems, setLoadingItems] = useState(true);
+  const { user } = useContext(AuthContext);
+
+  // useEffect(() => {
+  // const fetchSuppliers = async () => {
+  //   try {
+  //     const response = await getSuppliers();
+  //     if (response) {
+  //       setSuppliers(
+  //         response.data.map((supplier) => ({
+  //           value: supplier.supplierId,
+  //           label: `${supplier.supplierCode} - ${supplier.supplierName}`,
+  //         }))
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching suppliers", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  //   fetchSuppliers();
+  // }, []);
 
   useEffect(() => {
-    const fetchSuppliers = async () => {
-      try {
-        const response = await getSuppliers();
-        if (response) {
-          setSuppliers(
-            response.data.map((supplier) => ({
-              value: supplier.supplierId,
-              label: `${supplier.supplierCode} - ${supplier.supplierName}`,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching suppliers", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSuppliers();
-  }, []);
-
-  useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const response = await getItems();
-        if (response) {
-          setItems(
-            response.map((item) => ({
-              value: item.itemCode,
-              label: `${item.itemCode} - ${item.itemName}`,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching items", error);
-      } finally {
-        setLoadingItems(false);
-      }
-    };
+    // const fetchItems = async () => {
+    //   try {
+    //     const response = await getItems();
+    //     if (response) {
+    //       setItems(
+    //         response.map((item) => ({
+    //           value: item.itemCode,
+    //           label: `${item.itemCode} - ${item.itemName}`,
+    //         }))
+    //       );
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching items", error);
+    //   } finally {
+    //     setLoadingItems(false);
+    //   }
+    // };
 
     fetchItems();
+    fetchSuppliers();
+    // fetchUserID();
+    handleuser();
   }, []);
+
+  const fetchSuppliers = async () => {
+    try {
+      const response = await getSuppliers();
+      if (response) {
+        setSuppliers(
+          response.data.map((supplier) => ({
+            value: supplier.supplierId,
+            label: `${supplier.supplierCode} - ${supplier.supplierName}`,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching suppliers", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleuser = () => {
+    setGRNData((prevData) => ({
+      ...prevData,
+      grnReceivedBy: user.username
+    }))
+  }
+
+  const fetchItems = async () => {
+    try {
+      const response = await getItems();
+      if (response) {
+        setItems(
+          response.map((item) => ({
+            value: item.itemCode,
+            label: `${item.itemCode} - ${item.itemName}`,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching items", error);
+    } finally {
+      setLoadingItems(false);
+    }
+  };
 
   const handleChangeItem = (selectedOption) => {
     console.log("Selected Option:", selectedOption); // For debugging
@@ -150,6 +198,18 @@ const CreateGRN = () => {
     });
   };
 
+  // const fetchUserID = async () => {
+  //   try {
+  //     const response = await getUserID(user.username);
+  //     setGRNData((prevData) => ({
+  //       ...prevData,
+  //       grnReceivedBy: response
+  //     }))
+  //   } catch (error) {
+  //     console.error("Error fetch UserID:", error);
+  //   }
+  // }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -197,7 +257,8 @@ const CreateGRN = () => {
             type="text"
             name="grnReceivedBy"
             value={grnData.grnReceivedBy}
-            onChange={handleInputChange}
+            // onChange={handleInputChange}
+            // value={user}
             className="w-full p-2 border rounded"
             required
           />
@@ -234,27 +295,27 @@ const CreateGRN = () => {
               <tbody>
                 {grnData.grnItems.length > 0
                   ? grnData.grnItems.map((item, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="p-2">
-                          {items.find((i) => i.value === item.itemId)?.label ||
-                            "Unknown Item"}
-                        </td>
+                    <tr key={index} className="border-b">
+                      <td className="p-2">
+                        {items.find((i) => i.value === item.itemId)?.label ||
+                          "Unknown Item"}
+                      </td>
 
-                        <td className="p-2">{item.quantity}</td>
-                        <td className="p-2">Rs. {item.unitPrice}</td>
-                        <td className="p-2">{item.itemExpiryDate}</td>
-                        <td className="p-2">Rs. {item.totalAmount}</td>
-                        <td className="p-2">
-                          <button
-                            type="button"
-                            onClick={() => removeItem(index)}
-                            className="px-4 py-2 text-red-500 hover:text-red-600"
-                          >
-                            <FontAwesomeIcon icon={faMinus} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
+                      <td className="p-2">{item.quantity}</td>
+                      <td className="p-2">Rs. {item.unitPrice}</td>
+                      <td className="p-2">{item.itemExpiryDate}</td>
+                      <td className="p-2">Rs. {item.totalAmount}</td>
+                      <td className="p-2">
+                        <button
+                          type="button"
+                          onClick={() => removeItem(index)}
+                          className="px-4 py-2 text-red-500 hover:text-red-600"
+                        >
+                          <FontAwesomeIcon icon={faMinus} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
                   : null}
                 <tr className="border-b">
                   <td className="p-2 w-1/3">
