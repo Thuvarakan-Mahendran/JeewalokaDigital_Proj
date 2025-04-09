@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Download, Trash2 } from 'lucide-react';
 import {
     saveBill,
     getBills
@@ -35,8 +36,20 @@ const Invoices = () => {
     // }
 
     const handleDownloadBill = async () => {
-        try { }
-        catch (error) { }
+        try {
+
+        }
+        catch (error) {
+
+        }
+    }
+
+    const handleDeleteBill = async () => {
+        try {
+
+        } catch (error) {
+            console.error("Error deleting bill:", error);
+        }
     }
 
     const filteredInvoices = invoices.filter((invoice) => {
@@ -93,10 +106,10 @@ const Invoices = () => {
                             <th className="p-3">InvoiceNO</th>
                             <th className="p-3">User</th>
                             <th className="p-3">Retailer</th>
-                            <th className="p-3">Total</th>
+                            <th className="p-3">Total(Rs)</th>
                             <th className="p-3">Date</th>
                             <th className="p-3">Type</th>
-                            <th className="p-3">Download</th>
+                            <th className="p-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,7 +129,13 @@ const Invoices = () => {
                                         className="text-green-500"
                                         onClick={() => handleDownloadBill(invoice.BillNO)}
                                     >
-                                        Download
+                                        <Download className="w-5 h-5 text-green-600" />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteBill()}
+                                        className="p-1 hover:bg-gray-100 rounded"
+                                    >
+                                        <Trash2 className="w-5 h-5 text-red-600" />
                                     </button>
                                 </td>
                             </tr>

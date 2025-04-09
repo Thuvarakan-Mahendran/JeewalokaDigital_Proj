@@ -67,7 +67,8 @@ const InvoiceGenerator = () => {
     // })
     const [retailerData, setRetailerData] = useState({
         retailerId: '',
-        retailerName: ''
+        retailerName: '',
+        limitCredit: null,
     })
     const [invoiceData, setInvoiceData] = useState({
         invoiceNo: '',
@@ -192,8 +193,13 @@ const InvoiceGenerator = () => {
         setRetailerData(prev => ({
             ...prev,
             retailerId: value ? value : prev.retailerId,
-            retailerName: selectedRetailer ? selectedRetailer.retailerName : prev.retailerName
+            retailerName: selectedRetailer ? selectedRetailer.retailerName : prev.retailerName,
+            limitCredit: selectedRetailer ? selectedRetailer.limitCredit : null
         }))
+        setInvoiceData(prev => ({
+            ...prev,
+            retailer: value // Ensure the retailer ID is set in invoiceData for submission
+        }));
         // console.log(retailerData.retailerId)
     }
 
@@ -272,24 +278,80 @@ const InvoiceGenerator = () => {
     // }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
+        // --- CREDIT LIMIT CHECK ---
+        if (invoiceData.paymentType === 'CREDIT') {
+            // Ensure retailer and their credit limit are loaded
+            if (retailerData.retailerId === '' || retailerData.limitCredit === null || retailerData.limitCredit === undefined) {
+                alert('Please select a retailer to check credit limit.');
+                console.error("Retailer not selected or credit limit not available.", retailerData);
+                return; // Stop submission
+            }
+
+            const currentBillTotal = parseFloat(invoiceData.total);
+            const availableCredit = parseFloat(retailerData.limitCredit);
+
+            if (isNaN(currentBillTotal) || isNaN(availableCredit)) {
+                alert('Error calculating totals or credit limit. Please check values.');
+                console.error("NaN detected in total or credit limit.", invoiceData.total, retailerData.limitCredit);
+                return; // Stop submission
+            }
+
+
+            if (currentBillTotal > availableCredit) {
+                alert(`Error: Bill total (${currentBillTotal.toFixed(2)}) exceeds available credit limit (${availableCredit.toFixed(2)}) for ${retailerData.retailerName}.`);
+                console.error("Credit limit exceeded.");
+                return; // Stop submission
+            }
+            console.log(`Credit check passed for ${retailerData.retailerName}. Bill Total: ${currentBillTotal}, Available Credit: ${availableCredit}`);
+        }
+        // --- END CREDIT LIMIT CHECK ---
+
+
+        // Proceed with saving if check passed or payment type is not CREDIT
         try {
-            // const savedBillItems = handleItemSubmit()
             const billData = {
-                userID: invoiceData.user,
-                retailerID: invoiceData.retailer,
+                // Ensure field names match your backend Bill DTO or Entity expected by the saveBill endpoint
+                // Assuming your backend expects Retailer ID as a string and User ID potentially as a number/string
+                userID: String(invoiceData.user), // Ensure type consistency if backend expects String
+                retailerID: invoiceData.retailer, // This should be the RetailerId string
                 billCategory: invoiceData.paymentType,
                 total: parseFloat(invoiceData.total),
-                // billItemIDS: invoiceData.items.map(item => Number(item.id)),
-                billItems: invoiceData.billItemList
+                billItems: invoiceData.billItemList.map(item => ({
+                    ...item,
+                    // Ensure item ID is correctly formatted if needed (e.g., string/number)
+                    // item: String(item.item), 
+                })),
+                // Add other necessary fields like issueDate if needed by backend
+                // issueDate: invoiceData.issueDate || new Date().toISOString().split('T')[0], // Example: Default to today if empty
             };
-            console.log(billData)
-            const response = await saveBill(billData)
-            console.log("Bill is saved" + response)
-            navigate('/dashboard/sales/invoices')
+
+            console.log("Submitting Bill Data:", billData); // Log data being sent
+
+            // Make sure saveBill API endpoint and service handle the request correctly
+            const response = await saveBill(billData);
+            console.log("Bill is saved", response); // Log response from backend
+
+            // Optional: Show success message
+            alert('Invoice saved successfully!');
+            if (response && response.billNO && response.date) {
+                setInvoiceData(prev => ({
+                    ...prev,
+                    invoiceNo: response.billNO,
+                    issueDate: response.date // Make sure your backend sends it in YYYY-MM-DD or ISO format
+                }));
+            }
+            // navigate('/dashboard/sales/invoices'); // Navigate on success
+
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error saving Bill:", error);
+            // Display specific error from backend if available
+            if (error.response && error.response.data && error.response.data.message) {
+                alert(`Error saving invoice: ${error.response.data.message}`);
+            } else {
+                alert('An error occurred while saving the invoice. Please check console for details.');
+            }
         }
     };
 
@@ -326,7 +388,7 @@ const InvoiceGenerator = () => {
                                     value={user.username}
                                 />
                             </div>
-                            <div className="w-1/2 pr-2">
+                            {/* <div className="w-1/2 pr-2">
                                 <label className="block text-sm mb-1">User to be Notified</label>
                                 <Select
                                     name="retailer"
@@ -335,11 +397,11 @@ const InvoiceGenerator = () => {
                                 >
                                     <option value=''>Select User</option>
                                 </Select>
-                                {/* <Input
+                                <Input
                                     name="userNotify"
                                     value={}
-                                /> */}
-                            </div>
+                                />
+                            </div> */}
                         </div>
                         {/* <label className="block text-sm mb-1">User</label>
                         <Select
@@ -369,6 +431,22 @@ const InvoiceGenerator = () => {
                                 </option>
                             ))}
                         </Select>
+                        {retailerData.retailerId && ( // Only show if a retailer is selected
+                            <div className="mt-2 text-sm text-gray-600"> {/* Added margin-top for spacing */}
+                                Available Credit Limit:
+                                <span className="font-semibold text-red-600 ml-1"> {/* Red text, bold, margin-left */}
+                                    {/* Check if limitCredit is a valid number before formatting */}
+                                    {(retailerData.limitCredit !== null && !isNaN(parseFloat(retailerData.limitCredit)))
+                                        ? `Rs ${parseFloat(retailerData.limitCredit).toFixed(2)}`
+                                        : ' N/A' /* Show N/A if null or not a number */
+                                    }
+                                </span>
+                                {/* Optional: You can keep the warning logic if needed */}
+                                {invoiceData.paymentType === 'CREDIT' && retailerData.limitCredit !== null && parseFloat(invoiceData.total) > parseFloat(retailerData.limitCredit) && (
+                                    <p className="text-orange-600 text-xs mt-1">Warning: Current invoice total exceeds available credit.</p>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div>
@@ -450,6 +528,11 @@ const InvoiceGenerator = () => {
                             <Button
                                 onClick={handleSubmit}
                                 className='mr-2'
+                                disabled={
+                                    invoiceData.paymentType === 'CREDIT' &&
+                                    retailerData.limitCredit !== null &&
+                                    parseFloat(invoiceData.total) > parseFloat(retailerData.limitCredit)
+                                }
                             >
                                 Save
                             </Button>

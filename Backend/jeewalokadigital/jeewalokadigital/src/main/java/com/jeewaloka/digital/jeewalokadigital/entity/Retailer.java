@@ -27,7 +27,9 @@ public class Retailer {
     private String RetailerAddress;
 
     @Column(name = "RetailerEmail",  length = 45 )
-    private String RetailerEmail;
+    private String retailerEmail;
+
+    private Float LimitCredit;
 
     @OneToMany(mappedBy = "retailer", cascade = CascadeType.ALL)
     @Column(name = "BillNO")

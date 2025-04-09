@@ -1,3 +1,4 @@
+// package com.jeewaloka.digital.jeewalokadigital.service;
 package com.jeewaloka.digital.jeewalokadigital.service;
 
 import com.jeewaloka.digital.jeewalokadigital.dto.Request.RequestRetailerDTO;
@@ -15,4 +16,7 @@ public interface RetailerService {
     void updateRetailer(RequestRetailerDTO retailerDTO, String id);
 
     void deleteRetailer(String retailerId);
+
+    // --- NEW METHOD SIGNATURE ---
+    void updateCreditLimit(String retailerId, Float billTotal);
 }

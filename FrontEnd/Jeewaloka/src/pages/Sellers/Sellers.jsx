@@ -17,7 +17,7 @@ const Seller = () => {
     retailerAddress: "",
     retailerEmail: "",
   });
-  const [sellerId,setSellerId]=useState("");
+  const [sellerId, setSellerId] = useState("");
   const [isViewMode, setIsViewMode] = useState(false);
   const [editingSeller, setEditingSeller] = useState(null);
 
@@ -41,7 +41,7 @@ const Seller = () => {
       setSellers((prevSellers) =>
         prevSellers.filter((s) => s.sellerId !== sellerId)
       );
-      if (response){
+      if (response) {
         window.alert(`seller ${sellerId} successfully deleted.`)
         location.reload();
       }
@@ -103,6 +103,15 @@ const Seller = () => {
     seller.sellerName.toLowerCase().includes(search.toLowerCase())
   );*/
 
+  const filteredSellers = sellers.filter((seller) => {
+    const lowerSearch = search.toLowerCase();
+    return (
+      seller.retailerName?.toLowerCase().includes(lowerSearch) ||
+      seller.retailerAddress?.toLowerCase().includes(lowerSearch)
+    );
+  });
+
+
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-semibold text-gray-800">All Sellers</h2>
@@ -147,7 +156,7 @@ const Seller = () => {
             </tr>
           </thead>
           <tbody>
-            {sellers.map((seller) => (
+            {filteredSellers.map((seller) => (
               <tr
                 key={seller?.retailerId}
                 className="border-b hover:bg-gray-50"
@@ -241,8 +250,8 @@ const Seller = () => {
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${isViewMode
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      ? "bg-gray-200 cursor-not-allowed"
+                      : "focus:outline-none focus:ring-2 focus:ring-blue-500"
                       }`}
                     required
                   />
@@ -258,8 +267,8 @@ const Seller = () => {
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${isViewMode
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      ? "bg-gray-200 cursor-not-allowed"
+                      : "focus:outline-none focus:ring-2 focus:ring-blue-500"
                       }`}
                     required
                   />
@@ -275,8 +284,8 @@ const Seller = () => {
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${isViewMode
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      ? "bg-gray-200 cursor-not-allowed"
+                      : "focus:outline-none focus:ring-2 focus:ring-blue-500"
                       }`}
                     required
                   />
@@ -292,8 +301,8 @@ const Seller = () => {
                     onChange={handleInputChange}
                     readOnly={isViewMode} // Make it read-only in view mode
                     className={`w-full border border-gray-300 p-2 rounded ${isViewMode
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      ? "bg-gray-200 cursor-not-allowed"
+                      : "focus:outline-none focus:ring-2 focus:ring-blue-500"
                       }`}
                     required
                   />
