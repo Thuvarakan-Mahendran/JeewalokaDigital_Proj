@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { NumericFormat } from 'react-number-format'
 import { useRef } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { jwtDecode } from 'jwt-decode'
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Context/AuthContext';
+import { RefreshCw } from 'lucide-react';
+import { RefreshCcw } from 'lucide-react';
 import {
     getSellers,
     // saveRetailer,
@@ -53,6 +57,8 @@ const InvoiceGenerator = () => {
     const contentRef = useRef(null)
     const [retailers, setRetailers] = useState([])
     const [items, setItems] = useState([])
+    const { user } = useContext(AuthContext)
+    const navigate = useNavigate();
     // const [userData, setUserData] = useState({
     //     userId: '',
     //     userName: ''
@@ -63,7 +69,8 @@ const InvoiceGenerator = () => {
     // })
     const [retailerData, setRetailerData] = useState({
         retailerId: '',
-        retailerName: ''
+        retailerName: '',
+        limitCredit: null,
     })
     const [invoiceData, setInvoiceData] = useState({
         invoiceNo: '',
@@ -89,7 +96,8 @@ const InvoiceGenerator = () => {
     useEffect(() => {
         fetchReatilers()
         fetchItems()
-        setUserLoggedIn()
+        // setUserLoggedIn()
+        fetchUserID()
     }, []);
 
     const fetchItems = async () => {
@@ -99,6 +107,18 @@ const InvoiceGenerator = () => {
         } catch (error) {
             console.error("Error fetching Items:", error);
             setItems([]);
+        }
+    }
+
+    const fetchUserID = async () => {
+        try {
+            const response = await getUserID(user.username);
+            setInvoiceData((prevData) => ({
+                ...prevData,
+                user: response
+            }))
+        } catch (error) {
+            console.error("Error fetch UserID:", error);
         }
     }
 
@@ -113,25 +133,25 @@ const InvoiceGenerator = () => {
         }
     }
 
-    const getUserName = () => {
-        const token = localStorage.getItem("accessToken"); //should match the key used when storing the token -> localStorage.setItem("token", receivedJwtToken);
-        if (token) {
-            const decoded = jwtDecode(token)
-            return decoded.username;
-        }
-        return ""
-    }
+    // const getUserName = () => {
+    //     const token = localStorage.getItem("accessToken"); //should match the key used when storing the token -> localStorage.setItem("token", receivedJwtToken);
+    //     if (token) {
+    //         const decoded = jwtDecode(token)
+    //         return decoded.username;
+    //     }
+    //     return ""
+    // }
 
-    const setUserLoggedIn = async () => {
-        console.log("useEffect started")
-        // const loggedInUserName = getUserName();
-        // const loggedInUserID = await getUserID(loggedInUserName)
-        console.log("in useEffect and going to store value for user in invoice data")
-        setInvoiceData((prevData) => ({
-            ...prevData,
-            user: 3 //loggedInUserID, // Set the logged-in user id
-        }));
-    };
+    // const setUserLoggedIn = async () => {
+    //     console.log("useEffect started")
+    //     // const loggedInUserName = getUserName();
+    //     // const loggedInUserID = await getUserID(loggedInUserName)
+    //     console.log("in useEffect and going to store value for user in invoice data")
+    //     setInvoiceData((prevData) => ({
+    //         ...prevData,
+    //         user: 3 //loggedInUserID, // Set the logged-in user id
+    //     }));
+    // };
 
     const handleDownloadPDF = async () => {
         if (contentRef.current == null) {
@@ -149,6 +169,37 @@ const InvoiceGenerator = () => {
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
         pdf.save(`Invoice-${invoiceData.invoiceNo}.pdf`)
     }
+
+    const handleRefresh = () => {
+        fetchReatilers();
+        fetchItems();
+        fetchUserID();
+        setCurrentItem({
+            id: '',
+            name: '',
+            qty: '',
+            unitPrice: '',
+            amount: 0
+        });
+        setRetailerData({
+            retailerId: '',
+            retailerName: '',
+            limitCredit: null,
+        });
+        setInvoiceData({
+            invoiceNo: '',
+            issueDate: '',
+            user: '',
+            retailer: '',
+            paymentType: '',
+            items: [],
+            billItemList: [],
+            subtotal: 0,
+            discount: 0,
+            total: 0
+        });
+    };
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target
@@ -175,8 +226,13 @@ const InvoiceGenerator = () => {
         setRetailerData(prev => ({
             ...prev,
             retailerId: value ? value : prev.retailerId,
-            retailerName: selectedRetailer ? selectedRetailer.retailerName : prev.retailerName
+            retailerName: selectedRetailer ? selectedRetailer.retailerName : prev.retailerName,
+            limitCredit: selectedRetailer ? selectedRetailer.limitCredit : null
         }))
+        setInvoiceData(prev => ({
+            ...prev,
+            retailer: value // Ensure the retailer ID is set in invoiceData for submission
+        }));
         // console.log(retailerData.retailerId)
     }
 
@@ -255,23 +311,80 @@ const InvoiceGenerator = () => {
     // }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
+        // --- CREDIT LIMIT CHECK ---
+        if (invoiceData.paymentType === 'CREDIT') {
+            // Ensure retailer and their credit limit are loaded
+            if (retailerData.retailerId === '' || retailerData.limitCredit === null || retailerData.limitCredit === undefined) {
+                alert('Please select a retailer to check credit limit.');
+                console.error("Retailer not selected or credit limit not available.", retailerData);
+                return; // Stop submission
+            }
+
+            const currentBillTotal = parseFloat(invoiceData.total);
+            const availableCredit = parseFloat(retailerData.limitCredit);
+
+            if (isNaN(currentBillTotal) || isNaN(availableCredit)) {
+                alert('Error calculating totals or credit limit. Please check values.');
+                console.error("NaN detected in total or credit limit.", invoiceData.total, retailerData.limitCredit);
+                return; // Stop submission
+            }
+
+
+            if (currentBillTotal > availableCredit) {
+                alert(`Error: Bill total (${currentBillTotal.toFixed(2)}) exceeds available credit limit (${availableCredit.toFixed(2)}) for ${retailerData.retailerName}.`);
+                console.error("Credit limit exceeded.");
+                return; // Stop submission
+            }
+            console.log(`Credit check passed for ${retailerData.retailerName}. Bill Total: ${currentBillTotal}, Available Credit: ${availableCredit}`);
+        }
+        // --- END CREDIT LIMIT CHECK ---
+
+
+        // Proceed with saving if check passed or payment type is not CREDIT
         try {
-            // const savedBillItems = handleItemSubmit()
             const billData = {
-                userID: invoiceData.user,
-                retailerID: invoiceData.retailer,
+                // Ensure field names match your backend Bill DTO or Entity expected by the saveBill endpoint
+                // Assuming your backend expects Retailer ID as a string and User ID potentially as a number/string
+                userID: String(invoiceData.user), // Ensure type consistency if backend expects String
+                retailerID: invoiceData.retailer, // This should be the RetailerId string
                 billCategory: invoiceData.paymentType,
                 total: parseFloat(invoiceData.total),
-                // billItemIDS: invoiceData.items.map(item => Number(item.id)),
-                billItems: invoiceData.billItemList
+                billItems: invoiceData.billItemList.map(item => ({
+                    ...item,
+                    // Ensure item ID is correctly formatted if needed (e.g., string/number)
+                    // item: String(item.item), 
+                })),
+                // Add other necessary fields like issueDate if needed by backend
+                // issueDate: invoiceData.issueDate || new Date().toISOString().split('T')[0], // Example: Default to today if empty
             };
-            console.log(billData)
-            const response = await saveBill(billData)
-            console.log("Bill is saved" + response)
+
+            console.log("Submitting Bill Data:", billData); // Log data being sent
+
+            // Make sure saveBill API endpoint and service handle the request correctly
+            const response = await saveBill(billData);
+            console.log("Bill is saved", response); // Log response from backend
+
+            // Optional: Show success message
+            alert('Invoice saved successfully!');
+            if (response && response.billNO && response.date) {
+                setInvoiceData(prev => ({
+                    ...prev,
+                    invoiceNo: response.billNO,
+                    issueDate: response.date // Make sure your backend sends it in YYYY-MM-DD or ISO format
+                }));
+            }
+            // navigate('/dashboard/sales/invoices'); // Navigate on success
+
         } catch (error) {
-            console.error("Error:", error);
+            console.error("Error saving Bill:", error);
+            // Display specific error from backend if available
+            if (error.response && error.response.data && error.response.data.message) {
+                alert(`Error saving invoice: ${error.response.data.message}`);
+            } else {
+                alert('An error occurred while saving the invoice. Please check console for details.');
+            }
         }
     };
 
@@ -279,7 +392,15 @@ const InvoiceGenerator = () => {
         <div className="flex gap-6 p-6 min-h-screen bg-gray-50">
             {/* Left Side - Form */}
             <div className="w-1/2 p-6 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-6">Create Invoice</h2>
+                <div className='flex justify-between'>
+                    <h2 className="text-2xl font-bold mb-6">Create Invoice</h2>
+                    <Button
+                        onClick={handleRefresh}
+                        className='bg-blue-500 text-white mt-3'
+                    >
+                        <RefreshCw />
+                    </Button>
+                </div>
 
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
@@ -300,13 +421,28 @@ const InvoiceGenerator = () => {
                                 onChange={handleInputChange}
                             />
                         </div> */}
-                        <div>
-                            <label className="block text-sm mb-1">User</label>
-                            <Input
-                                name="userNo"
-                                value={invoiceData.user}
-                            // onChange={handleUserChange}
-                            />
+                        <div className='flex justify-between w-full'>
+                            <div className="w-1/2 pr-2">
+                                <label className="block text-sm mb-1">User</label>
+                                <Input
+                                    name="user"
+                                    value={user.username}
+                                />
+                            </div>
+                            {/* <div className="w-1/2 pr-2">
+                                <label className="block text-sm mb-1">User to be Notified</label>
+                                <Select
+                                    name="retailer"
+                                    value={invoiceData.retailer}
+                                    onChange={handleRetailerChange}
+                                >
+                                    <option value=''>Select User</option>
+                                </Select>
+                                <Input
+                                    name="userNotify"
+                                    value={}
+                                />
+                            </div> */}
                         </div>
                         {/* <label className="block text-sm mb-1">User</label>
                         <Select
@@ -336,6 +472,22 @@ const InvoiceGenerator = () => {
                                 </option>
                             ))}
                         </Select>
+                        {retailerData.retailerId && ( // Only show if a retailer is selected
+                            <div className="mt-2 text-sm text-gray-600"> {/* Added margin-top for spacing */}
+                                Available Credit Limit:
+                                <span className="font-semibold text-red-600 ml-1"> {/* Red text, bold, margin-left */}
+                                    {/* Check if limitCredit is a valid number before formatting */}
+                                    {(retailerData.limitCredit !== null && !isNaN(parseFloat(retailerData.limitCredit)))
+                                        ? `Rs ${parseFloat(retailerData.limitCredit).toFixed(2)}`
+                                        : ' N/A' /* Show N/A if null or not a number */
+                                    }
+                                </span>
+                                {/* Optional: You can keep the warning logic if needed */}
+                                {invoiceData.paymentType === 'CREDIT' && retailerData.limitCredit !== null && parseFloat(invoiceData.total) > parseFloat(retailerData.limitCredit) && (
+                                    <p className="text-orange-600 text-xs mt-1">Warning: Current invoice total exceeds available credit.</p>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div>
@@ -393,6 +545,20 @@ const InvoiceGenerator = () => {
                             /> */}
                             <Button onClick={addItem}>Add Item</Button>
                         </div>
+                        <h3 className="text-lg font-semibold mb-4">Discount</h3>
+                        <div>
+                            <Input
+                                type="number"
+                                placeholder="%"
+                                name="discount"
+                                value={invoiceData.discount}
+                                onChange={handleInputChange}
+                                min="0"
+                                max="100"
+                                step="0.1"
+                                className="w-40 px-2 py-1 border rounded text-left"
+                            />
+                        </div>
                         <div>
                             <Button
                                 onClick={handleDownloadPDF}
@@ -403,6 +569,11 @@ const InvoiceGenerator = () => {
                             <Button
                                 onClick={handleSubmit}
                                 className='mr-2'
+                                disabled={
+                                    invoiceData.paymentType === 'CREDIT' &&
+                                    retailerData.limitCredit !== null &&
+                                    parseFloat(invoiceData.total) > parseFloat(retailerData.limitCredit)
+                                }
                             >
                                 Save
                             </Button>
@@ -421,9 +592,9 @@ const InvoiceGenerator = () => {
                             <p className="text-gray-600">Date: {invoiceData.issueDate}</p>
                         </div>
                         <div className="text-right">
-                            <h2 className="font-bold">Jeewaloka</h2>
-                            <p className="text-gray-600">Address Line 1</p>
-                            <p className="text-gray-600">City, State, ZIP</p>
+                            <h2 className="font-bold">Jeewaloka Osusala,</h2>
+                            <p className="text-gray-600">Dahamana,</p>
+                            <p className="text-gray-600">Balangoda.</p>
                         </div>
                     </div>
                 </div>
@@ -473,7 +644,7 @@ const InvoiceGenerator = () => {
                         </div>
                         <div className="flex justify-between py-2">
                             <span>Discount:</span>
-                            <span>{invoiceData.discount.toFixed(2)}</span>
+                            <span>{invoiceData.discount}%</span>
                         </div>
                         <div className="flex justify-between py-2 font-bold">
                             <span>Total:</span>

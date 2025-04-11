@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class RateLimiterService {
     private final RedisTemplate<String, Object> redisTokenTemplate;
-    private static final int REQUEST_LIMIT = 5;
+    private static final int REQUEST_LIMIT = 10;
     private static final int TIME_WINDOW_SECONDS = 1000*10;
     @Autowired
     public RateLimiterService(@Qualifier("redisTokenTemplate") RedisTemplate<String, Object> redisTokenTemplate){

@@ -1,6 +1,5 @@
 package com.jeewaloka.digital.jeewalokadigital.dto.Response;
 
-
 import lombok.*;
 
 import java.util.List;
@@ -14,6 +13,7 @@ public class ResponseRetailerDTO {
     private String RetailerName;
     private String RetailerContactNo;
     private String RetailerAddress;
-    private String RetailerEmail;
+    private String retailerEmail;
+    private Float LimitCredit; // <-- ADDED
     private List<Long> billIds;
 }

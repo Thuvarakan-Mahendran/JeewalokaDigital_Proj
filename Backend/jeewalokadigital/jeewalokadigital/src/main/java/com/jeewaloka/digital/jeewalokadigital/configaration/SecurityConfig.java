@@ -144,12 +144,22 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/auth/login", "/api/auth/refresh-token").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/api/auth/**").hasAuthority("ROLE_ADMIN") // Be careful with overlaps
+//                        .requestMatchers(HttpMethod.GET,"/api/presence/online").hasAuthority("ROLE_CASHIER")
+                        .requestMatchers("/api/presence/online","/api/presence/online").hasAnyAuthority("ROLE_ADMIN","ROLE_CASHIER","ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.GET,"/api/auth/sessions").hasAnyAuthority("ROLE_ADMIN","ROLE_CASHIER","ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/auth/revoke-session","/api/auth/revokeAllSessions").hasAnyAuthority("ROLE_ADMIN","ROLE_CASHIER","ROLE_MANAGER")
+                        .requestMatchers(HttpMethod.GET,"/api/items/getitems","/api/retailer/getAllRetailers","/api/userCreds/findUserID/**").hasAnyAuthority("ROLE_ADMIN","ROLE_CASHIER")
+                        .requestMatchers("/api/items/**","/api/suppliers/**").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
+                        .requestMatchers("/api/grns/**").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
+                        .requestMatchers("/api/Bill/**","/api/BillItem/**","/api/retailer/**").hasAnyAuthority("ROLE_ADMIN","ROLE_CASHIER")
+//                                .requestMatchers().hasAnyAuthority("ROLE_ADMIN","ROLE_CASHIER")
+                        .requestMatchers("/api/**").hasAuthority("ROLE_ADMIN")
+//                        .requestMatchers()
 //                        .requestMatchers(HttpMethod.GET,"/api/users/getusers", "/api/userCreds/getUserCreds").hasRole("ADMIN")
-                        .requestMatchers("/api/users/**","/api/userCreds/**").hasRole("ADMIN")
+//                        .requestMatchers("/api/users/**","/api/userCreds/**").hasRole("ADMIN")
                         // Add rules for suppliers and items if they also need ADMIN role
-                        .requestMatchers("/api/suppliers/**", "/api/items/**").hasRole("ADMIN") // <-- ADDED EXAMPLE
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/api/suppliers/**", "/api/items/**").hasRole("ADMIN") // <-- ADDED EXAMPLE
+//                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

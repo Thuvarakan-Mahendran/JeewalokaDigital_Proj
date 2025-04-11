@@ -97,11 +97,11 @@ const DashboardPage = () => {
               {new Date(parseInt(session.createdAt, 10)).toLocaleString()}
             </p> */}
             </div>
-            <div onClick={handleRevokeSession}
+            {/* <div onClick={handleRevokeSession}
               className='items-center'
             >
               <FontAwesomeIcon icon={faTimes} className='text-gray-600 cursor-pointer text-2xl' />
-            </div>
+            </div> */}
             {/* </div> */}
           </div>
         ))
@@ -110,7 +110,7 @@ const DashboardPage = () => {
       <button
         onClick={handleRevokeAllSessions}
         disabled={revokeLoading}
-        className='py-2.5 px-5 text-base bg-red-600 text-white rounded-lg cursor-pointer'
+        className='py-2.5 px-5 m-3 text-base bg-red-600 text-white rounded-lg cursor-pointer'
       >
         {revokeLoading ? 'Revoking...' : 'Revoke All Sessions'}
       </button>
@@ -143,9 +143,9 @@ const DashboardPage = () => {
         )}
       </div>
       <br></br>
-      <div>
+      {/* <div>
         <h1 className="text-2xl font-semibold mb-4 text-gray-800 border-b pb-2">Notifications</h1>
-      </div>
+      </div> */}
     </div >
   );
 };

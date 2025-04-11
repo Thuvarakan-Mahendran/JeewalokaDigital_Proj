@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Download, Trash2 } from 'lucide-react';
 import {
     saveBill,
-    getBills
+    getBills,
+    deleteBill,
 } from "../../api/InvoiceService"
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -35,14 +37,36 @@ const Invoices = () => {
     // }
 
     const handleDownloadBill = async () => {
-        try { }
-        catch (error) { }
+        try {
+
+        }
+        catch (error) {
+
+        }
     }
+
+    const handleDeleteBill = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this invoice?")) {
+            return;
+        }
+
+        try {
+            await deleteBill(id);
+            // setInvoices((prev) => prev.filter((invoice) => invoice.billNO !== id));
+            await fetchInvoices();
+
+            alert("Invoice deleted successfully.");
+        } catch (error) {
+            console.error("Error deleting bill:", error);
+            alert("Failed to delete the invoice. Check console for more info.");
+        }
+    };
+
 
     const filteredInvoices = invoices.filter((invoice) => {
         // invoice.BillNO.toString().includes(search.toString())
         const matchesBillNo = search ? invoice.billNO.toString().includes(search.toString()) : true
-        const matchesIssuedDate = idate ? new Date(invoice.date) === new Date(idate) : true
+        const matchesIssuedDate = idate ? invoice.date === idate : true
         // let matchesIssuedDate = true;
         // if (idate) {
         //     const invoiceDate = parse(invoice.date, "yyyy/MM/dd", new Date());
@@ -93,10 +117,10 @@ const Invoices = () => {
                             <th className="p-3">InvoiceNO</th>
                             <th className="p-3">User</th>
                             <th className="p-3">Retailer</th>
-                            <th className="p-3">Total</th>
+                            <th className="p-3">Total(Rs)</th>
                             <th className="p-3">Date</th>
                             <th className="p-3">Type</th>
-                            <th className="p-3">Download</th>
+                            <th className="p-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,11 +136,17 @@ const Invoices = () => {
                                 <td className="p-3">{invoice.date}</td>
                                 <td className="p-3">{invoice.billCategory}</td>
                                 <td className="p-3 flex space-x-4">
-                                    <button
+                                    {/* <button
                                         className="text-green-500"
-                                        onClick={() => handleDownloadBill(invoice.BillNO)}
+                                        onClick={() => handleDownloadBill(invoice.billNO)}
                                     >
-                                        Download
+                                        <Download className="w-5 h-5 text-green-600" />
+                                    </button> */}
+                                    <button
+                                        onClick={() => handleDeleteBill(invoice.billNO)}
+                                        className="p-1 hover:bg-gray-100 rounded"
+                                    >
+                                        <Trash2 className="w-5 h-5 text-red-600" />
                                     </button>
                                 </td>
                             </tr>
