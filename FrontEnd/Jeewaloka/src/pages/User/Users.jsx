@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { KeyIcon, KeyRound, Pencil, Trash2 } from 'lucide-react';
+import { KeyRound, Pencil, Trash2 } from 'lucide-react';
 import { getUsers, saveUser, editsUser, deleteUser } from "../../api/UserService";
 import { saveUserCred, getUserCreds, deleteUserCred } from "../../api/UserCredService"
 import { useWebSocket } from '../../Context/WebSocketContext';
@@ -12,10 +12,10 @@ const Users = () => {
     const [isUserCred, setIsUserCred] = useState(false);
     const [userCred, setUserCred] = useState(null)
     const [userCreds, setUserCreds] = useState([]);
-    const [refresh, setRefresh] = useState(false);
+    // const [refresh, setRefresh] = useState(false);
     const [isViewMode, setIsViewMode] = useState(false)
     const { isConnected, onlineUsers } = useWebSocket();
-    // let statusColor = null;
+    const [contactError, setContactError] = useState('');
 
     useEffect(() => {
         fetchUsers();
@@ -26,7 +26,6 @@ const Users = () => {
         try {
             const response = await getUsers();
             setUsers(Array.isArray(response) ? response : response?.data || []);
-            // console.log(response)
         } catch (error) {
             console.error("Error fetching users:", error);
             setUsers([]);
@@ -45,7 +44,6 @@ const Users = () => {
 
     const handleOnlineCheck = (username) => {
         const isOnline = isConnected && onlineUsers.has(username);
-        // const statusText = isConnected ? (isOnline ? 'Online' : 'Offline') : 'Connecting...';
         return isConnected ? (isOnline ? 'bg-green-500' : 'bg-gray-400') : 'bg-orange-400';
     }
 
@@ -69,6 +67,11 @@ const Users = () => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!isValidEmail(editingUser.email)) {
+            console.log("entered handle update")
+            alert("Please enter a valid email")
+            return;
+        }
         try {
             await editsUser(editingUser);
             setUsers((prevUsers) =>
@@ -85,6 +88,11 @@ const Users = () => {
 
     const handleSave = async (e) => {
         e.preventDefault()
+        if (!isValidEmail(editingUser.email)) {
+            console.log("entered handle save")
+            alert("Please enter a valid email")
+            return;
+        }
         try {
             const savedUser = await saveUser(editingUser);
             setUsers((prevUsers) => [...prevUsers, savedUser]);
@@ -129,6 +137,25 @@ const Users = () => {
             // setRefresh(prev => !prev)
         } catch (error) {
             console.error("Error deleting credentials:", error);
+        }
+    }
+
+    const isValidEmail = (email) => {
+        console.log("entered is valid email")
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(email)
+    }
+
+    const handleContactChange = (e) => {
+        setEditingUser({ ...editingUser, contact: e.target.value })
+        if (/^\d*$/.test(e.target.value)) {
+            if (e.target.value.length == 10) {
+                setContactError('')
+            } else {
+                setContactError('Please enter a valid 10 digit phone number')
+            }
+        } else {
+            setContactError('only numbers are allowed')
         }
     }
 
@@ -189,8 +216,11 @@ const Users = () => {
                                     type="text"
                                     className="w-full px-3 py-2 border rounded"
                                     value={editingUser.contact}
-                                    onChange={(e) => setEditingUser({ ...editingUser, contact: e.target.value })}
+                                    // onChange={(e) => setEditingUser({ ...editingUser, contact: e.target.value })}
+                                    onChange={handleContactChange}
+                                    maxLength={10}
                                 />
+                                {contactError && <p className='text-red-500 text-sm mt-1'>{contactError}</p>}
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2">Email</label>
