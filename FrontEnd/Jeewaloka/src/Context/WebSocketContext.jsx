@@ -1,28 +1,26 @@
 import React, { createContext, useContext, useEffect, useState, useRef, useCallback } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { AuthContext } from './AuthContext'; // Import AuthContext
-import { getAccessToken } from '../api/TokenService'; // Get token service
-import api from '../api/axiosInstance'; // Use your configured axios instance
+import { AuthContext } from './AuthContext';
+import { getAccessToken } from '../api/TokenService';
+import api from '../api/axiosInstance';
 
 const WebSocketContext = createContext(null);
 
 export const useWebSocket = () => useContext(WebSocketContext);
 
 const socketFactory = () => {
-    // Ensure URL matches your backend endpoint in WebSocketConfig
-    return new SockJS('http://localhost:8080/ws'); // Adjust port if needed
+    return new SockJS('http://localhost:8080/ws');
 };
 
 export const WebSocketProvider = ({ children }) => {
-    const { user } = useContext(AuthContext); // Get user from AuthContext
+    const { user } = useContext(AuthContext);
     const [stompClient, setStompClient] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [onlineUsers, setOnlineUsers] = useState(new Set()); // Store online usernames
     const subscriptions = useRef({});
     const clientRef = useRef(null); // Ref to hold the client instance persistently
 
-    // Function to fetch initial list of online users
     const fetchInitialOnlineUsers = useCallback(async () => {
         if (!user) return; // Don't fetch if not logged in
         try {

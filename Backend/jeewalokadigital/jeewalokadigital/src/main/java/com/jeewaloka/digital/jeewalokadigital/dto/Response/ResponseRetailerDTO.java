@@ -14,6 +14,6 @@ public class ResponseRetailerDTO {
     private String RetailerContactNo;
     private String RetailerAddress;
     private String retailerEmail;
-    private Float LimitCredit; // <-- ADDED
+    private Float LimitCredit;
     private List<Long> billIds;
 }

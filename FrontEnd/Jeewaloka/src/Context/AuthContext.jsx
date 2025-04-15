@@ -233,27 +233,19 @@ export const AuthProvider = ({ children }) => {
 
                     if (isExpired) {
                         console.log('Auth check: Token expired, removing.');
-                        removeAccessToken(); // Clean up expired token
-                        // currentUser remains null
+                        removeAccessToken();
                     } else {
-                        // Token exists and is valid
-                        // *** Use consistent field for username (e.g., 'sub') ***
                         currentUser = { username: decoded.sub, role: decoded.role };
                         console.log("Auth check: User restored from valid token. Role:", decoded.role);
                     }
                 } catch (error) {
-                    // Token exists but is invalid (decoding failed)
                     console.error('Auth check: Invalid token found, removing.', error);
-                    removeAccessToken(); // Clean up invalid token
-                    // currentUser remains null
+                    removeAccessToken();
                 }
             } else {
-                // No token found
                 console.log("Auth check: No token found.");
-                // currentUser remains null
             }
 
-            // Only update state if the component is still mounted
             if (isMounted) {
                 setUser(currentUser); // Set the user (or null) based on checks
                 setLoading(false);    // Set loading to false *after* all checks and user state are set
@@ -267,11 +259,10 @@ export const AuthProvider = ({ children }) => {
             isMounted = false;
             console.log("AuthProvider effect cleanup"); // Add log for debugging
         };
-    }, []); // Empty dependency array ensures this runs only once on initial mount
+    }, []);
 
     console.log(`AuthProvider rendering: loading=${loading}, user=${user?.username}`); // Add log
 
-    // --- Conditional Rendering (Remains the Same) ---
     // Render loading indicator while checking auth status
     if (loading) {
         return <div>Loading authentication...</div>;

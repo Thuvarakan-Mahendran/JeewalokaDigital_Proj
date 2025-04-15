@@ -4,10 +4,9 @@ import com.jeewaloka.digital.jeewalokadigital.entity.Retailer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional; // <-- Import Optional
+import java.util.Optional;
 
 @Repository
 public interface RetailerRepo extends JpaRepository<Retailer, String> {
-    // --- NEW METHOD SIGNATURE ---
-    Optional<Retailer> findByRetailerEmail(String email); // Used for checking duplicates
+    Optional<Retailer> findByRetailerEmail(String email);
 }

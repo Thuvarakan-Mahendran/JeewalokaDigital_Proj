@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 public class Retailer {
     @Id
-    @Column(name = "RetailerId", length = 80)  // is it good to define RestailerId as retailerId?
+    @Column(name = "RetailerId", length = 80)
     private String RetailerId;
 
     @Column(name = "RetailerName", length = 45 )

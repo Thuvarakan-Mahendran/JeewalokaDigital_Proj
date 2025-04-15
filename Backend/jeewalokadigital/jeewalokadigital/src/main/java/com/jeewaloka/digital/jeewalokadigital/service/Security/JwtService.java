@@ -22,8 +22,6 @@ public class JwtService {
         this.jwtProperties = jwtProperties;
     }
 
-    // Generate token for user
-//    public String generateTokens(UserDetails userDetails) {return generateToken(new HashMap<>(), userDetails);}
 
     public Map<String, String> generateTokens(UserDetails userDetails) {
         Map<String, String> tokens = new HashMap<>();

@@ -1,6 +1,6 @@
 package com.jeewaloka.digital.jeewalokadigital.Interceptor;
 
-import com.jeewaloka.digital.jeewalokadigital.service.RateLimiterService;
+import com.jeewaloka.digital.jeewalokadigital.service.Security.RateLimiterService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
