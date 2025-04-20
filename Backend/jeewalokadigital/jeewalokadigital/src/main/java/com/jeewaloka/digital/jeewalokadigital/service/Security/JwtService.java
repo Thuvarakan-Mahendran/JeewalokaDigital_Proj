@@ -25,7 +25,7 @@ public class JwtService {
 
     public Map<String, String> generateTokens(UserDetails userDetails) {
         Map<String, String> tokens = new HashMap<>();
-        tokens.put("accessToken", generateToken(new HashMap<>(), userDetails, 1000*60*60));
+        tokens.put("accessToken", generateToken(new HashMap<>(), userDetails, 1000*30));
         tokens.put("refreshToken",generateToken(new HashMap<>(), userDetails, 1000*60*60*24*7));
         return tokens;
     }
