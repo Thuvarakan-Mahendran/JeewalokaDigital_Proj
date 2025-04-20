@@ -9,8 +9,11 @@ const WebSocketContext = createContext(null);
 
 export const useWebSocket = () => useContext(WebSocketContext);
 
+const wsBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080');
+console.log("WebSocket Base URL:", wsBaseUrl);
+
 const socketFactory = () => {
-    return new SockJS('http://localhost:8080/ws');
+    return new SockJS(wsBaseUrl + "/ws");
 };
 
 export const WebSocketProvider = ({ children }) => {

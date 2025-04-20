@@ -312,8 +312,9 @@ api.interceptors.response.use(
 
         // Check if it's a 401 error and not a retry request,
         // and the failed request was not for the refresh token endpoint itself
+        console.log("going for if statement")
         if (error.response?.status === 401 && !originalRequest._retry && originalRequest.url !== '/auth/refresh-token') {
-
+            console.log(isRefreshing);
             // Prevent multiple refresh attempts concurrently
             if (isRefreshing) {
                 console.log("Response Interceptor - Already refreshing, queuing request:", originalRequest.url); // Debug

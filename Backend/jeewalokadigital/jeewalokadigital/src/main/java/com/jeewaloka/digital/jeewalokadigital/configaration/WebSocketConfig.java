@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //        WebSocketMessageBrokerConfigurer.super.registerStompEndpoints(registry);
         registry
                 .addEndpoint("/ws")    //to establish the connection via this path
-                .setAllowedOrigins("http://localhost:5173")      //allows cross origin request from which domains
+                .setAllowedOrigins("http://localhost:3000", "http://127.0.0.1:3000", "http://frontend:80") //allows cross origin request from which domains
                 .withSockJS();              //enable SockJS fallback option for browser that don't support web socket
     }
 

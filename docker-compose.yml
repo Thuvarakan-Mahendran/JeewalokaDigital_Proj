@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./Backend/jeewalokadigital/jeewalokadigital
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/Jeewalokadigital_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    restart: on-failure
+
+  frontend:
+    build:
+      context: ./FrontEnd/Jeewaloka
+      args:
+        VITE_API_BASE_URL: http://localhost:8080
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+
+  mysql:
+    image: mysql:9.1.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Jeewalokadigital_db
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "127.0.0.1", "-uroot", "-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-h", "127.0.0.1", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:

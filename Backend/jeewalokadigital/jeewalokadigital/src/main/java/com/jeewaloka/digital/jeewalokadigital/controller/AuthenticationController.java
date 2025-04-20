@@ -122,6 +122,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> authenticate(@RequestBody UserCredentialsRequestDTO userCredentialsDTO, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+        System.out.println("inside login");
         UserCredentials userCredentials = modelMapper.map(userCredentialsDTO,UserCredentials.class);
 
 //        String token = null;
@@ -137,7 +138,12 @@ public class AuthenticationController {
             String userAgent = httpServletRequest.getHeader("User-Agent");
             System.out.println("ip is " + ip);
             System.out.println("user agent is " + userAgent);
-            refreshTokenRedisService.storeRefreshToken(user.getUsername(),tokens.get("refreshToken"),ip,userAgent);
+            try {
+                refreshTokenRedisService.storeRefreshToken(user.getUsername(), tokens.get("refreshToken"), ip, userAgent);
+            } catch (Exception e) {
+                System.err.println("Warning: Failed to store refresh token in Redis: " + e.getMessage());
+            }
+//            refreshTokenRedisService.storeRefreshToken(user.getUsername(),tokens.get("refreshToken"),ip,userAgent);
 //            refreshTokenRedisService.storeRefreshToken(user.getUsername(),tokens.get("refreshToken"));
             Cookie refreshTokenCookie = new Cookie("refreshToken",tokens.get("refreshToken"));
             refreshTokenCookie.setHttpOnly(true);
@@ -262,7 +268,7 @@ public class AuthenticationController {
         System.out.println("user details are " + userDetails.getUsername() + " " + userDetails.getPassword() + " " + userDetails.getAuthorities());
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userDetails.getAuthorities().iterator().next().getAuthority());
-        String newToken = jwtService.generateToken(claims,userDetails,1000*60*60);
+        String newToken = jwtService.generateToken(claims,userDetails,1000*30);
         return ResponseEntity.ok(newToken);
     }
 
