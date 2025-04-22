@@ -1,0 +1,84 @@
+# .github/workflows/deploy.yml
+
+name: Deploy to EC2
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main # Or your deployment branch (e.g., master, production)
+
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Sets up the SSH agent with the private key for connecting to EC2
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+
+      # Adds the EC2 host's public key to the runner's known_hosts file to avoid interactive prompts
+      - name: Add EC2 host to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      # Copies the project files from the runner to the EC2 instance using rsync
+      - name: Copy project files to EC2
+        # Ensure rsync is installed on EC2: sudo apt update && sudo apt install rsync -y (Ubuntu) or sudo yum install rsync -y (Amazon Linux)
+        run: rsync -avz --delete --exclude='.git/' --exclude='.github/' -e ssh ./ ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/app/
+
+      # Connects to EC2 via SSH and executes deployment commands
+      - name: SSH into EC2 and Deploy
+        run: |
+          ssh -A -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
+            # Ensure the deployment user is part of the docker group (run once manually on EC2: sudo usermod -aG docker $USER)
+            # Verify docker access: docker ps
+          
+            # Navigate to the application directory on EC2
+            cd ~/app
+          
+            # Set the environment variable for the frontend build arg using the public URL
+            # This ensures the frontend knows how to reach the backend from the user's browser
+            export VITE_API_BASE_URL_FROM_HOST=http://${{ secrets.EC2_HOST }}:8080
+          
+            echo "Using API Base URL: $VITE_API_BASE_URL_FROM_HOST"
+          
+            # Stop existing containers defined in the compose file (if any)
+            # Uses Docker Compose V2 command (docker compose)
+            docker compose down
+          
+            # Pull the latest versions of images specified directly in the compose file (mysql, redis)
+            # Uses Docker Compose V2 command
+            docker compose pull
+          
+            # Build the application images (backend, frontend) using Dockerfiles
+            # The VITE_API_BASE_URL_FROM_HOST env var is used by the compose file's build args
+            # --no-cache ensures a clean build, remove if build times are excessive and caching is safe
+            # Uses Docker Compose V2 command
+            docker compose build --no-cache
+          
+            # Start the services in detached mode (-d)
+            # Uses Docker Compose V2 command
+            docker compose up -d
+          
+            # Optional: Clean up unused Docker images to save disk space
+            echo "Pruning unused Docker images..."
+            docker image prune -af # -a removes all unused images, not just dangling ones; -f forces without prompt
+          
+            echo "Deployment complete!"
+          EOF
+
+      # Optional: Cleans up the SSH agent process on the runner
+      - name: Clean up SSH agent
+        run: ssh-agent -k
