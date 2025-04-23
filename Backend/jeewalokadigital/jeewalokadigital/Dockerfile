@@ -1,4 +1,4 @@
-# Stage 1: Build the application using Maven
+# Stage 1: Build the application using Maven, version as in local
 FROM maven:3.9.2-openjdk-17 AS build
 
 # Set the working directory inside the build stage
